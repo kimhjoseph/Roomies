@@ -1,18 +1,19 @@
 import React from 'react';
-import UserList from './UserList'
-import NotificationCards from './NotificationList'
+import UserList from './UserList';
+import NotificationCards from './NotificationList';
+import MainCard from './MainCard';
 import { Container, Row, Col } from 'reactstrap';
-import './Card.css'
+// import './Card.css';
+import './RoomiesHome.css';
 
 function RoomiesHome() {
     return (
       <div>
-          <h1>Good Morning Rondald</h1>
-          <Container className='MainContainer'>
-            <UserList/>
-            <NotificationCards/>
-          </Container>
-
+            <MainCard/>
+            <Container className='MainContainer'>
+              <UserList/>
+              <NotificationCards/>
+            </Container>
       </div>
     );
   }
