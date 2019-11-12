@@ -43,20 +43,22 @@
 }
 
 .NotificationContainer{
-  height: 100%;
+  height: 50%;
   width: 100%;
-  /* top: 200%; */
+  flex: 1 1 auto;
   flex-basis: content;
-  flex-grow: 100; /* default 0 */
+  flex-grow: 100;
   padding-top: 50%;
+  overflow-y: visible;
+  min-height: 30%;
 }
 
 .UserContainer{
-  height: 100%;
+  height: 50%;
   width: 100%;
   flex-grow: 2;
+  flex: auto;
   flex-basis: content;
-  /* top: 0%; */
 }
 
 .user-card {

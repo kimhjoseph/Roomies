@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Container, Row, Col } from 'reactstrap';
+import { Container, Row, Col } from 'react-bootstrap';
+import CardDeck from 'react-bootstrap/CardDeck';
 import NotificationCard from './NotificationCard';
 import './Card.css';
 
@@ -13,16 +14,14 @@ class NotificationCards extends Component {
 	render () {
 		return (
       <div>
-      <Container className="NotificationContainer">
-      	<Row>
+      <CardDeck className='NotificationContainer'>
           <div className='section-title'> Notifications </div>
-      		<Col>
               <NotificationCard  />
               <NotificationCard />
               <NotificationCard />
-        		</Col>
-        	</Row>
-        </Container>
+							<NotificationCard />
+							<NotificationCard />
+        </CardDeck>
       </div>
 		)
 	}
