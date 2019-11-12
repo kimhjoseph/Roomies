@@ -13,10 +13,10 @@ class UserCard extends Component {
 	render () {
 		return (
 		    <div>
-		      <Card>
-		        <CardBody>
-		          <CardTitle>Zachary</CardTitle>
-		          <CardSubtitle>Card subtitle</CardSubtitle>
+		      <Card className='user-card'>
+		        <CardBody className ='user-card-body'>
+		          <CardTitle className ='user-card-title'>Zachary</CardTitle>
+		          <CardSubtitle className='user-card-subtitle'>Card subtitle</CardSubtitle>
 		        </CardBody>
 		      </Card>
 		    </div>

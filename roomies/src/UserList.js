@@ -15,7 +15,7 @@ class UserList extends Component {
 	render () {
 		return (
 		    <div>
-		      <Container>
+		      <Container className="user-container">
 		      	<Row>
 		      		<Col sm="2">
 		      			<UserCard />
