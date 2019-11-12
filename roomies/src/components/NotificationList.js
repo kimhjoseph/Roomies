@@ -13,9 +13,9 @@ class NotificationCards extends Component {
 
 	render () {
 		return (
-      <div>
+			<div>
+			<div className='section-title'> Notifications </div>
       <CardDeck className='NotificationContainer'>
-          <div className='section-title'> Notifications </div>
               <NotificationCard  />
               <NotificationCard />
               <NotificationCard />
