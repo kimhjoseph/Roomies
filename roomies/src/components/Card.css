@@ -35,18 +35,21 @@
 .NotificationContainer{
   height: 100%;
   width: 100%;
-  /* top: 200%; */
+  padding-top: 2%;
+  flex: 1 1 auto;
   flex-basis: content;
-  flex-grow: 100; /* default 0 */
-  padding-top: 50%;
+  flex-grow: 100;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 200px;
 }
 
 .UserContainer{
-  height: 100%;
+  height: 50%;
   width: 100%;
-  flex-grow: 100;
+  flex-grow: 2;
+  flex: auto;
   flex-basis: content;
-  /* top: 0%; */
 }
 
 .user-card {
@@ -72,6 +75,7 @@
 	font-weight: normal;
 	font-size: 200%;
   padding-left: 5%;
+  padding-top: 10%;
 }
 
 .user-title {
@@ -95,4 +99,3 @@
   margin:0px;
 	color: #000000;
 }
-
