@@ -28,6 +28,11 @@ let ShoppingListItem = new Schema({
         enum: ["Low", "Medium", "High", "ASAP"],
         default: "Low"
 
+    },
+
+    apartment: {
+        type:  mongoose.Schema.Types.ObjectId,
+        ref : "Apartment"
     }
 
 });

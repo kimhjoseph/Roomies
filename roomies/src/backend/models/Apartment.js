@@ -15,28 +15,8 @@ let Apartment = new Schema({
     },
      code: {
         type: String
-     },
-
-    users: [{
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "User"
-    }],
-
-    chores: [{
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "ChoreListItem"
-    }],
-
-    groceries: [{
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "ShoppingListItem"
-    }],
-
-    events: [{
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "Event"
-    }]
-
+     }
+     
 });
 
 module.exports = mongoose.model('Apartment', Apartment);

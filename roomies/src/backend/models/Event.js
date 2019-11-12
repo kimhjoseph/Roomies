@@ -28,6 +28,10 @@ let Event = new Schema({
         ref: "User"
     }],
 
+    apartment: {
+        type:  mongoose.Schema.Types.ObjectId,
+        ref : "Apartment"
+    }
 
 });
 
