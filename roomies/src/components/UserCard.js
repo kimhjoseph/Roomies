@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import {
-  Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button
-} from 'reactstrap';
-import './UserCard.css'
+import Card from 'react-bootstrap/Card';
 import './Card.css'
 
 class UserCard extends Component {
@@ -14,12 +10,15 @@ class UserCard extends Component {
 	render () {
 		return (
 		    <div>
-		      <Card className='NotificationCard'>
-		        <CardBody className ='user-card-body'>
-		          <CardTitle className ='user-card-title'>Zachary</CardTitle>
-		          <CardSubtitle className='user-card-subtitle'>Card subtitle</CardSubtitle>
-		        </CardBody>
-		      </Card>
+		      <Card style={{ width: '16rem' }}>
+				  <Card.Body className="user-card">
+				  	<Card.Img variant="top" src="holder.js/100px180" />
+				    <Card.Title className="user-title">Zachary</Card.Title>
+				    <Card.Text className="user-subtitle">
+				      Sleeping
+				    </Card.Text>
+				  </Card.Body>
+				</Card>
 		    </div>
 
 		)
