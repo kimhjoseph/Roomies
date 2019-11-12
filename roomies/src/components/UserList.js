@@ -11,13 +11,13 @@ class UserList extends Component {
 
 	render () {
 		return (
-		    <div>
+		    <div className='UserContainer'>
 		    <CardDeck>
-		      		<div className="section-title"> Roomies </div>
-			      		<UserCard />
-			      		<UserCard />
-			      		<UserCard />
-			    </CardDeck>
+	      		<div className="section-title"> Roomies </div>
+	      			<UserCard />
+	      			<UserCard />
+	      			<UserCard />
+		    </CardDeck>
 		    </div>
 
 		)
