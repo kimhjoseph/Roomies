@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import NotificationCard from './NotificationCard';
-import './Card.css'
+import './Card.css';
+
 
 class NotificationCards extends Component {
 	constructor() {
@@ -10,8 +11,8 @@ class NotificationCards extends Component {
 
 	render () {
 		return (
-      <div classname="NotificationCard">
-      <Container class="UserCards">
+      <div>
+      <Container className="NotificationContainer">
       	<Row>
       		<Col sm="4">
               <NotificationCard />

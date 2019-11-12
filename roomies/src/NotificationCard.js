@@ -3,6 +3,8 @@ import {
   Card, CardImg, CardText, CardBody,
   CardTitle, CardSubtitle, Button
 } from 'reactstrap';
+import './Card.css';
+
 
 class NotificationCard extends Component {
 	constructor() {
@@ -12,7 +14,7 @@ class NotificationCard extends Component {
 	render () {
 		return (
 		    <div>
-		      <Card>
+		      <Card className="NotificationCard">
 		        <Card body>This is a notificiaton.</Card>
 		      </Card>
           </div>
