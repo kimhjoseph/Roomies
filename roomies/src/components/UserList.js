@@ -1,9 +1,6 @@
 import React, { Component } from 'react';
-import {
-  Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button
-} from 'reactstrap';
-import { Container, Row, Col } from 'reactstrap';
+import Card from 'react-bootstrap/Card';
+import { Container, Row, Col, CardDeck } from 'react-bootstrap';
 import UserCard from './UserCard';
 import './Card.css'
 
@@ -15,15 +12,12 @@ class UserList extends Component {
 	render () {
 		return (
 		    <div>
-		      <Container className="UserContainer">
-		      	<Row>
-		      		<Col>
-		      			<UserCard />
-		      			<UserCard />
-		      			<UserCard />
-		      		</Col>
-		      	</Row>
-		      </Container>
+		    <CardDeck>
+		      		<div className="section-title"> Roomies </div>
+			      		<UserCard />
+			      		<UserCard />
+			      		<UserCard />
+			    </CardDeck>
 		    </div>
 
 		)
