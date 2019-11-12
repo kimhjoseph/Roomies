@@ -8,5 +8,5 @@ function RoomiesLanding() {
       </div>
     );
   }
-  
+
   export default RoomiesLanding;

@@ -15,6 +15,7 @@ class NotificationCards extends Component {
       <div>
       <Container className="NotificationContainer">
       	<Row>
+          <div className='section-title'> Notifications </div>
       		<Col>
               <NotificationCard  />
               <NotificationCard />

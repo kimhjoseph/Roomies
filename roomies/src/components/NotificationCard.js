@@ -15,7 +15,7 @@ class NotificationCard extends Component {
 		return (
 		    <div>
 		      <Card className="NotificationCard">
-		        <Card body>This is a notificiaton.</Card>
+		        <Card body className="NotificationText">This is a notificiaton.</Card>
 		      </Card>
           </div>
 		)

@@ -1,32 +1,115 @@
 .NotificationCard{
   position: relative;
   text-align: center;
-  margin: 10px;
-  width: 272px;
-  height: 65px;
+
+  margin: 2%;
+  width: 100%;
+  height: 100%;
 
   background: #FFFFFF;
   box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   border-radius: 8px;
 }
 
+.UserCard{
+  position: relative;
+  text-align: center;
+
+  margin: 2%;
+  width: 100%;
+  height: 100%;
+
+  background: #FFFFFF;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+}
+
+.NotificationText{
+  position:relative;
+  top: 40%;
+  padding: 5px;
+  font-size: 75%;
+}
+
 .MainContainer{
   position:relative;
   float: right;
-  margin-right:400px;
+  width: 20%;
+  height: 100%;
+  margin-right: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
 }
 
 .NotificationContainer{
-  position: absolute;
-  top: 300px;
+  height: 100%;
+  width: 100%;
+  /* top: 200%; */
+  flex-basis: content;
+  flex-grow: 100; /* default 0 */
+  padding-top: 50%;
 }
 
 .UserContainer{
-	position:absolute;
-  top: 0px;
+  height: 100%;
+  width: 100%;
+  flex-grow: 2;
+  flex-basis: content;
+  /* top: 0%; */
 }
 
+.user-card {
+	 position: relative;
+    display: flex;
+    flex-direction: column;
+    word-wrap: break-word;
+    background-color: #fff;
+    background-clip: border-box;
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: .25rem;
+    width: 272px;
+	  height: 65px;
 
+	  background: #FFFFFF;
+  	box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  	border-radius: 8px;
+}
+
+.user-card-body{
+    padding: 4%;
+}
+
+.section-title {
+  font-family: Noto Sans Tai Le;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 200%;
+  padding-left: 5%;
+}
+
+.card-title {
+	font-family: Noto Sans Tai Le;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 120%;
+	display: flex;
+	align-items: center;
+
+	color: #000000;
+}
+
+.card-subtitle {
+	font-family: Markazi Text;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 80%;
+	line-height: 24px;
+	display: flex;
+	align-items: center;
+
+	color: #000000;
+}
 
 .UserCards {
 
