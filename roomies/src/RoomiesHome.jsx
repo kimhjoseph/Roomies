@@ -2,6 +2,7 @@ import React from 'react';
 import { Container, Row, Col } from 'reactstrap';
 import UserCard from './UserCard';
 import NotificationCard from './NotificationCard';
+import NotificationCards from './NotificationCards';
 
 function RoomiesHome() {
     return (
@@ -9,7 +10,7 @@ function RoomiesHome() {
           <h1>Good Morning Rondald</h1>
 
 
-      <Container>
+      <Container class="UserCards">
       	<Row>
       		<Col sm="4">
       			<UserCard />
@@ -18,16 +19,9 @@ function RoomiesHome() {
       		</Col>
       	</Row>
       </Container>
+ 
+      <NotificationCards />
 
-      <Container>
-      	<Row>
-      		<Col sm="4">
-      			<NotificationCard />
-      			<NotificationCard />
-      			<NotificationCard />
-      		</Col>
-      	</Row>
-      </Container>
       </div>
     );
   }
