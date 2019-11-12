@@ -10,11 +10,23 @@
   border-radius: 8px;
 }
 
+.MainContainer{
+  position:relative;
+  float: right;
+  margin-right:400px;
+}
+
 .NotificationContainer{
-  display: grid;
-  position: relative;
+  position: absolute;
+  top: 300px;
+}
+
+.UserContainer{
+	position:absolute;
   top: 0px;
 }
+
+
 
 .UserCards {
 

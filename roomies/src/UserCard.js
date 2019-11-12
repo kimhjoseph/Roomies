@@ -4,6 +4,7 @@ import {
   CardTitle, CardSubtitle, Button
 } from 'reactstrap';
 import './UserCard.css'
+import './Card.css'
 
 class UserCard extends Component {
 	constructor() {
@@ -13,7 +14,7 @@ class UserCard extends Component {
 	render () {
 		return (
 		    <div>
-		      <Card className='user-card'>
+		      <Card className='NotificationCard'>
 		        <CardBody className ='user-card-body'>
 		          <CardTitle className ='user-card-title'>Zachary</CardTitle>
 		          <CardSubtitle className='user-card-subtitle'>Card subtitle</CardSubtitle>

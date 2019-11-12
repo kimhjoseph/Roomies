@@ -4,6 +4,7 @@ import NotificationCard from './NotificationCard';
 import './Card.css';
 
 
+
 class NotificationCards extends Component {
 	constructor() {
 		super();
@@ -14,8 +15,8 @@ class NotificationCards extends Component {
       <div>
       <Container className="NotificationContainer">
       	<Row>
-      		<Col sm="4">
-              <NotificationCard />
+      		<Col>
+              <NotificationCard  />
               <NotificationCard />
               <NotificationCard />
         		</Col>

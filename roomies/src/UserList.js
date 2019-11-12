@@ -5,7 +5,7 @@ import {
 } from 'reactstrap';
 import { Container, Row, Col } from 'reactstrap';
 import UserCard from './UserCard';
-import './UserList.css'
+import './Card.css'
 
 class UserList extends Component {
 	constructor() {
@@ -15,9 +15,9 @@ class UserList extends Component {
 	render () {
 		return (
 		    <div>
-		      <Container className="user-container">
+		      <Container className="UserContainer">
 		      	<Row>
-		      		<Col sm="2">
+		      		<Col>
 		      			<UserCard />
 		      			<UserCard />
 		      			<UserCard />

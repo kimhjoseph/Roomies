@@ -1,4 +1,9 @@
-.user-container{
+.container{
+	position:relative;
 	float:right;
-    margin-right: 70px;
+  margin-right: 40px;
+}
+.user-container{
+	position:absolute;
+	float:right;
 }
