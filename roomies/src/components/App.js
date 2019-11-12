@@ -12,7 +12,7 @@ import './App.css';
 function App() {
   return (
     <div>
-      <header style={{backgroundColor: '#F9F9F9', height: '1200px'}}>
+      <header style={{backgroundColor: '#F9F9F9'}}>
         <Router>
           <div>
             <Switch>
