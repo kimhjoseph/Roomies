@@ -1,0 +1,17 @@
+.navbar-component {
+  background-color: #9fcaea;
+  height: 55px;
+
+  font-family: Noto Sans;
+  font-weight: 800;
+}
+
+img {
+  width: 45px;
+  height: 45px;
+}
+
+.home {
+  font-family: Sansita;
+  font-style: italic;
+}
