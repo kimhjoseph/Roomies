@@ -1,5 +1,3 @@
-# Taskr
+# Roomies
 
-Dependencies:
-React Router Dom
-``` npm install react-router-dom ```
+It's time to make your roommates great.
