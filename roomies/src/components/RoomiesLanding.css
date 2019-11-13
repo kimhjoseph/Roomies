@@ -1,0 +1,32 @@
+.main {
+    display: flex;
+    margin: auto;
+    width: 80%;
+    height: 100vh;
+    text-align: center;
+    align-items: center;
+    font-family: Sansita;
+    font-weight: 800;
+    font-style: italic;
+    color: #008DC9;
+}
+
+.container-left {
+    width: 50%;
+    float: left;
+}
+
+h1 {
+    font-size: 60px;
+}
+
+.container-right {
+    width: 50%;
+    float: right;
+}
+
+.login-button {
+    width: 90%;
+    text-align: center;
+    margin: 5px;
+}

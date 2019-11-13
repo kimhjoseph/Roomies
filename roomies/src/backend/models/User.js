@@ -7,9 +7,15 @@ let User = new Schema({
     _id: {
         type: Schema.Types.ObjectId
     },
-    name: {
+    
+    first_name: {
         type: String
     },
+
+    last_name: {
+        type: String
+    },
+
     email: {
         type: String
     },
