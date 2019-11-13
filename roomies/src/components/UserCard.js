@@ -7,7 +7,7 @@ class UserCard extends Component {
 		super();
 	}
 
-	render () {
+	render() {
 		return (
 		    <div>
 		      <Card style={{ width: '16rem' }}>
@@ -20,7 +20,6 @@ class UserCard extends Component {
 				  </Card.Body>
 				</Card>
 		    </div>
-
 		)
 	}
 }
