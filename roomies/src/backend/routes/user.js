@@ -11,6 +11,16 @@ const Apartment = require('.../models/Apartment');
 	// update_status (post)
 	// get_statuses (get)
 
+
+
+/**
+ * Edits user information.
+ *
+ * Use axios.post(.../user/edit_info, newUser)
+ *
+ * @param req contains the newUser object which contains first_name, last_name, email, status
+ * @return            "Success"
+ */
 router.post('/add_info', async function(req, res){
 	if (req.body.first_name && req.body.last_name && req.body.email) {
 		let addData = {
@@ -42,6 +52,15 @@ router.post('/update_status', async function(req, res) {
 	}
 	res.status(200).send("Success");
 });
+
+/**
+ * Get relevant users.
+ *
+ * Use axios.post(.../user/get_users, newUser)
+ *
+ * @param req contains session user variable
+ * @return array of matching User objects found
+ */
 
 router.get('/get_statuses', async function(req, res) {
 	try { let statuses = await User.find({ apartment: req.user.apartment }, 'status').toArray(); }
