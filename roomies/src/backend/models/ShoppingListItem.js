@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 let ShoppingListItem = new Schema({
 
-
-    _id: {
-        type: Schema.Types.ObjectId
-    },
     name: {
         type: String
     },
