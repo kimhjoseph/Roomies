@@ -13,16 +13,16 @@ class NotificationCards extends Component {
 
 	render () {
 		return (
-			<div>
-			<div className='section-title'> Notifications </div>
-      <CardDeck className='NotificationContainer'>
-              <NotificationCard  />
-              <NotificationCard />
-              <NotificationCard />
-							<NotificationCard />
-							<NotificationCard />
-        </CardDeck>
-      </div>
+			<Container style={{alignItems:'center', padding: '0px'}}>
+				<div className='section-title'>Notifications</div>
+				<CardDeck className='NotificationContainer' style={{justifyContent:'center', marginLeft: 'auto', marginRight: 'auto'}}>
+					<NotificationCard />
+					<NotificationCard />
+					<NotificationCard />
+					<NotificationCard />
+					<NotificationCard />
+				</CardDeck>
+      		</Container>
 		)
 	}
 }

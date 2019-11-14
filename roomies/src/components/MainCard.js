@@ -13,12 +13,12 @@ export default class MainCard extends Component {
       <div>
         <Card className="main-card">
           <Card.Body>
-            <Card.Title className="greeting">Good Morning, Rondald</Card.Title>
+            <Card.Title className="greeting" style={{fontSize: '28px'}}>Good Morning,<br/>Rondald</Card.Title>
             <div>
               {/* TODO: currently getting the image in a weird way, should be done better */}
-              <img src={dummy}></img>
+              <img src={dummy} style={{height:'125px', width: '125px'}}></img>
             </div>
-            <div>
+            <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
               <Button variant="outline-primary" className="status-button">
                 Home
               </Button>
