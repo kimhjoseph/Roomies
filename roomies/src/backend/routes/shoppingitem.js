@@ -26,7 +26,7 @@ const ShoppingListItem = require('.../models/ShoppingListItem');
 router.post('/add_item', async function(req, res) {
 	try { let item = await ShoppingListItem.create(name: req.body.name, quantity: req.body.quantity, price: req.body.price, completed: req.body.completed, priority: req.body.priority, apartment: req.user.apartment); } 
 	catch(err) { res.status(400).send("Error creating shopping list item."); }
-	res.status(200).send("Success");
+	res.status(201).send("Success");
 });
 
 
@@ -39,9 +39,9 @@ router.post('/add_item', async function(req, res) {
  * @return res containing "Success"
  */
 
+router.post('/edit_item/:id', async function(req, res) {
+	try { let oldItem = await ShoppingListItem.findById(req.params.id); } 
 
-router.post('/edit_item', async function(req, res) {
-	try { let oldItem = await ShoppingListItem.findById(req.body.id); } 
 	catch (err) { res.status(400).send("Error finding apartment in database."); }
 
 	let updatedItem = {
@@ -50,9 +50,9 @@ router.post('/edit_item', async function(req, res) {
 		completed: ((req.body.completed != null) ? req.body.completed : oldItem.completed),
 		priority: ((req.body.priority != null) ? req.body.priority : oldItem.priority)
 	}
-	try { let newItem = await ShoppingListItem.findByIdAndUpdate(req.body.id, updatedItem, { new: true }); } 
+	try { let newItem = await ShoppingListItem.findByIdAndUpdate(req.params.id, updatedItem, { new: true }); } 
 	catch(err) { res.status(400).send("Error editing shopping list item."); }
-	res.status(200).send("Success")
+	res.status(201).send("Success")
 });
 
 /**

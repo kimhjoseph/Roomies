@@ -7,9 +7,8 @@ const User = require('../models/User');
 const Apartment = require('.../models/Apartment');
 
 //
-	// create_user (post)
-	// update_status (post)
-	// get_statuses (get)
+	// edit_info (post)
+	// get_users (get)
 
 
 
@@ -21,36 +20,20 @@ const Apartment = require('.../models/Apartment');
  * @param req contains the newUser object which contains first_name, last_name, email, status
  * @return            "Success"
  */
-router.post('/add_info', async function(req, res){
-	if (req.body.first_name && req.body.last_name && req.body.email) {
-		let addData = {
-			first_name: req.body.first_name,
-			last_name: req.body.last_name,
-			email: req.body.email
-		}
-		try { let user = await User.findOneAndUpdate({ email: req.user.email }, addData, { new: true }); } 
-		catch(err) {
-			console.log('Error updating user.');
-			res.status(400).send(err);
-		}
-		res.status(200).send("Success")
-	}
 
-	else {
-		console.log("All fields required.")
-	}
-});
-
-router.post('/update_status', async function(req, res) {
-	let updatedStatus = {
+router.post('/edit_info', async function(req, res){
+	let updatedData = {
+		first_name: ((req.body.first_name != null) req.body.first_name : req.user.first_name),
+		last_name: ((req.body.last_name != null) req.body.last_name : req.user.last_name),
+		email: ((req.body.email != null) req.body.email : req.user.email),
 		status: ((req.body.status != null) ? req.body.status : req.user.status)
 	}
-	try { let user = await User.findOneAndUpdate({ email: req.user.email }, updatedStatus, { new: true }); } 
+	try { let user = await User.findOneAndUpdate({ email: req.user.email }, updatedData, { new: true }); } 
 	catch(err) {
-		console.log('Error adding information to user.');
-		res.status(400).send(err);	
+		console.log('Error updating user.');
+		res.status(400).send(err);
 	}
-	res.status(200).send("Success");
+	res.status(201).send("Success")
 });
 
 /**
@@ -62,13 +45,13 @@ router.post('/update_status', async function(req, res) {
  * @return array of matching User objects found
  */
 
-router.get('/get_statuses', async function(req, res) {
-	try { let statuses = await User.find({ apartment: req.user.apartment }, 'status').toArray(); }
+router.get('/get_users', async function(req, res) {
+	try { let users = await User.find({ apartment: req.user.apartment }).toArray(); }
 	catch(err) {
 		console.log("Error finding users in database.");
 		res.status(400).send(err);
 	}
-	res.status(200).send(statuses);
+	res.status(200).send(users);
 });
 
 module.exports = router;
