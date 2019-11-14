@@ -56,7 +56,7 @@ router.post('/update_status', async function(req, res) {
 /**
  * Get relevant users.
  *
- * Use axios.post(.../user/get_users, newUser)
+ * Use axios.get(.../user/get_users, newUser)
  *
  * @param req contains session user variable
  * @return array of matching User objects found
