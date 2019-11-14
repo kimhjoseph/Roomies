@@ -38,7 +38,7 @@ router.get('/callback', (req, res, next) => {
 		else if (user) {
 			req.logIn(user, function(err) {
 				if (err) { return next(err); }
-				if (is_new == 1) { res.status(200).redirect('/user/add_info'); }
+				if (is_new == 1) { res.status(200).redirect('/user/edit_info'); }
 				else { res.status(200).send("Successfully logged in existing user"); }
 			});
 		}
