@@ -87,7 +87,8 @@ router.get('/get_items', async function(req, res) {
 	catch(err) { res.status(400).send("Error finding items in database."); }
 	let populatedItems = [];
 	items.forEach((item) => {
-		populate(user);
+		try { await item.populate(user); }
+		catch(err) {res.status(400).send("Error populating item."); }
 		populatedItems.push({description: item.description, frequency: item.frequency, first_name: user.first_name, last_name: user.last_name, completed: item.completed, priority: item.priority}); 
 	}
 	res.status(200).send(populatedItems);
