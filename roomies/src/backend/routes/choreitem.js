@@ -79,7 +79,7 @@ router.get('/get_items', async function(req, res) {
 /**
  * Delete a ChoreListItem by object id.
  *
- * Use axios.post(.../choreitem/delete_item:id)
+ * Use axios.get(.../choreitem/delete_item:id)
  *
  * @param req contains the id paramater of the chore to be deleted.
  * @return "Success"
@@ -95,7 +95,7 @@ router.delete('/delete_item/:id', async function(req, res) {
 /**
  * Delete all ChoreListItems for the apartment by user apartment id.
  *
- * Use axios.post(.../choreitem/delete_all_items)
+ * Use axios.delete(.../choreitem/delete_all_items)
  *
  * @param req user session variable with apartment_id
  * @return "Success"
@@ -112,7 +112,7 @@ router.delete('/delete_all_items', async function(req, res) {
 /**
  * Retrieve all ChoreListItems by user id.
  *
- * Use axios.post(.../choreitem/get_my_items)
+ * Use axios.delete(.../choreitem/get_my_items)
  *
  * @param req user session variable with user _id
  * @return res containing a list of items retrieved.
