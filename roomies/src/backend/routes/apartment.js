@@ -14,7 +14,7 @@ const Apartment = require('.../models/Apartment');
 /**
  * Create a new apartment and assign the new apartment id to user's apartment field.
  *
- * Use axios.post(.../apartment/create_apartment, newApartment)
+ * Use axios.get(.../apartment/create_apartment, newApartment)
  *
  * @param req contains the apartment object with name, address, and id fields
  * @return res which contains the apartment code that was generated
@@ -52,7 +52,7 @@ router.post('/join_apartment', async function(req, res) {
 /**
  * Find you apartment by user apartment id field.
  *
- * Use axios.post(.../apartment/get_apartment)
+ * Use axios.get(.../apartment/get_apartment)
  *
  * @param req contains the user session variable
  * @return res containing the apartment found
