@@ -2,11 +2,7 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 let ChoreListItem = new Schema({
-
-
-    _id: {
-        type: Schema.Types.ObjectId
-    },
+    
     description: {
         type: String
     },
