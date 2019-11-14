@@ -17,7 +17,8 @@ let ChoreListItem = new Schema({
     },
 
     completed: {
-        type: Boolean
+        type: Boolean,
+        default: false
     },
 
     priority: {
