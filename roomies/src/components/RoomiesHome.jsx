@@ -9,12 +9,20 @@ import "./RoomiesHome.css";
 
 function RoomiesHome() {
   return (
-    <div>
+    <div style={{height:'100vh'}}>
       <NavbarComponent />
-      <MainCard />
-      <Container className="MainContainer">
-        <UserList />
-        <NotificationCards />
+      <Container style={{height:'100%', alignContent: 'center'}}>
+        <Row style={{ alignItems: 'center', height:'100%'}}>
+          <Col md="8" style={{height:'50%', marginBottom: '10%'}}>
+            <MainCard />
+          </Col>
+          <Col md="4" style={{height:'100%'}}>
+            <Container style={{alignItems:'center'}}>
+              <UserList />
+              <NotificationCards />
+            </Container>
+          </Col>
+        </Row>
       </Container>
     </div>
   );

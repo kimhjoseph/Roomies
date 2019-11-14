@@ -11,8 +11,6 @@ class NotificationCard extends Component {
 	render () {
 		return (
 		    <div>
-
-
           <Card style={{ width: '16rem' }}>
               <Card.Body className="NotificationCard">
                 <Card.Text className="NotificationText">
