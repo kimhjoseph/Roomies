@@ -4,7 +4,7 @@ var request = require('request');
 
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const Apartment = require('.../models/Apartment');
+const Apartment = require('../models/Apartment');
 
 // 
 	// create_apartment (get)
@@ -22,7 +22,7 @@ const Apartment = require('.../models/Apartment');
  */
 
 router.post('/create_apartment', async function(req, res) {
-	try { let apartment = await Apartment.create(_id: req.body.id, name: req.body.name, address: req.body.address, code: 'AAAAA'); } 
+	try { let apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: 'AAAAA' }); } 
 	catch(err) { res.status(400).send("Error creating apartment."); }
 
 	try { let user = await User.findOneAndUpdate({ email: req.user.email }, { apartment: apartment._id }, { new: true }); } 

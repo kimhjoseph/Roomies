@@ -4,7 +4,7 @@ var request = require('request');
 
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const ShoppingListItem = require('.../models/ShoppingListItem');
+const ShoppingListItem = require('../models/ShoppingListItem');
 
 //
 	// add_item (post)
@@ -24,7 +24,7 @@ const ShoppingListItem = require('.../models/ShoppingListItem');
  */
 
 router.post('/add_item', async function(req, res) {
-	try { let item = await ShoppingListItem.create(name: req.body.name, quantity: req.body.quantity, price: req.body.price, completed: req.body.completed, priority: req.body.priority, apartment: req.user.apartment); } 
+	try { let item = await ShoppingListItem.create({ name: req.body.name, quantity: req.body.quantity, price: req.body.price, completed: req.body.completed, priority: req.body.priority, apartment: req.user.apartment }); } 
 	catch(err) { res.status(400).send("Error creating shopping list item."); }
 	res.status(201).send("Success");
 });

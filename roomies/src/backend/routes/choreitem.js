@@ -4,7 +4,7 @@ var request = require('request');
 
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const ChoreListItem = require('.../models/ChoreListItem');
+const ChoreListItem = require('../models/ChoreListItem');
 
 //
 	// add_item (post)
@@ -31,7 +31,7 @@ router.post('/add_item', async function(req, res) {
 		try { let user = await User.findOne({ first_name: req.body.first_name, last_name: req.body.last_name }); }
 		catch(err) { res.status(400).send("Error finding user with that first and last name."); }
 
-		try { let item = await ChoreListItem.create(description: req.body.description, frequency: req.body.frequency, user: user._id, priority: req.body.priority, apartment: req.user.apartment); } 
+		try { let item = await ChoreListItem.create({ description: req.body.description, frequency: req.body.frequency, user: user._id, priority: req.body.priority, apartment: req.user.apartment }); } 
 		catch(err) { res.status(400).send("Error creating chore list item."); }
 		res.status(201).send("Success");
 	}

@@ -4,7 +4,7 @@ var request = require('request');
 
 const mongoose = require('mongoose');
 const User = require('../models/User');
-const Apartment = require('.../models/Apartment');
+const Apartment = require('../models/Apartment');
 
 //
 	// edit_info (post)
