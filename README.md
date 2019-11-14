@@ -1,9 +1,5 @@
 # Taskr
 
-Dependencies:
-React Router Dom
-``` npm install react-router-dom ```
-
 Taskr is a web platform used by roommates to make their lives easier.
 
 Test Cases:
