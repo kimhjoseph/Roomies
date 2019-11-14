@@ -1,5 +1,6 @@
-# Taskr
+# Roomies
 
+<<<<<<< HEAD
 Dependencies:
 React Router Dom
 ``` npm install react-router-dom ```
@@ -20,3 +21,6 @@ Backend Testing:
 
 		5) Delete ChoreListItem - This test creates a ChoreListItem, deletes it using ChoreListItem.delete(), and checks the length of ChoreListItem.
 		Expected: 0, Received: 0
+=======
+It's time to make your roommates great.
+>>>>>>> 17d214dc1179270595c2c50781a3a5c1001fefff

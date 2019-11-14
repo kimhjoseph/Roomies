@@ -11,15 +11,14 @@ class UserList extends Component {
 
 	render () {
 		return (
-		    <div>
-		    <CardDeck>
-		      		<div className="section-title"> Roomies </div>
-			      		<UserCard />
-			      		<UserCard />
-			      		<UserCard />
+		    <Container>
+		    	<CardDeck style={{alignItems:'center', justifyContent:'center'}}>
+		      		<div className="section-title">Roomies</div>
+					<UserCard />
+					<UserCard />
+					<UserCard />
 			    </CardDeck>
-		    </div>
-
+		    </Container>
 		)
 	}
 }

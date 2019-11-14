@@ -52,7 +52,11 @@
   flex-grow: 100;
   flex-direction: column;
   overflow-y: auto;
+<<<<<<< HEAD
   max-height: 200px;
+=======
+  max-height: 400px;
+>>>>>>> 17d214dc1179270595c2c50781a3a5c1001fefff
 }
 
 .UserContainer{
@@ -85,8 +89,8 @@
 	font-style: normal;
 	font-weight: normal;
 	font-size: 200%;
-  padding-left: 5%;
   padding-top: 10%;
+  text-align: center;
 }
 
 .user-title {
