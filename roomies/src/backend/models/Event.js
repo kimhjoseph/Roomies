@@ -3,10 +3,6 @@ const Schema = mongoose.Schema;
 
 let Event = new Schema({
 
-
-    _id: {
-        type: Schema.Types.ObjectId
-    },
     description: {
         type: String
     },
