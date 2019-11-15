@@ -1,6 +1,6 @@
-# Taskr
+# Roomies
 
-Taskr is a web platform used by roommates to make their lives easier.
+Roomies is a web platform used by roommates to make their lives easier.
 
 Test Cases:
 1. Get all Users - This test creates 2 mock Users and tests if the length of User.find().
