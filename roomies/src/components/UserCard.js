@@ -1,10 +1,7 @@
 import React, { Component } from 'react';
 import Card from 'react-bootstrap/Card';
-<<<<<<< HEAD
-=======
 import DummyIcon from '../images/dummy.jpg'; 
 import { Row, Col } from 'react-bootstrap';
->>>>>>> 17d214dc1179270595c2c50781a3a5c1001fefff
 import './Card.css'
 
 class UserCard extends Component {

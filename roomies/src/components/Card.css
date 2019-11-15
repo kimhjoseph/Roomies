@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css?family=Markazi+Text|Noto+Sans&display=swap');
+
 .NotificationCard{
   position: relative;
   text-align: center;
@@ -52,11 +54,7 @@
   flex-grow: 100;
   flex-direction: column;
   overflow-y: auto;
-<<<<<<< HEAD
-  max-height: 200px;
-=======
   max-height: 400px;
->>>>>>> 17d214dc1179270595c2c50781a3a5c1001fefff
 }
 
 .UserContainer{
@@ -85,7 +83,7 @@
 }
 
 .section-title {
-  font-family: Noto Sans Tai Le;
+  font-family: Noto Sans;
 	font-style: normal;
 	font-weight: normal;
 	font-size: 200%;
@@ -94,7 +92,7 @@
 }
 
 .user-title {
-	font-family: Noto Sans Tai Le;
+	font-family: Noto Sans;
 	font-style: normal;
 	font-weight: normal;
 	font-size: 120%;
@@ -107,7 +105,7 @@
 	font-family: Markazi Text;
 	font-style: normal;
 	font-weight: normal;
-	font-size: 80%;
+	font-size: 100%;
 	line-height: 24px;
 	display: flex;
 	align-items: center;
