@@ -1,0 +1,58 @@
+.group-code-card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    align-items: center;
+    width: 80%;
+    height: 100%;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+}
+
+.group-button1.btn-primary {
+    width: 100%;
+    background-color: #008DC9;
+    border: #008DC9;
+    font-family: Sansita;
+    font-style: italic;
+}
+
+.btn-primary:hover {
+    background-color: white;
+}
+
+.group-button2.btn-primary {
+    width: 100%;
+    background-color: #9FCAEA;
+    border: #9FCAEA;
+    font-family: Sansita;
+    font-style: italic;
+}
+
+
+.group-title {
+    font-family: Sansita;
+    font-style: italic;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 42px;
+    margin-bottom: 0px;
+
+    color: #000000;
+}
+
+input[type=text]{
+  border: 1.3px solid grey;
+  border-radius: 4px;
+  text-align: center;
+  padding-left: 1px;
+  width: 70%;
+  font-family: Noto Sans;
+  font-style: italic;
+  color: black;
+}
+
+input::placeholder {
+    color: #C4C4C4;
+}
