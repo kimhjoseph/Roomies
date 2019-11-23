@@ -16,7 +16,6 @@ function RoomiesHome() {
         <Row style={{ alignItems: 'center', height:'100%'}}>
           <Col md="8" style={{height:'50%', marginBottom: '10%'}}>
             <MainCard />
-            <GroupCard />
           </Col>
           <Col md="4" style={{height:'100%'}}>
             <Container style={{alignItems:'center'}}>
