@@ -12,7 +12,7 @@ export default class GroupCard extends Component {
     return (
       <div>
         <Card className="group-code-card">
-          <Card.Body>
+          <Card.Body className="group-code-body">
             <Card.Title className="group-title" style={{fontSize: '30px'}}>Group Code:</Card.Title>
             <div style={{paddingTop: '2px', paddingBottom: '10px'}}>
               <form className='group-form'>
