@@ -16,7 +16,7 @@ export default class GroupCard extends Component {
             <Card.Title className="group-title" style={{fontSize: '30px'}}>Group Code:</Card.Title>
             <div style={{paddingTop: '2px', paddingBottom: '10px'}}>
               <form className='group-form'>
-                <input type="text" 
+                <input type="group-code-text" 
                  name="group-code"
                  placeholder="ABC123"
                 />

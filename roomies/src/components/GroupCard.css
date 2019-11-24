@@ -47,7 +47,7 @@
     color: #000000;
 }
 
-input[type=text]{
+input[type=group-code-text]{
   border: 1.3px solid grey;
   border-radius: 4px;
   text-align: center;

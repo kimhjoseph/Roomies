@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css?family=Markazi+Text|Noto+Sans&display=swap');
+
+.modal-header {
+    font-family: Sansita;
+    font-style: italic;
+}
+
+.form-label {
+    font-weight: bold;
+}
+
+.modal-content {
+    font-family: Noto Sans;
+}
+.chore-table.table-hover {
+    font-family: Noto Sans;
+}
+
+.table {
+	text-align: center;
+}
+
+.chore-header {
+	border-bottom: 2pt solid black;	
+}
+
+.btn.btn-default.btn-circle {
+    width: 20px;
+    height: 20px;
+    padding: 6px 0px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 12px;
+    line-height: 1.42857;
+    background-color: #C4C4C4;
+}
+
+.chore-button.btn-primary {
+    background-color: #9FCAEA;
+    border: #9FCAEA;
+    font-family: Sansita;
+    font-style: italic;
+    font-size: 20px;
+}
+    
