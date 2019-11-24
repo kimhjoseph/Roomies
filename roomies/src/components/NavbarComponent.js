@@ -12,14 +12,14 @@ export default class NavbarComponent extends Component {
         variant="dark"
         className="navbar-component"
       >
-        <Navbar.Brand href="#home" className="home">
+        <Navbar.Brand href="/home" className="home">
           Roomies
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="#home">List</Nav.Link>
-            <Nav.Link href="#link">Chores</Nav.Link>
+            <Nav.Link href="/chores">Chores</Nav.Link>
             <Nav.Link href="#calendar">Calendar</Nav.Link>
           </Nav>
           <Nav>

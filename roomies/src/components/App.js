@@ -7,6 +7,7 @@ import {
 } from "react-router-dom";
 import RoomiesLanding from './RoomiesLanding';
 import RoomiesHome from './RoomiesHome';
+import Chores from './Chores';
 import './App.css';
 
 function App() {
@@ -18,6 +19,9 @@ function App() {
             <Switch>
               <Route path="/home">
                 <RoomiesHome/>
+              </Route>
+              <Route path="/chores">
+                <Chores/>
               </Route>
               <Route path="/">
                 <RoomiesLanding/>
