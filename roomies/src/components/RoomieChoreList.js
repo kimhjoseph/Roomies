@@ -12,7 +12,7 @@ export default class RoomieChoreList extends Component {
     return (
       <div>
         <div class='section-title'>Roomie Chores</div>
-        <Card style={{marginTop: '5%'}}>
+        <Card className='chore-card' style={{marginTop: '5%'}}>
           <Table hover borderless className="chore-table">
             <thead>
               <tr className="chore-header">

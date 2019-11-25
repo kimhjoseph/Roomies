@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import RoomiesLanding from "./RoomiesLanding";
 import RoomiesHome from "./RoomiesHome";
 import ShoppingList from "./ShoppingList";
+import Chores from "./Chores";
 import "./App.css";
 
 function App() {
