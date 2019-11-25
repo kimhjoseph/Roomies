@@ -76,3 +76,37 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+.edit-button {
+  margin: 3px;
+  font-size: 14px;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  outline: none;
+  border: 0;
+  background: transparent;
+  color: #9fcaea;
+}
+
+.edit-button:hover {
+  color: #76bcef;
+}
+
+.edit-functions {
+  display: flex;
+  flex-direction: column;
+  float: right;
+}
+
+.item-entry {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 0px 0px 3px 0px;
+}
+
+.custom-card-subtitle {
+  margin: 0px 0px 0px 2px;
+  color: #6c757d;
+}
