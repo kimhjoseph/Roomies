@@ -19,7 +19,7 @@ export default class NavbarComponent extends Component {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="mr-auto">
             <Nav.Link href="/list">List</Nav.Link>
-            <Nav.Link href="#link">Chores</Nav.Link>
+            <Nav.Link href="/chores">Chores</Nav.Link>
             <Nav.Link href="#calendar">Calendar</Nav.Link>
           </Nav>
           <Nav>

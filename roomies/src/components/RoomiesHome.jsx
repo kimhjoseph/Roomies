@@ -2,6 +2,7 @@ import React from "react";
 import UserList from "./UserList";
 import NotificationCards from "./NotificationList";
 import MainCard from "./MainCard";
+import GroupCard from "./GroupCard";
 import NavbarComponent from "./NavbarComponent";
 import { Container, Row, Col } from "reactstrap";
 // import './Card.css';
