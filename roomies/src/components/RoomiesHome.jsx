@@ -10,15 +10,15 @@ import "./RoomiesHome.css";
 
 function RoomiesHome() {
   return (
-    <div style={{height:'100vh'}}>
+    <div style={{ height: "100vh" }}>
       <NavbarComponent />
-      <Container style={{height:'100%', alignContent: 'center'}}>
-        <Row style={{ alignItems: 'center', height:'100%'}}>
-          <Col md="8" style={{height:'50%', marginBottom: '10%'}}>
+      <Container style={{ alignContent: "center" }}>
+        <Row style={{ alignItems: "center", height: "100%" }}>
+          <Col md="8" style={{ height: "50%", marginBottom: "10%" }}>
             <MainCard />
           </Col>
-          <Col md="4" style={{height:'100%'}}>
-            <Container style={{alignItems:'center'}}>
+          <Col md="4" style={{ height: "100%" }}>
+            <Container style={{ alignItems: "center" }}>
               <UserList />
               <NotificationCards />
             </Container>
