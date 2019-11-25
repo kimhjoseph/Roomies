@@ -4,21 +4,25 @@ import "./MainCard.css";
 import dummy from "../images/dummy.jpg";
 
 export default class MainCard extends Component {
-  constructor(props) {
-    super(props);
-  }
-
   render() {
     return (
       <div>
         <Card className="main-card">
           <Card.Body>
-            <Card.Title className="greeting" style={{fontSize: '28px'}}>Good Morning,<br/>Rondald</Card.Title>
+            <Card.Title className="greeting" style={{ fontSize: "28px" }}>
+              Good Morning,
+              <br />
+              Rondald
+            </Card.Title>
             <div>
               {/* TODO: currently getting the image in a weird way, should be done better */}
-              <img src={dummy} style={{height:'125px', width: '125px'}}></img>
+              <img
+                src={dummy}
+                style={{ height: "125px", width: "125px" }}
+                alt=""
+              ></img>
             </div>
-            <div style={{paddingTop: '10px', paddingBottom: '10px'}}>
+            <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
               <Button variant="outline-primary" className="status-button">
                 Home
               </Button>

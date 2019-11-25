@@ -24,7 +24,7 @@ export default class NavbarComponent extends Component {
           </Nav>
           <Nav>
             <NavDropdown
-              title={<img src={dummy} />}
+              title={<img src={dummy} alt="" />}
               alignRight
               id="basic-nav-dropdown"
             >
