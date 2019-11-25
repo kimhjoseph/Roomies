@@ -24,6 +24,7 @@ export default class ShoppingList extends Component {
     this.updateNotes = this.updateNotes.bind(this);
     this.updateCost = this.updateCost.bind(this);
     this.roundCost = this.roundCost.bind(this);
+    this.handleRemoveItem = this.handleRemoveItem.bind(this);
 
     this.state = {
       addItemModal: false,
@@ -113,16 +114,6 @@ export default class ShoppingList extends Component {
     console.log(this.state.items);
   }
 
-  // handleItemClicked(item) {
-  //   var newItems = this.state.items.slice();
-  //   var toCharge = newItems.find(i => i === item);
-  //   toCharge.charge = !toCharge.charge;
-  //   this.setState({
-  //     items: newItems
-  //   });
-  //   // this.updateChargeList();
-  // }
-
   handleTransferToCharge(item) {
     var newItems = this.state.items.filter(i => i !== item);
     var toCharge = this.state.items.find(i => i === item);
@@ -142,6 +133,13 @@ export default class ShoppingList extends Component {
     this.setState({
       items: newItems,
       chargeList: newCharge
+    });
+  }
+
+  handleRemoveItem(item) {
+    var newItems = this.state.items.filter(i => i !== item);
+    this.setState({
+      items: newItems
     });
   }
 
@@ -195,56 +193,14 @@ export default class ShoppingList extends Component {
     console.log(this.state.tempItem);
   }
 
-  // updateCost = (key, val) => {
-  //   console.log(key + " " + val);
-  //   this.setState({
-  //     items: this.state.items.map(item =>
-  //       item.item + " " + item.people.join(", ") === key
-  //         ? { ...item, cost: val }
-  //         : item
-  //     )
-  //   });
-  // };
-
   updateCost = (key, val) => {
     console.log(key + " " + val);
-    // // 1. Make a shallow copy of the items
-    // let items = [...this.state.chargeListCondensed];
-    // // 2. Make a shallow copy of the item you want to mutate
-    // let item = { ...items[key] };
-    // // 3. Replace the property you're intested in
-    // item.cost = val;
-    // // 4. Put it back into our array. N.B. we *are* mutating the array here, but that's why we made a copy first
-    // items[key] = item;
-    // // 5. Set the state to our new copy
-    // this.setState({
-    //   chargeListCondensed: items
-    // });
-
     let items = this.state.chargeListCondensed;
     items[key].cost = val;
     this.setState({
       chargeListCondensed: items
     });
-
-    // this.setState(prevState => ({
-    //   chargeListCondensed: {
-    //     ...prevState.chargeListCondensed,
-    //     [prevState.chargeListCondensed[key].cost]: val
-    //   }
-    // }));
   };
-
-  // roundCost = (key, val) => {
-  //   console.log("focus lost: " + key + " " + val);
-  //   this.setState({
-  //     items: this.state.items.map(item =>
-  //       item.item + " " + item.people.join(", ") === key
-  //         ? { ...item, cost: val.toFixed(2) }
-  //         : item
-  //     )
-  //   });
-  // };
 
   roundCost = (key, val) => {
     console.log("focus lost: " + key + " " + val);
@@ -253,12 +209,6 @@ export default class ShoppingList extends Component {
     this.setState({
       chargeListCondensed: items
     });
-    // this.setState(prevState => ({
-    //   chargeListCondensed: {
-    //     ...prevState.chargeListCondensed,
-    //     [prevState.chargeListCondensed[key].cost]: val.toFixed(2)
-    //   }
-    // }));
   };
 
   updateChargeListCondensed(items, chargeList) {
@@ -328,12 +278,22 @@ export default class ShoppingList extends Component {
                       .map(item => {
                         return (
                           <ListGroup.Item
-                            action
-                            onClick={() => this.handleTransferToCharge(item)}
                             key={item.item + " " + item.people.join(", ")}
                           >
                             <Card.Body as="custom-card-body">
                               <Card.Title>{item.item}</Card.Title>
+                              <div className="edit-functions">
+                                <span
+                                  className="fas fa-plus-circle edit-button"
+                                  onClick={() =>
+                                    this.handleTransferToCharge(item)
+                                  }
+                                ></span>
+                                <span
+                                  className="fas fa-times-circle edit-button"
+                                  onClick={() => this.handleRemoveItem(item)}
+                                ></span>
+                              </div>
                               <Card.Subtitle className="mb-2 text-muted">
                                 {item.people.join(", ")}
                               </Card.Subtitle>
@@ -388,79 +348,23 @@ export default class ShoppingList extends Component {
                                   <Card.Title>{key}</Card.Title>
                                   {console.log(this.state.chargeListCondensed)}
                                   {value.items.map(item => (
-                                    <Card.Subtitle
-                                      action
+                                    <div
+                                      className="item-entry"
                                       onClick={() =>
                                         this.handleTransferToBuy(item)
                                       }
-                                      className="mb-2 text-muted"
                                     >
-                                      {item.item}
-                                    </Card.Subtitle>
+                                      <span className="fas fa-minus-circle edit-button"></span>
+                                      <div className="custom-card-subtitle">
+                                        {item.item}
+                                      </div>
+                                    </div>
                                   ))}
                                 </Card.Body>
                               </ListGroup.Item>
                             );
                           }
                         )}
-                        {/* {this.state.chargeList
-                          .sort((a, b) =>
-                            a.people.toString().toLowerCase() >
-                            b.people.toString().toLowerCase()
-                              ? 1
-                              : a.people.toString().toLowerCase() ==
-                                  b.people.toString().toLowerCase() &&
-                                a.item.toString().toLowerCase() >
-                                  b.item.toString().toLowerCase()
-                              ? 1
-                              : -1
-                          )
-                          .map(item => {
-                            console.log(item);
-                            return (
-                              <ListGroup.Item
-                                action
-                                onClick={() => this.handleTransferToBuy(item)}
-                                key={item.item + " " + item.people.join(", ")}
-                              >
-                                <Card.Body as="custom-card-body">
-                                  <span className="price-input-dollar-sign">
-                                    $
-                                    <input
-                                      type="number"
-                                      step=".01"
-                                      placeholder="0.00"
-                                      onClick={this.handleDisableClick}
-                                      className="price-input"
-                                      value={item.cost}
-                                      onChange={e =>
-                                        this.updateCost(
-                                          item.item +
-                                            " " +
-                                            item.people.join(", "),
-                                          parseFloat(e.target.value)
-                                        )
-                                      }
-                                      onBlur={e =>
-                                        this.roundCost(
-                                          item.item +
-                                            " " +
-                                            item.people.join(", "),
-                                          parseFloat(e.target.value)
-                                        )
-                                      }
-                                    />
-                                  </span>
-                                  <Card.Title>
-                                    {item.people.join(", ")}
-                                  </Card.Title>
-                                  <Card.Subtitle className="mb-2 text-muted">
-                                    {item.item}
-                                  </Card.Subtitle>
-                                </Card.Body>
-                              </ListGroup.Item>
-                            );
-                          })} */}
                         <ListGroup.Item>
                           <Card.Body as="custom-card-body">
                             <Card.Title style={{ textAlign: "right" }}>
