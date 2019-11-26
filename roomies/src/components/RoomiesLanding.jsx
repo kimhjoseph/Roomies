@@ -9,20 +9,22 @@ export default class RoomiesLanding extends Component {
   render() {
     return (
       <div className="main">
-        <div className="container-left">
-          <h1>Roomies</h1>
-          <p>It's time to make your Roommates Great</p>
+        <div className="inner-container">
+          <h1 style={{ fontSize: "70px" }}>Roomies</h1>
+          <h5 style={{ margin: "0px 0px 24px 0px" }}>
+            It's time to make your Roommates Great
+          </h5>
         </div>
-        <div className="container-right">
+        <div className="inner-container">
           <Link to="/home">
-            <Button variant="outline-primary" className="login-button">
+            <button className="custom-landing-button">
               Continue With Facebook
-            </Button>
+            </button>
           </Link>
           <Link to="/home">
-            <Button variant="outline-primary" className="login-button">
+            <button className="custom-landing-button">
               Continue With Google
-            </Button>
+            </button>
           </Link>
         </div>
       </div>
