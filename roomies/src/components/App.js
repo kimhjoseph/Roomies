@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import RoomiesLanding from "./RoomiesLanding";
 import RoomiesHome from "./RoomiesHome";
 import ShoppingList from "./ShoppingList";
+import Settings from "./Settings"
 import "./App.css";
 
 function App() {
@@ -12,6 +13,9 @@ function App() {
         <Router>
           <div>
             <Switch>
+              <Route path="/settings">
+                <Settings />
+              </Route>
               <Route path="/list">
                 <ShoppingList />
               </Route>

@@ -22,16 +22,16 @@ export default class NavbarComponent extends Component {
             <Nav.Link href="#link">Chores</Nav.Link>
             <Nav.Link href="#calendar">Calendar</Nav.Link>
           </Nav>
-          <Nav>
-            <NavDropdown
-              title={<img src={dummy} />}
-              alignRight
-              id="basic-nav-dropdown"
-            >
-              <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-            </NavDropdown>
+          <Nav className="ml-auto">
+            <Navbar.Brand href="/settings">
+              <img
+                src="/dummy.jpg"
+                width="30"
+                height="30"
+                className="d-inline-block align-top"
+                alt="React Bootstrap logo"
+              />
+            </Navbar.Brand>
           </Nav>
         </Navbar.Collapse>
       </Navbar>
