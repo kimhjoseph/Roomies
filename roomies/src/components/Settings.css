@@ -13,12 +13,21 @@
   position: relative;
   width: 300px;
   height: 300px;
-  top: 50%;
+  top: 40%;
   left: 50%;
-  transform: translateX(-50%) translateY(-50%);
+  transform: translateX(-50%) translateY(-35%);
 }
 
 .edit-button{
+  position: absolute;
+  vertical-align: bottom;
+  left: 50%;
+  top: 150%;
+  transform: translateX(-50%) translateY(-150%);
+}
+
+.name{
+  font-family: Sansita One;
   position: absolute;
   vertical-align: bottom;
   left: 50%;

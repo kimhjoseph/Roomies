@@ -32,17 +32,6 @@ export default class NavbarComponent extends Component {
                   alt="React Bootstrap logo"
                 />
               </Navbar.Brand>
-            <Nav>
-              <NavDropdown
-                title={<img src={dummy} alt="" />}
-                alignRight
-                id="basic-nav-dropdown"
-              >
-                <NavDropdown.Item href="#action/3.1">Profile</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.2">Settings</NavDropdown.Item>
-                <NavDropdown.Item href="#action/3.3">Something</NavDropdown.Item>
-              </NavDropdown>
-              </Nav>
             </Nav>
         </Navbar.Collapse>
       </Navbar>
