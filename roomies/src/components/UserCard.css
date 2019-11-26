@@ -1,0 +1,108 @@
+@import url("https://fonts.googleapis.com/css?family=Markazi+Text|Noto+Sans&display=swap");
+
+.NotificationCard {
+  position: relative;
+  text-align: center;
+
+  margin: 2%;
+  width: 100%;
+  height: 100%;
+
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+}
+
+.user-card {
+  position: relative;
+  text-align: center;
+
+  margin: 2%;
+  width: 100%;
+  height: 100%;
+
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 4%;
+}
+
+.NotificationText {
+  position: relative;
+  top: 40%;
+  padding: 5px;
+  font-size: 75%;
+}
+
+.MainContainer {
+  position: relative;
+  float: right;
+  width: 20%;
+  height: 100%;
+  margin-right: 10%;
+  display: flex;
+  flex-direction: column;
+  justify-content: stretch;
+}
+
+.NotificationContainer {
+  height: 100%;
+  width: 100%;
+  padding-top: 2%;
+  flex: 1 1 auto;
+  flex-basis: content;
+  flex-grow: 100;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 400px;
+}
+
+.UserContainer {
+  height: 50%;
+  width: 100%;
+  flex-grow: 2;
+  flex: auto;
+  flex-basis: content;
+}
+
+.user-card {
+  display: flex;
+  flex-direction: column;
+  word-wrap: break-word;
+  background-clip: border-box;
+  border: 1px solid rgba(0, 0, 0, 0.125);
+  position: relative;
+  text-align: center;
+  margin: 2%;
+  width: 100%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  padding: 4%;
+}
+
+.section-title {
+  font-family: Noto Sans;
+  font-style: normal;
+  font-weight: normal;
+  font-size: 200%;
+  padding-top: 10%;
+  text-align: center;
+}
+
+.user-title {
+  font-size: 120%;
+  display: flex;
+  align-items: center;
+  color: #000000;
+}
+
+.user-subtitle {
+  font-size: 80%;
+  line-height: 24px;
+  display: flex;
+  align-items: center;
+  margin: 0px;
+  color: #000000;
+}
