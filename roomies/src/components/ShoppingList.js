@@ -15,6 +15,7 @@ import {
 
 import NavbarComponent from "./NavbarComponent";
 import ShoppingListAddItemModal from "./ShoppingListAddItemModal";
+import ShoppingListChargeModal from "./ShoppingListChargeModal";
 
 import "./ShoppingList.css";
 
@@ -23,6 +24,7 @@ export default class ShoppingList extends Component {
     super(props);
 
     this.showAddItemModal = this.showAddItemModal.bind(this);
+    this.showChargeModal = this.showChargeModal.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
     this.handleDisableClick = this.handleDisableClick.bind(this);
     this.handleClearChargeList = this.handleClearChargeList.bind(this);
@@ -35,6 +37,7 @@ export default class ShoppingList extends Component {
 
     this.state = {
       addItemModal: false,
+      chargeModal: false,
       items: [
         {
           item: "Bananas",
@@ -81,6 +84,10 @@ export default class ShoppingList extends Component {
 
   showAddItemModal() {
     this.setState({ addItemModal: !this.state.addItemModal });
+  }
+
+  showChargeModal() {
+    this.setState({ chargeModal: !this.state.chargeModal });
   }
 
   handleAddItem(tempItem) {
@@ -342,7 +349,11 @@ export default class ShoppingList extends Component {
                                       }
                                     />
                                   </span>
-                                  <Card.Title>{key}</Card.Title>
+                                  <Card.Title
+                                    style={{ margin: "0px 0px 6px 0px" }}
+                                  >
+                                    {key}
+                                  </Card.Title>
                                   {console.log(this.state.chargeListCondensed)}
                                   {value.items.map(item => (
                                     <div
@@ -391,12 +402,15 @@ export default class ShoppingList extends Component {
                   </div>
                 </Form>
               </div>
-              <input
+              <button onClick={this.showChargeModal} className="custom-button">
+                Charge
+              </button>
+              {/* <input
                 type="submit"
                 onClick={this.handleClearChargeList}
                 className="custom-button"
                 value="Charge"
-              />
+              /> */}
             </Col>
           </Row>
         </Container>
@@ -408,6 +422,12 @@ export default class ShoppingList extends Component {
           updateItem={this.updateItem}
           updatePeople={this.updatePeople}
           updateNotes={this.updateNotes}
+        />
+        <ShoppingListChargeModal
+          onClose={this.showChargeModal}
+          show={this.state.chargeModal}
+          handleClearChargeList={this.handleClearChargeList}
+          chargeListCondensed={this.chargeListCondensed}
         />
       </div>
     );
