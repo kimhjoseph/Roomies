@@ -66,23 +66,31 @@ export default class ShoppingList extends Component {
   render() {
     return (
       <div style={{display: "flex", flexDirection: "column", height:'100vh'}}>
+
         <NavbarComponent />
+
+        <h1 style={{ marginTop: "20px", marginBottom: "0px", fontWeight: "800" }}>
+          Settings
+        </h1>
+
         <Container style={{height:'100%', alignContent: 'center'}}>
-            <div className='title-text'>Settings</div>
+
             <div className='rounded-circle'>
               <img className='rounded-circle' src={dummy} />
               <div className="name">{this.state.userInfo.name}</div>
-              <Button variant="primary" onClick={this.showChangeInfoModal} className="edit-button">
+              <button onClick={this.showChangeInfoModal} className="change-info-button">
                 Change User Info
-              </Button>
+              </button>
               <ProfileChangeModal
-              onClose={this.showChangeInfoModal}
-              show={this.state.changeInfoModal}
-              handleUpdateInfo={this.handleUpdateInfo}
-              updateName={this.updateName}
-              userInfo={this.state.userInfo}
-              newInfo={this.state.newInfo}/ >
+                  onClose={this.showChangeInfoModal}
+                  show={this.state.changeInfoModal}
+                  handleUpdateInfo={this.handleUpdateInfo}
+                  updateName={this.updateName}
+                  userInfo={this.state.userInfo}
+                  newInfo={this.state.newInfo}
+              />
             </div>
+
         </Container>
       </div>
 

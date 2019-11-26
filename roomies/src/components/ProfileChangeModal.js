@@ -1,6 +1,8 @@
 import React, {Component} from "react";
 import {Table, Card, Button, ToggleButton, Modal, ButtonToolbar, Form} from "react-bootstrap";
 
+import "./ProfileChangeModal.css"
+
 
 export default class ProfileChangeModal extends Component {
   constructor(props) {
@@ -53,12 +55,12 @@ export default class ProfileChangeModal extends Component {
             Enter Your Full Name
           </Form.Text>
         </Form.Group>
-        <Button onClick={this.handleDisableClick} variant="primary" type="submit">
+        <button onClick={this.handleDisableClick} variant="primary" type="submit" className="profile-change-submit-button">
           Submit
-        </Button>
-        <Button variant="secondary" type="leave group" >
+        </button>
+        <button variant="secondary" type="leave group" className="leave-apt-button">
           Leave Apartment
-        </Button>
+        </button>
         </Form>
               </Modal.Body>
             </Modal>
