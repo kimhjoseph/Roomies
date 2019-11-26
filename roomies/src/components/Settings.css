@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css?family=Markazi+Text|Sansita+One&display=swap');
+.title-text{
+  display:flex;
+  position:absolute;
+  font-family: Sansita One;
+  font-size: 24pt;
+  top: 15%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-20%);
+}
+
+.rounded-circle{
+  position: relative;
+  width: 300px;
+  height: 300px;
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.edit-button{
+  position: absolute;
+  vertical-align: bottom;
+  left: 50%;
+  top: 100%;
+  transform: translateX(-50%) translateY(-100%);
+}
