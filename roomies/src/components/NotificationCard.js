@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
-import "./Card.css";
 
 class NotificationCard extends Component {
   render() {

@@ -16,7 +16,8 @@ export default class ShoppingListAddItemModal extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    if (e !== undefined) e.preventDefault();
+    this.props.onClose();
   };
 
   handleDisableClick = e => {
@@ -31,7 +32,6 @@ export default class ShoppingListAddItemModal extends Component {
       <Modal
         show={this.props.show}
         onHide={this.onClose}
-        onSubmit={() => this.props.handleAddItem(this.props.tempItem)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered

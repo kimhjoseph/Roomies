@@ -2,7 +2,6 @@ import React, { Component } from "react";
 import { Container } from "react-bootstrap";
 import CardDeck from "react-bootstrap/CardDeck";
 import NotificationCard from "./NotificationCard";
-import "./Card.css";
 
 class NotificationCards extends Component {
   render() {
