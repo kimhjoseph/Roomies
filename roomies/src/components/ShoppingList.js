@@ -6,6 +6,13 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlusCircle,
+  faTimesCircle,
+  faMinusCircle
+} from "@fortawesome/free-solid-svg-icons";
+
 import NavbarComponent from "./NavbarComponent";
 import ShoppingListAddItemModal from "./ShoppingListAddItemModal";
 
@@ -17,13 +24,14 @@ export default class ShoppingList extends Component {
 
     this.showAddItemModal = this.showAddItemModal.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
-    this.handleItemClicked = this.handleItemClicked.bind(this);
     this.handleDisableClick = this.handleDisableClick.bind(this);
+    this.handleClearChargeList = this.handleClearChargeList.bind(this);
     this.updateItem = this.updateItem.bind(this);
     this.updatePeople = this.updatePeople.bind(this);
     this.updateNotes = this.updateNotes.bind(this);
     this.updateCost = this.updateCost.bind(this);
     this.roundCost = this.roundCost.bind(this);
+    this.handleRemoveItem = this.handleRemoveItem.bind(this);
 
     this.state = {
       addItemModal: false,
@@ -31,44 +39,32 @@ export default class ShoppingList extends Component {
         {
           item: "Bananas",
           people: ["Joe"],
-          notes: "3 green ones pls",
-          charge: false,
-          cost: null
+          notes: "3 green ones pls"
         },
         {
           item: "Paper Towels",
           people: ["Joe", "Mike", "Saman"],
-          notes: "roll up",
-          charge: false,
-          cost: null
+          notes: "roll up"
         },
         {
           item: "Gum",
           people: ["Joe", "Mike", "Saman"],
-          notes: "gum not gun",
-          charge: false,
-          cost: null
+          notes: "gum not gun"
         },
         {
           item: "Bananas",
           people: ["Mike"],
-          notes: "3 green ones but less green pls",
-          charge: false,
-          cost: null
+          notes: "3 green ones but less green pls"
         },
         {
           item: "Bananas",
           people: ["Saman"],
-          notes: "3 yellow ones pls",
-          charge: false,
-          cost: null
+          notes: "3 yellow ones pls"
         },
         {
           item: "Apples",
           people: ["Zach"],
-          notes: "3 green ones pls",
-          charge: true,
-          cost: null
+          notes: "3 green ones pls"
         }
       ],
       tempItem: {
@@ -76,8 +72,10 @@ export default class ShoppingList extends Component {
         people: "",
         notes: "",
         charge: false,
-        cost: null
-      }
+        cost: undefined
+      },
+      chargeList: [],
+      chargeListCondensed: {}
     };
   }
 
@@ -94,32 +92,53 @@ export default class ShoppingList extends Component {
           {
             item: tempItem.item,
             people: tempItem.people.split(",").map(s => s.trim()),
-            notes: tempItem.notes,
-            charge: false,
-            cost: tempItem.cost
+            notes: tempItem.notes
           }
         ]),
         tempItem: {
           item: "",
           people: "",
-          notes: "",
-          charge: false,
-          cost: null
+          notes: ""
         }
       };
     });
     console.log(this.state.items);
   }
 
-  handleItemClicked(item) {
-    console.log(item);
-    var newItems = this.state.items.slice();
-    var toCharge = newItems.find(i => i == item);
-    toCharge.charge = !toCharge.charge;
+  handleTransferToCharge(item) {
+    var newItems = this.state.items.filter(i => i !== item);
+    var toCharge = this.state.items.find(i => i === item);
+    var newCharge = this.state.chargeList.concat([toCharge]);
+    this.updateChargeListCondensed(newItems, newCharge);
+    this.setState({
+      items: newItems,
+      chargeList: newCharge
+    });
+  }
+
+  handleTransferToBuy(item) {
+    var newCharge = this.state.chargeList.filter(i => i !== item);
+    var toBuy = this.state.chargeList.find(i => i === item);
+    var newItems = this.state.items.concat([toBuy]);
+    this.updateChargeListCondensed(newItems, newCharge);
+    this.setState({
+      items: newItems,
+      chargeList: newCharge
+    });
+  }
+
+  handleRemoveItem(item) {
+    var newItems = this.state.items.filter(i => i !== item);
     this.setState({
       items: newItems
     });
-    console.log(item);
+  }
+
+  handleClearChargeList() {
+    this.setState({
+      chargeList: [],
+      chargeListCondensed: {}
+    });
   }
 
   handleDisableClick = e => {
@@ -134,9 +153,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: value,
         people: this.state.tempItem.people,
-        notes: this.state.tempItem.notes,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: this.state.tempItem.notes
       }
     });
     console.log(this.state.tempItem);
@@ -149,9 +166,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: this.state.tempItem.item,
         people: value,
-        notes: this.state.tempItem.notes,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: this.state.tempItem.notes
       }
     });
     console.log(this.state.tempItem);
@@ -164,9 +179,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: this.state.tempItem.item,
         people: this.state.tempItem.people,
-        notes: value,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: value
       }
     });
     console.log(this.state.tempItem);
@@ -174,25 +187,55 @@ export default class ShoppingList extends Component {
 
   updateCost = (key, val) => {
     console.log(key + " " + val);
+    let items = this.state.chargeListCondensed;
+    items[key].cost = val;
     this.setState({
-      items: this.state.items.map(item =>
-        item.item + " " + item.people.join(", ") === key
-          ? { ...item, cost: val }
-          : item
-      )
+      chargeListCondensed: items
     });
   };
 
   roundCost = (key, val) => {
     console.log("focus lost: " + key + " " + val);
+    let items = this.state.chargeListCondensed;
+    items[key].cost = val.toFixed(2);
     this.setState({
-      items: this.state.items.map(item =>
-        item.item + " " + item.people.join(", ") === key
-          ? { ...item, cost: val.toFixed(2) }
-          : item
-      )
+      chargeListCondensed: items
     });
   };
+
+  updateChargeListCondensed(items, chargeList) {
+    chargeList.forEach(item => {
+      var key = item.people.join(", ");
+      // people group exists, add item to group
+      var map = this.state.chargeListCondensed;
+      if (key in this.state.chargeListCondensed) {
+        if (!map[key].items.includes(item)) map[key].items.push(item);
+        this.setState({
+          chargeListCondensed: map
+        });
+      } else {
+        // new group of people, add new entry
+        map[key] = { items: [item], cost: undefined };
+        this.setState({
+          chargeListCondensed: map
+        });
+      }
+    });
+    items.forEach(item => {
+      var key = item.people.join(", ");
+      if (key in this.state.chargeListCondensed) {
+        var map = this.state.chargeListCondensed;
+        if (map[key].items.includes(item))
+          map[key].items = map[key].items.filter(i => i !== item);
+        if (map[key].items === undefined || map[key].items.length === 0)
+          delete map[key];
+        this.setState({
+          chargeListCondensed: map
+        });
+      }
+    });
+    console.log(this.state.chargeListCondensed);
+  }
 
   render() {
     return (
@@ -217,7 +260,7 @@ export default class ShoppingList extends Component {
                         a.item.toString().toLowerCase() >
                         b.item.toString().toLowerCase()
                           ? 1
-                          : a.item.toString().toLowerCase() ==
+                          : a.item.toString().toLowerCase() ===
                               b.item.toString().toLowerCase() &&
                             a.people.toString().toLowerCase() >
                               b.people.toString().toLowerCase()
@@ -225,23 +268,35 @@ export default class ShoppingList extends Component {
                           : -1
                       )
                       .map(item => {
-                        if (item.charge == false) {
-                          return (
-                            <ListGroup.Item
-                              action
-                              onClick={() => this.handleItemClicked(item)}
-                              key={item.item + " " + item.people.join(", ")}
-                            >
-                              <Card.Body as="custom-card-body">
-                                <Card.Title>{item.item}</Card.Title>
-                                <Card.Subtitle className="mb-2 text-muted">
-                                  {item.people.join(", ")}
-                                </Card.Subtitle>
+                        return (
+                          <ListGroup.Item
+                            key={item.item + " " + item.people.join(", ")}
+                          >
+                            <Card.Body as="custom-card-body">
+                              <div className="edit-functions">
+                                <FontAwesomeIcon
+                                  icon={faPlusCircle}
+                                  className="edit-button"
+                                  onClick={() =>
+                                    this.handleTransferToCharge(item)
+                                  }
+                                />
+                                <FontAwesomeIcon
+                                  icon={faTimesCircle}
+                                  className="edit-button"
+                                  onClick={() => this.handleRemoveItem(item)}
+                                />
+                              </div>
+                              <Card.Title>{item.item}</Card.Title>
+                              <Card.Subtitle className="mb-2 text-muted">
+                                {item.people.join(", ")}
+                              </Card.Subtitle>
+                              {item.notes.length > 0 ? (
                                 <Card.Text>{item.notes}</Card.Text>
-                              </Card.Body>
-                            </ListGroup.Item>
-                          );
-                        }
+                              ) : null}
+                            </Card.Body>
+                          </ListGroup.Item>
+                        );
                       })}
                   </ListGroup>
                 </Card>
@@ -258,72 +313,76 @@ export default class ShoppingList extends Component {
                   <div>
                     <Card style={{ border: "none" }}>
                       <ListGroup variant="flush">
-                        {this.state.items
-                          .sort((a, b) =>
-                            a.people.toString().toLowerCase() >
-                            b.people.toString().toLowerCase()
-                              ? 1
-                              : a.people.toString().toLowerCase() ==
-                                  b.people.toString().toLowerCase() &&
-                                a.item.toString().toLowerCase() >
-                                  b.item.toString().toLowerCase()
-                              ? 1
-                              : -1
-                          )
-                          .map(item => {
-                            if (item.charge == true) {
-                              return (
-                                <ListGroup.Item
-                                  action
-                                  onClick={() => this.handleItemClicked(item)}
-                                  key={item.item + " " + item.people.join(", ")}
-                                >
-                                  <Card.Body as="custom-card-body">
-                                    <span className="price-input-dollar-sign">
-                                      $
-                                      <input
-                                        type="number"
-                                        step=".01"
-                                        placeholder="0.00"
-                                        onClick={this.handleDisableClick}
-                                        className="price-input"
-                                        value={item.cost}
-                                        onChange={e =>
-                                          this.updateCost(
-                                            item.item +
-                                              " " +
-                                              item.people.join(", "),
-                                            parseFloat(e.target.value)
-                                          )
-                                        }
-                                        onBlur={e =>
-                                          this.roundCost(
-                                            item.item +
-                                              " " +
-                                              item.people.join(", "),
-                                            parseFloat(e.target.value)
-                                          )
-                                        }
+                        {Object.entries(this.state.chargeListCondensed).map(
+                          ([key, value]) => {
+                            return (
+                              <ListGroup.Item key={key}>
+                                <Card.Body as="custom-card-body">
+                                  <span className="price-input-dollar-sign">
+                                    $
+                                    <input
+                                      required
+                                      type="number"
+                                      step=".01"
+                                      placeholder="0.00"
+                                      onClick={this.handleDisableClick}
+                                      className="price-input"
+                                      value={value.cost}
+                                      onChange={e =>
+                                        this.updateCost(
+                                          key,
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                      onBlur={e =>
+                                        this.roundCost(
+                                          key,
+                                          parseFloat(e.target.value)
+                                        )
+                                      }
+                                    />
+                                  </span>
+                                  <Card.Title>{key}</Card.Title>
+                                  {console.log(this.state.chargeListCondensed)}
+                                  {value.items.map(item => (
+                                    <div
+                                      className="item-entry"
+                                      onClick={() =>
+                                        this.handleTransferToBuy(item)
+                                      }
+                                    >
+                                      <FontAwesomeIcon
+                                        icon={faMinusCircle}
+                                        className="edit-button"
                                       />
-                                    </span>
-                                    <Card.Title>
-                                      {item.people.join(", ")}
-                                    </Card.Title>
-                                    <Card.Subtitle className="mb-2 text-muted">
-                                      {item.item}
-                                    </Card.Subtitle>
-                                  </Card.Body>
-                                </ListGroup.Item>
-                              );
-                            }
-                          })}
+                                      <div className="custom-card-subtitle">
+                                        {item.item}
+                                      </div>
+                                    </div>
+                                  ))}
+                                </Card.Body>
+                              </ListGroup.Item>
+                            );
+                          }
+                        )}
                         <ListGroup.Item>
                           <Card.Body as="custom-card-body">
                             <Card.Title style={{ textAlign: "right" }}>
                               Total
                             </Card.Title>
                             <Card.Text style={{ textAlign: "right" }}>
-                              <Total items={this.state.items} />
+                              $
+                              {parseFloat(
+                                Object.values(
+                                  this.state.chargeListCondensed
+                                ).reduce((sum, i) => {
+                                  if (i.cost != undefined) {
+                                    sum += parseFloat(i.cost);
+                                  }
+                                  if (!isNaN(sum)) return sum;
+                                  return 0;
+                                }, 0)
+                              ).toFixed(2)}
                             </Card.Text>
                           </Card.Body>
                         </ListGroup.Item>
@@ -332,7 +391,12 @@ export default class ShoppingList extends Component {
                   </div>
                 </Form>
               </div>
-              <button className="custom-button">Charge</button>
+              <input
+                type="submit"
+                onClick={this.handleClearChargeList}
+                className="custom-button"
+                value="Charge"
+              />
             </Col>
           </Row>
         </Container>
@@ -349,18 +413,3 @@ export default class ShoppingList extends Component {
     );
   }
 }
-
-const Total = ({ items }) => (
-  <p>
-    $
-    {parseFloat(
-      items.reduce((sum, i) => {
-        if (i.charge == true && i.cost != null) {
-          sum += parseFloat(i.cost);
-        }
-        if (!isNaN(sum)) return sum;
-        return 0;
-      }, 0)
-    ).toFixed(2)}
-  </p>
-);

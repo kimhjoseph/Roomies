@@ -1,4 +1,5 @@
-.main-card {
-    display: flex;
-    align-items: center;
+.scrollable-user-list {
+  max-height: 50%;
+  overflow: scroll;
+  -webkit-overflow-scrolling: touch;
 }

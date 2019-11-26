@@ -64,7 +64,7 @@ export default class ShoppingListAddItemModal extends Component {
                 onChange={this.props.updatePeople}
               />
               <Form.Text className="text-muted">
-                List the people associated to this item (comma separated)
+                Who is this item for? (comma separated)
               </Form.Text>
             </Form.Group>
             <Form.Group controlId="notes">
