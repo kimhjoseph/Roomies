@@ -1,27 +1,42 @@
 import React from "react";
 import UserList from "./UserList";
-import NotificationCards from "./NotificationList";
+// import NotificationList from "./NotificationList";
 import MainCard from "./MainCard";
-import GroupCard from "./GroupCard";
 import NavbarComponent from "./NavbarComponent";
-import { Container, Row, Col } from "reactstrap";
-// import './Card.css';
+import { Container, Row, Col } from "react-bootstrap";
 import "./RoomiesHome.css";
 
 function RoomiesHome() {
   return (
-    <div style={{ height: "100vh" }}>
+    <div style={{ display: "flex", flexDirection: "column", height: "100vh" }}>
       <NavbarComponent />
-      <Container style={{ alignContent: "center" }}>
-        <Row style={{ alignItems: "center", height: "100%" }}>
-          <Col md="8" style={{ height: "50%", marginBottom: "10%" }}>
+      <Container style={{ height: "100%" }}>
+        <Row style={{ height: "100%", alignItems: "center" }}>
+          <Col
+            md={8}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "60%",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
             <MainCard />
           </Col>
-          <Col md="4" style={{ height: "100%" }}>
-            <Container style={{ alignItems: "center" }}>
+          <Col
+            md={4}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              height: "100%",
+              justifyContent: "center",
+              alignItems: "center"
+            }}
+          >
+            <div className="scrollable-user-list">
               <UserList />
-              <NotificationCards />
-            </Container>
+            </div>
           </Col>
         </Row>
       </Container>

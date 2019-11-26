@@ -1,18 +1,18 @@
 import React, { Component } from "react";
-import { Container, CardDeck } from "react-bootstrap";
+import Container from "react-bootstrap/Container";
 import UserCard from "./UserCard";
-import "./Card.css";
+import "./UserList.css";
 
 class UserList extends Component {
   render() {
     return (
       <Container>
-        <CardDeck style={{ alignItems: "center", justifyContent: "center" }}>
-          <div className="section-title">Roomies</div>
+        <div className="user-list">
+          <h2>Roomies</h2>
           <UserCard />
           <UserCard />
           <UserCard />
-        </CardDeck>
+        </div>
       </Container>
     );
   }

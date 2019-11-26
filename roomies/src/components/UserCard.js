@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import Card from "react-bootstrap/Card";
 import DummyIcon from "../images/dummy.jpg";
 import { Row, Col } from "react-bootstrap";
-import "./Card.css";
+import "./UserCard.css";
 
 class UserCard extends Component {
   render() {

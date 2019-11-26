@@ -6,6 +6,13 @@ import Card from "react-bootstrap/Card";
 import ListGroup from "react-bootstrap/ListGroup";
 import Form from "react-bootstrap/Form";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+  faPlusCircle,
+  faTimesCircle,
+  faMinusCircle
+} from "@fortawesome/free-solid-svg-icons";
+
 import NavbarComponent from "./NavbarComponent";
 import ShoppingListAddItemModal from "./ShoppingListAddItemModal";
 
@@ -17,8 +24,8 @@ export default class ShoppingList extends Component {
 
     this.showAddItemModal = this.showAddItemModal.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
-    // this.handleItemClicked = this.handleItemClicked.bind(this);
     this.handleDisableClick = this.handleDisableClick.bind(this);
+    this.handleClearChargeList = this.handleClearChargeList.bind(this);
     this.updateItem = this.updateItem.bind(this);
     this.updatePeople = this.updatePeople.bind(this);
     this.updateNotes = this.updateNotes.bind(this);
@@ -32,44 +39,32 @@ export default class ShoppingList extends Component {
         {
           item: "Bananas",
           people: ["Joe"],
-          notes: "3 green ones pls",
-          charge: false,
-          cost: undefined
+          notes: "3 green ones pls"
         },
         {
           item: "Paper Towels",
           people: ["Joe", "Mike", "Saman"],
-          notes: "roll up",
-          charge: false,
-          cost: undefined
+          notes: "roll up"
         },
         {
           item: "Gum",
           people: ["Joe", "Mike", "Saman"],
-          notes: "gum not gun",
-          charge: false,
-          cost: undefined
+          notes: "gum not gun"
         },
         {
           item: "Bananas",
           people: ["Mike"],
-          notes: "3 green ones but less green pls",
-          charge: false,
-          cost: undefined
+          notes: "3 green ones but less green pls"
         },
         {
           item: "Bananas",
           people: ["Saman"],
-          notes: "3 yellow ones pls",
-          charge: false,
-          cost: undefined
+          notes: "3 yellow ones pls"
         },
         {
           item: "Apples",
           people: ["Zach"],
-          notes: "3 green ones pls",
-          charge: false,
-          cost: undefined
+          notes: "3 green ones pls"
         }
       ],
       tempItem: {
@@ -97,17 +92,13 @@ export default class ShoppingList extends Component {
           {
             item: tempItem.item,
             people: tempItem.people.split(",").map(s => s.trim()),
-            notes: tempItem.notes,
-            charge: false,
-            cost: tempItem.cost
+            notes: tempItem.notes
           }
         ]),
         tempItem: {
           item: "",
           people: "",
-          notes: "",
-          charge: false,
-          cost: undefined
+          notes: ""
         }
       };
     });
@@ -143,6 +134,13 @@ export default class ShoppingList extends Component {
     });
   }
 
+  handleClearChargeList() {
+    this.setState({
+      chargeList: [],
+      chargeListCondensed: {}
+    });
+  }
+
   handleDisableClick = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -155,9 +153,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: value,
         people: this.state.tempItem.people,
-        notes: this.state.tempItem.notes,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: this.state.tempItem.notes
       }
     });
     console.log(this.state.tempItem);
@@ -170,9 +166,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: this.state.tempItem.item,
         people: value,
-        notes: this.state.tempItem.notes,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: this.state.tempItem.notes
       }
     });
     console.log(this.state.tempItem);
@@ -185,9 +179,7 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: this.state.tempItem.item,
         people: this.state.tempItem.people,
-        notes: value,
-        charge: this.state.tempItem.charge,
-        cost: this.state.tempItem.cost
+        notes: value
       }
     });
     console.log(this.state.tempItem);
@@ -281,23 +273,27 @@ export default class ShoppingList extends Component {
                             key={item.item + " " + item.people.join(", ")}
                           >
                             <Card.Body as="custom-card-body">
-                              <Card.Title>{item.item}</Card.Title>
                               <div className="edit-functions">
-                                <span
-                                  className="fas fa-plus-circle edit-button"
+                                <FontAwesomeIcon
+                                  icon={faPlusCircle}
+                                  className="edit-button"
                                   onClick={() =>
                                     this.handleTransferToCharge(item)
                                   }
-                                ></span>
-                                <span
-                                  className="fas fa-times-circle edit-button"
+                                />
+                                <FontAwesomeIcon
+                                  icon={faTimesCircle}
+                                  className="edit-button"
                                   onClick={() => this.handleRemoveItem(item)}
-                                ></span>
+                                />
                               </div>
+                              <Card.Title>{item.item}</Card.Title>
                               <Card.Subtitle className="mb-2 text-muted">
                                 {item.people.join(", ")}
                               </Card.Subtitle>
-                              <Card.Text>{item.notes}</Card.Text>
+                              {item.notes.length > 0 ? (
+                                <Card.Text>{item.notes}</Card.Text>
+                              ) : null}
                             </Card.Body>
                           </ListGroup.Item>
                         );
@@ -325,6 +321,7 @@ export default class ShoppingList extends Component {
                                   <span className="price-input-dollar-sign">
                                     $
                                     <input
+                                      required
                                       type="number"
                                       step=".01"
                                       placeholder="0.00"
@@ -354,7 +351,10 @@ export default class ShoppingList extends Component {
                                         this.handleTransferToBuy(item)
                                       }
                                     >
-                                      <span className="fas fa-minus-circle edit-button"></span>
+                                      <FontAwesomeIcon
+                                        icon={faMinusCircle}
+                                        className="edit-button"
+                                      />
                                       <div className="custom-card-subtitle">
                                         {item.item}
                                       </div>
@@ -391,7 +391,12 @@ export default class ShoppingList extends Component {
                   </div>
                 </Form>
               </div>
-              <button className="custom-button">Charge</button>
+              <input
+                type="submit"
+                onClick={this.handleClearChargeList}
+                className="custom-button"
+                value="Charge"
+              />
             </Col>
           </Row>
         </Container>
