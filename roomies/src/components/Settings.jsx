@@ -65,14 +65,14 @@ export default class ShoppingList extends Component {
 
   render() {
     return (
-      <div style={{height:'100vh'}}>
+      <div style={{display: "flex", flexDirection: "column", height:'100vh'}}>
         <NavbarComponent />
         <Container style={{height:'100%', alignContent: 'center'}}>
             <div className='title-text'>Settings</div>
             <div className='rounded-circle'>
               <img className='rounded-circle' src={dummy} />
-              {this.state.userInfo.name}
-              <Button variant="primary" onClick={this.showChangeInfoModal}>
+              <div className="name">{this.state.userInfo.name}</div>
+              <Button variant="primary" onClick={this.showChangeInfoModal} className="edit-button">
                 Change User Info
               </Button>
               <ProfileChangeModal
@@ -81,7 +81,7 @@ export default class ShoppingList extends Component {
               handleUpdateInfo={this.handleUpdateInfo}
               updateName={this.updateName}
               userInfo={this.state.userInfo}
-              newInfo={this.state.newInfo}/>
+              newInfo={this.state.newInfo}/ >
             </div>
         </Container>
       </div>
