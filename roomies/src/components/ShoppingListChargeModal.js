@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
 import ListGroup from "react-bootstrap/ListGroup";
 import Card from "react-bootstrap/Card";
 
@@ -18,7 +17,8 @@ export default class ShoppingListChargeModal extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    if (e !== undefined) e.preventDefault();
+    this.props.onClose();
   };
 
   handleDisableClick = e => {
@@ -33,7 +33,7 @@ export default class ShoppingListChargeModal extends Component {
       <Modal
         show={this.props.show}
         onHide={this.onClose}
-        size="lg"
+        size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -44,18 +44,16 @@ export default class ShoppingListChargeModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <ListGroup variant="flush">
-            {this.props.chargeListCondensed === undefined
+            {console.log(this.props.chargesByPerson)}
+            {this.props.chargesByPerson === undefined
               ? null
-              : Object.entries(this.props.chargeListCondensed).map(
+              : Object.entries(this.props.chargesByPerson).map(
                   ([key, value]) => {
                     return (
                       <ListGroup.Item key={key}>
                         <Card.Body as="custom-card-body">
-                          {value.cost}
+                          <div className="charge-amount">${value.cost}</div>
                           <Card.Title>{key}</Card.Title>
-                          {value.items.map(item => (
-                            <Card.Subtitle>{item.item}</Card.Subtitle>
-                          ))}
                         </Card.Body>
                       </ListGroup.Item>
                     );
@@ -65,11 +63,11 @@ export default class ShoppingListChargeModal extends Component {
               <Card.Body as="custom-card-body">
                 <Card.Title style={{ textAlign: "right" }}>Total</Card.Title>
                 <Card.Text style={{ textAlign: "right" }}>
-                  ${console.log(this.props.chargeListCondensed)}
-                  {this.props.chargeListCondensed === undefined
+                  $
+                  {this.props.chargesByPerson === undefined
                     ? null
                     : parseFloat(
-                        Object.values(this.props.chargeListCondensed).reduce(
+                        Object.values(this.props.chargesByPerson).reduce(
                           (sum, i) => {
                             if (i.cost != undefined) {
                               sum += parseFloat(i.cost);

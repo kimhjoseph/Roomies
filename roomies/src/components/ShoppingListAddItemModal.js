@@ -16,7 +16,8 @@ export default class ShoppingListAddItemModal extends Component {
   }
 
   onClose = e => {
-    this.props.onClose && this.props.onClose(e);
+    if (e !== undefined) e.preventDefault();
+    this.props.onClose();
   };
 
   handleDisableClick = e => {

@@ -34,6 +34,7 @@ export default class ShoppingList extends Component {
     this.updateCost = this.updateCost.bind(this);
     this.roundCost = this.roundCost.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
+    this.updateChargesByPerson = this.updateChargesByPerson.bind(this);
 
     this.state = {
       addItemModal: false,
@@ -78,7 +79,8 @@ export default class ShoppingList extends Component {
         cost: undefined
       },
       chargeList: [],
-      chargeListCondensed: {}
+      chargeListCondensed: {},
+      chargesByPerson: {}
     };
   }
 
@@ -87,12 +89,11 @@ export default class ShoppingList extends Component {
   }
 
   showChargeModal() {
+    if (!this.state.chargeModal === true) this.updateChargesByPerson();
     this.setState({ chargeModal: !this.state.chargeModal });
   }
 
   handleAddItem(tempItem) {
-    console.log("called handleAddItem");
-    console.log(tempItem);
     this.setState(currentState => {
       return {
         items: currentState.items.concat([
@@ -109,7 +110,6 @@ export default class ShoppingList extends Component {
         }
       };
     });
-    console.log(this.state.items);
   }
 
   handleTransferToCharge(item) {
@@ -155,7 +155,6 @@ export default class ShoppingList extends Component {
 
   updateItem(e) {
     const value = e.target.value;
-    console.log(value);
     this.setState({
       tempItem: {
         item: value,
@@ -163,12 +162,10 @@ export default class ShoppingList extends Component {
         notes: this.state.tempItem.notes
       }
     });
-    console.log(this.state.tempItem);
   }
 
   updatePeople(e) {
     const value = e.target.value;
-    console.log(value);
     this.setState({
       tempItem: {
         item: this.state.tempItem.item,
@@ -176,12 +173,10 @@ export default class ShoppingList extends Component {
         notes: this.state.tempItem.notes
       }
     });
-    console.log(this.state.tempItem);
   }
 
   updateNotes(e) {
     const value = e.target.value;
-    console.log(value);
     this.setState({
       tempItem: {
         item: this.state.tempItem.item,
@@ -189,11 +184,9 @@ export default class ShoppingList extends Component {
         notes: value
       }
     });
-    console.log(this.state.tempItem);
   }
 
   updateCost = (key, val) => {
-    console.log(key + " " + val);
     let items = this.state.chargeListCondensed;
     items[key].cost = val;
     this.setState({
@@ -202,7 +195,6 @@ export default class ShoppingList extends Component {
   };
 
   roundCost = (key, val) => {
-    console.log("focus lost: " + key + " " + val);
     let items = this.state.chargeListCondensed;
     items[key].cost = val.toFixed(2);
     this.setState({
@@ -211,37 +203,66 @@ export default class ShoppingList extends Component {
   };
 
   updateChargeListCondensed(items, chargeList) {
+    var map = this.state.chargeListCondensed;
     chargeList.forEach(item => {
       var key = item.people.join(", ");
       // people group exists, add item to group
-      var map = this.state.chargeListCondensed;
-      if (key in this.state.chargeListCondensed) {
+      if (key in map) {
         if (!map[key].items.includes(item)) map[key].items.push(item);
-        this.setState({
-          chargeListCondensed: map
-        });
       } else {
         // new group of people, add new entry
         map[key] = { items: [item], cost: undefined };
-        this.setState({
-          chargeListCondensed: map
-        });
       }
     });
     items.forEach(item => {
       var key = item.people.join(", ");
-      if (key in this.state.chargeListCondensed) {
-        var map = this.state.chargeListCondensed;
+      if (key in map) {
         if (map[key].items.includes(item))
           map[key].items = map[key].items.filter(i => i !== item);
         if (map[key].items === undefined || map[key].items.length === 0)
           delete map[key];
-        this.setState({
-          chargeListCondensed: map
-        });
       }
     });
-    console.log(this.state.chargeListCondensed);
+    this.setState({
+      chargeListCondensed: map
+    });
+  }
+
+  updateChargesByPerson() {
+    var map = {};
+    Object.entries(this.state.chargeListCondensed).map(([key, value]) => {
+      var people = key.split(", ");
+      // more than one person
+      if (people.length > 1 && value.cost !== undefined) {
+        console.log(key);
+        var divided = parseFloat(value.cost) / people.length;
+        divided = parseFloat(divided).toFixed(2);
+        people.forEach(person => {
+          console.log(person);
+          if (map[person] !== undefined && map[person].cost !== undefined) {
+            var newCost = parseFloat(map[person].cost) + parseFloat(divided);
+            newCost = parseFloat(newCost).toFixed(2);
+            map[person] = { cost: newCost };
+          } else {
+            map[person] = { cost: divided };
+          }
+        });
+      }
+      // one person
+      else if (value.cost !== undefined) {
+        console.log(key);
+        var newCost = value.cost;
+        if (map[people[0]] !== undefined && map[people[0]].cost !== undefined) {
+          var oldCost = parseFloat(map[people[0]].cost);
+          newCost = parseFloat(newCost) + oldCost;
+        }
+        newCost = parseFloat(newCost).toFixed(2);
+        map[people[0]] = { cost: newCost };
+      }
+    });
+    this.setState({
+      chargesByPerson: map
+    });
   }
 
   render() {
@@ -354,7 +375,6 @@ export default class ShoppingList extends Component {
                                   >
                                     {key}
                                   </Card.Title>
-                                  {console.log(this.state.chargeListCondensed)}
                                   {value.items.map(item => (
                                     <div
                                       className="item-entry"
@@ -427,7 +447,8 @@ export default class ShoppingList extends Component {
           onClose={this.showChargeModal}
           show={this.state.chargeModal}
           handleClearChargeList={this.handleClearChargeList}
-          chargeListCondensed={this.chargeListCondensed}
+          chargeListCondensed={this.state.chargeListCondensed}
+          chargesByPerson={this.state.chargesByPerson}
         />
       </div>
     );
