@@ -1,25 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
-  Card, CardImg, CardText, CardBody,
-  CardTitle, CardSubtitle, Button
-} from 'reactstrap';
-import './Card.css';
-
+  Card,
+  CardImg,
+  CardText,
+  CardBody,
+  CardTitle,
+  CardSubtitle,
+  Button
+} from "react-bootstrap";
+import "./Card.css";
 
 class NotificationCard extends Component {
-	constructor() {
-		super();
-	}
+  constructor() {
+    super();
+  }
 
-	render () {
-		return (
-		    <div>
-		      <Card className="NotificationCard">
-		        <Card body className="NotificationText">This is a notificiaton.</Card>
-		      </Card>
-          </div>
-		)
-	}
+  render() {
+    return (
+      <div>
+        <Card className="NotificationCard">
+          <Card body className="NotificationText">
+            This is a notificiaton.
+          </Card>
+        </Card>
+      </div>
+    );
+  }
 }
 
 export default NotificationCard;
