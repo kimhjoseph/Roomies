@@ -7,8 +7,9 @@ let ChoreListItem = new Schema({
         type: String
     },
 
-    frequency: {
-        type: Number
+    completed: {
+        type: Boolean,
+        default: false
     },
 
     user: {
@@ -16,21 +17,18 @@ let ChoreListItem = new Schema({
         ref: "User"
     },
 
-    completed: {
-        type: Boolean,
-        default: false
-    },
-
-    priority: {
-        type: String,
-        enum: ["Low", "Medium", "High", "ASAP"],
-        default: "Low"
-
-    },
-
     apartment: {
         type:  mongoose.Schema.Types.ObjectId,
         ref : "Apartment"
+    }
+
+    created: {
+        type: Date,
+        default: Date.now
+    },
+
+    days: {
+        type: Number
     }
 
 });

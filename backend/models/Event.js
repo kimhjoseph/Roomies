@@ -25,7 +25,7 @@ let Event = new Schema({
     }],
 
     apartment: {
-        type:  mongoose.Schema.Types.ObjectId,
+        type:  Schema.Types.ObjectId,
         ref : "Apartment"
     }
 

@@ -7,6 +7,11 @@ let ShoppingListItem = new Schema({
         type: String
     },
 
+    description {
+        type: String,
+        default: ""
+    }
+
     quantity: {
         type: Number
     },
@@ -19,16 +24,14 @@ let ShoppingListItem = new Schema({
         type: Boolean
     },
 
-    priority: {
-        type: String,
-        enum: ["Low", "Medium", "High", "ASAP"],
-        default: "Low"
-
+    apartment: {
+        type:  Schema.Types.ObjectId,
+        ref : "Apartment"
     },
 
-    apartment: {
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "Apartment"
+    users: {
+        type: [Scheme.Types.ObjectId],
+        ref: "User"
     }
 
 });

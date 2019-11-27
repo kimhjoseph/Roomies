@@ -10,7 +10,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
 	clientID: global.gConfig.FB_APP_ID,
 	clientSecret: global.gConfig.FB_APP_SECRET,
 	},
-	(accessToken, refreshToken, profile, done) => {
+	async function (accessToken, refreshToken, profile, done) {
 		let user_info = {
 			first_name: profile.name.givenName,
 			last_name: profile.name.familyName,

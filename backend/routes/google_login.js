@@ -11,7 +11,7 @@ passport.use(new GoogleStrategy({
 	callbackURL: 'https://localhost:'+global.gConfig.port+'/auth/google/callback',
 	profileFields: ['id', 'name', 'email'],
 	},
-	(accessToken, refreshToken, profile, done) => {
+	async function (accessToken, refreshToken, profile, done) {
 		let user_info = {
 			first_name: profile.name.givenName,
 			last_name: profile.name.familyName,

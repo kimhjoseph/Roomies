@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +15,8 @@
     "express": "^4.17.1",
     "googleapis": "^39.2.0",
     "mocha": "^6.2.2",
-    "mongoose": "^5.7.9"
-  },
-  "scripts": {
-    "test": "mocha"
+    "mongoose": "^5.7.9",
+    "passport": "^0.4.0",
+    "passport-facebook-token": "^3.3.0"
   }
 }

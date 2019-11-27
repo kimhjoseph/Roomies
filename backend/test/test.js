@@ -43,7 +43,7 @@ describe('#findOneAndUpdate', function() {
 		let newApartment = await Apartment.findOneAndUpdate({ _id: 1 }, updatedApartment, { new: true });
 		assert.equal(newApartment.name, "Red Roebs");
 	})
-})
+});
 
 // tests add_item to check that User and ChoreListItem interact correctly
 beforeEach(async function() {
