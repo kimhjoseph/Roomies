@@ -1,22 +1,24 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let Apartment = new Schema({
-
-
+let Apartment = new Schema(
+  {
     _id: {
-        type: Schema.Types.ObjectId
+      type: Schema.Types.ObjectId
     },
     name: {
-        type: String
+      type: String
     },
     address: {
-        type: String
+      type: String
     },
-     code: {
-        type: String
-     }
-     
-});
+    code: {
+      type: String
+    }
+  },
+  {
+    collection: "Apartments"
+  }
+);
 
-module.exports = mongoose.model('Apartment', Apartment);
+module.exports = mongoose.model("Apartment", Apartment);
