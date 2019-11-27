@@ -1,36 +1,34 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let ChoreListItem = new Schema({
-    
+let ChoreListItem = new Schema(
+  {
     description: {
-        type: String
+      type: String
     },
-
     completed: {
-        type: Boolean,
-        default: false
+      type: Boolean,
+      default: false
     },
-
     user: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
+      type: Schema.Types.ObjectId,
+      ref: "User"
     },
-
     apartment: {
-        type:  mongoose.Schema.Types.ObjectId,
-        ref : "Apartment"
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Apartment"
     },
-
     created: {
-        type: Date,
-        default: Date.now
+      type: Date,
+      default: Date.now
     },
-
     days: {
-        type: Number
+      type: Number
     }
+  },
+  {
+    collection: "ChoreListItems"
+  }
+);
 
-});
-
-module.exports = mongoose.model('ChoreListItem', ChoreListItem);
+module.exports = mongoose.model("ChoreListItem", ChoreListItem);

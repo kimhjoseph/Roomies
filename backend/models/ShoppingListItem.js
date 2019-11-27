@@ -1,39 +1,36 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let ShoppingListItem = new Schema({
-
+let ShoppingListItem = new Schema(
+  {
     name: {
-        type: String
+      type: String
     },
-
     description: {
-        type: String,
-        default: ""
+      type: String,
+      default: ""
     },
-
     quantity: {
-        type: Number
+      type: Number
     },
-
     price: {
-        type: Number
+      type: Number
     },
-
     completed: {
-        type: Boolean
+      type: Boolean
     },
-
     apartment: {
-        type:  Schema.Types.ObjectId,
-        ref : "Apartment"
+      type: Schema.Types.ObjectId,
+      ref: "Apartment"
     },
-
     users: {
-        type: [Schema.Types.ObjectId],
-        ref: "User"
+      type: [Schema.Types.ObjectId],
+      ref: "User"
     }
+  },
+  {
+    collection: "ShoppingListItems"
+  }
+);
 
-});
-
-module.exports = mongoose.model('ShoppingListItem', ShoppingListItem);
+module.exports = mongoose.model("ShoppingListItem", ShoppingListItem);
