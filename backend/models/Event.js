@@ -1,34 +1,39 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let Event = new Schema({
-
+let Event = new Schema(
+  {
     description: {
-        type: String
+      type: String
     },
 
     frequency: {
-        type: Number
+      type: Number
     },
 
     location: {
-        type: String
+      type: String
     },
 
     time: {
-        type: String
+      type: String
     },
 
-    users: [{
+    users: [
+      {
         type: Schema.Types.ObjectId,
         ref: "User"
-    }],
+      }
+    ],
 
     apartment: {
-        type:  Schema.Types.ObjectId,
-        ref : "Apartment"
+      type: Schema.Types.ObjectId,
+      ref: "Apartment"
     }
+  },
+  {
+    collection: "Events"
+  }
+);
 
-});
-
-module.exports = mongoose.model('Event', Event);
+module.exports = mongoose.model("Event", Event);

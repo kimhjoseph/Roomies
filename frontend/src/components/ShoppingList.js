@@ -84,6 +84,15 @@ export default class ShoppingList extends Component {
     };
   }
 
+  componentDidMount() {
+    axios
+      .get("http://localhost:4000/shoppingitem/get_items")
+      .then(response => {
+        this.setState({ items: response.body });
+      })
+      .catch(error => res.status(400).json("Error: " + error));
+  }
+
   showAddItemModal() {
     this.setState({ addItemModal: !this.state.addItemModal });
   }
