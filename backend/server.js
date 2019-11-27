@@ -29,7 +29,7 @@ app.use('/user', userRouter);
 app.use('/apartment', apartmentRouter);
 app.use('/shoppingitem', shoppingitemRouter);
 app.use('/choreitem', choreitemRouter);
-app.use('/event', eventRouter);
+// app.use('/event', eventRouter);
 
 app.listen(PORT, function() {
     console.log("Server is running on Port: " + PORT);

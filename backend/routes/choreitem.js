@@ -96,13 +96,12 @@ router.get('/get_items', async function(req, res) {
 	catch(err) { res.status(400).send("Error finding items in database."); }
 
 	let populatedItems = [];
-	items.forEach((item) => {
+	for (let item in items) {
 		var diffDays = getDaysRemaining(item.created, item.days)
-		item.populate('user').exec(err, item) {
-			if (err) { res.status(400).send("Error populating item."); }
-			populatedItems.push({description: item.description, completed: item.completed, first_name: item.user.first_name, last_name: item.user.last_name, daysRemaining: diffDays});
-		}
-	});
+		try { let item = await item.populate('user'); }
+		catch(err) { res.status(400).send("Error populating item."); }
+		populatedItems.push({description: item.description, completed: item.completed, first_name: item.user.first_name, last_name: item.user.last_name, daysRemaining: diffDays});
+	}
 	res.status(200).json(populatedItems);
 });
 
@@ -153,10 +152,10 @@ router.get('/get_my_items', async function(req, res) {
 	catch(err) { res.status(400).send("Error finding items in database."); }
 
 	let UserItems = [];
-	items.forEach((item) => {
+	for (let item in items) {
 		var diffDays = getDaysRemaining(item.created, item.days)
 		populatedItems.push({description: item.description, completed: item.completed, daysRemaining: diffDays}); 
-	});
+	}
 	res.status(200).json(UserItems);
 });
 

@@ -24,14 +24,14 @@ const ShoppingListItem = require('../models/ShoppingListItem');
 
 router.post('/add_item', async function(req, res) {
 	let userIds = [];
-	req.body.users.forEach((user_name) => {
+	for (let userName in req.body.users) {
 		var name = userName.split(" ");
 		var userFirstName = name[0];
 		var userLastName = name[1];
 		try { let user = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
 		catch(err) { res.status(400).send("Error finding user with that first and last name."); }
 		userIds.push(user._id);
-	});
+	}
 
 	try { let item = await ShoppingListItem.create({ name: req.body.name, description: req.body.description, quantity: req.body.quantity, price: req.body.price, completed: req.body.completed, apartment: req.user.apartment, users: userIds}); } 
 	catch(err) { res.status(400).send("Error creating shopping list item."); }
@@ -53,14 +53,14 @@ router.post('/edit_item/:id', async function(req, res) {
 	catch (err) { res.status(400).send("Error finding apartment in database."); }
 
 	let userIds = [];
-	req.body.users.forEach((user_name) => {
+	for (let userName in req.body.users) {
 		var name = userName.split(" ");
 		var userFirstName = name[0];
 		var userLastName = name[1];
 		try { let user = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
 		catch(err) { res.status(400).send("Error finding user with that first and last name."); }
 		userIds.push(user._id);
-	});
+	}
 
 	let updatedItem = {
 		name: ((req.body.name != null) ? req.body.name : oldItem.name),
@@ -90,18 +90,17 @@ router.get('/get_items', async function(req, res) {
 	catch(err) { res.status(400).send(("Error finding items in database.")); }
 
 	let populatedItems = [];
-	items.forEach((item) => {
-		item.populate('users').exec(err, item) {
-			if (err) { res.status(400).send("Error populating item."); }
-			let firstNames = [];
-			let lastNames = [];
-			item.users.forEach((user) => {
-				firstNames.push(user.first_name);
-				lastNames.push(user.last_name);
-			});
-			populatedItems.push({name: item.name, description: item.description, quantity: item.quantity, price: item.price, completed: item.completed, first_names: firstNames, last_names: lastNames, completed: item.completed, priority: item.priority});
-		} 
-	});
+	for (let item in items) {
+		try { let item = await item.populate('users'); }
+		catch(err) { res.status(400).send("Error populating item."); }
+		let firstNames = [];
+		let lastNames = [];
+		for (let user in item.users) {
+			firstNames.push(user.first_name);
+			lastNames.push(user.last_name);
+		}
+		populatedItems.push({name: item.name, description: item.description, quantity: item.quantity, price: item.price, completed: item.completed, first_names: firstNames, last_names: lastNames, completed: item.completed, priority: item.priority}); 
+	}
 	res.status(200).json(populatedItems);
 });
 
@@ -142,18 +141,13 @@ router.post('charge_users', async function(req, res) {
 	catch(err) { res.status(400).send("Error finding items."); }
 
 	let charges = {};
-	completedItems.forEach((item) => {
+	for (let item in completedItems) {
 		let individualCharge = item.price / item.users.length;
-		item.users.forEach(userID) => {
-			if userID in charges { charges[userID] += individualCharge; }
+		for (let userID in item.users) {
+			if (userID in charges) { charges[userID] += individualCharge; }
 			else { charges[userID] = individualCharge; }
 		}
-	});
-
-	charges.forEach((userID) => {
-		try { let charge = await stripe.charges.create({ amount: charges[userID] * 100, currency: "usd", source: req.body.stripeToken, destination: { amount: charges[userID] * 100, account: req.user.stripe_account } }); }
-		catch(err) { res.status(400).send("Error creating charge."); }
-  	});
+	}
 });
 
 module.exports = router;

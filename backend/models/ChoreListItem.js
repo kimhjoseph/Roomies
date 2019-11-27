@@ -20,7 +20,7 @@ let ChoreListItem = new Schema({
     apartment: {
         type:  mongoose.Schema.Types.ObjectId,
         ref : "Apartment"
-    }
+    },
 
     created: {
         type: Date,

@@ -7,10 +7,10 @@ let ShoppingListItem = new Schema({
         type: String
     },
 
-    description {
+    description: {
         type: String,
         default: ""
-    }
+    },
 
     quantity: {
         type: Number
@@ -30,7 +30,7 @@ let ShoppingListItem = new Schema({
     },
 
     users: {
-        type: [Scheme.Types.ObjectId],
+        type: [Schema.Types.ObjectId],
         ref: "User"
     }
 
