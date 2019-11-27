@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { Card, Button } from "react-bootstrap";
 import "./MainCard.css";
 import dummy from "../images/dummy.jpg";
+import axios from "axios";
 
 export default class MainCard extends Component {
   constructor(props) {

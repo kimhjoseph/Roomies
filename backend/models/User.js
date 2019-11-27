@@ -1,35 +1,37 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-let User = new Schema({
-    
+let User = new Schema(
+  {
     first_name: {
-        type: String
+      type: String
     },
 
     last_name: {
-        type: String
+      type: String
     },
 
     email: {
-        type: String
+      type: String
     },
     status: {
-        type: String,
-        enum: ["Busy", "Away", "At Home", "Asleep"],
-        default: "At Home"
+      type: String,
+      enum: ["Busy", "Away", "At Home", "Asleep"],
+      default: "At Home"
     },
 
     apartment: {
-        type:  Schema.Types.ObjectId,
-        ref : "Apartment"
+      type: Schema.Types.ObjectId,
+      ref: "Apartment"
     },
-    
+
     picture: {
-        type: Object
+      type: Object
     }
+  },
+  {
+    collection: "Users"
+  }
+);
 
-
-});
-
-module.exports = mongoose.model('User', User);
+module.exports = mongoose.model("User", User);
