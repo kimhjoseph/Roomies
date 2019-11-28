@@ -13,6 +13,8 @@ import {
   faMinusCircle
 } from "@fortawesome/free-solid-svg-icons";
 
+import axios from "axios";
+
 import NavbarComponent from "./NavbarComponent";
 import ShoppingListAddItemModal from "./ShoppingListAddItemModal";
 import ShoppingListChargeModal from "./ShoppingListChargeModal";
@@ -39,49 +41,28 @@ export default class ShoppingList extends Component {
     this.state = {
       addItemModal: false,
       chargeModal: false,
-      items: [
-        {
-          item: "Bananas",
-          people: ["Joe"],
-          notes: "3 green ones pls"
-        },
-        {
-          item: "Paper Towels",
-          people: ["Joe", "Mike", "Saman"],
-          notes: "roll up"
-        },
-        {
-          item: "Gum",
-          people: ["Joe", "Mike", "Saman"],
-          notes: "gum not gun"
-        },
-        {
-          item: "Bananas",
-          people: ["Mike"],
-          notes: "3 green ones but less green pls"
-        },
-        {
-          item: "Bananas",
-          people: ["Saman"],
-          notes: "3 yellow ones pls"
-        },
-        {
-          item: "Apples",
-          people: ["Zach"],
-          notes: "3 green ones pls"
-        }
-      ],
+      items: [],
       tempItem: {
         item: "",
         people: "",
-        notes: "",
-        charge: false,
-        cost: undefined
+        notes: ""
       },
       chargeList: [],
       chargeListCondensed: {},
       chargesByPerson: {}
     };
+  }
+
+  componentDidMount() {
+    axios
+      .get("http://localhost:4000/shoppingitem/get")
+      .then(response => {
+        console.log(response);
+        this.setState({ items: response.data });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
   }
 
   showAddItemModal() {
@@ -94,22 +75,34 @@ export default class ShoppingList extends Component {
   }
 
   handleAddItem(tempItem) {
-    this.setState(currentState => {
-      return {
-        items: currentState.items.concat([
-          {
-            item: tempItem.item,
-            people: tempItem.people.split(",").map(s => s.trim()),
-            notes: tempItem.notes
-          }
-        ]),
-        tempItem: {
-          item: "",
-          people: "",
-          notes: ""
-        }
-      };
-    });
+    tempItem.people = tempItem.people.split(",").map(s => s.trim());
+    axios
+      .post("http://localhost:4000/shoppingitem/add", tempItem)
+      .then(response => {
+        console.log(response);
+        this.setState(currentState => {
+          return {
+            items: currentState.items.concat([tempItem]),
+            tempItem: {
+              item: "",
+              people: "",
+              notes: ""
+            }
+          };
+        });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
+    // get item list again to give item an itemID
+    axios
+      .get("http://localhost:4000/shoppingitem/get")
+      .then(response => {
+        this.setState({ items: response.data });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
   }
 
   handleTransferToCharge(item) {
@@ -135,13 +128,31 @@ export default class ShoppingList extends Component {
   }
 
   handleRemoveItem(item) {
-    var newItems = this.state.items.filter(i => i !== item);
-    this.setState({
-      items: newItems
-    });
+    axios
+      .delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
+      .then(response => {
+        console.log(response);
+        var newItems = this.state.items.filter(i => i !== item);
+        this.setState({
+          items: newItems
+        });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
   }
 
   handleClearChargeList() {
+    this.state.chargeList.forEach(item => {
+      axios
+        .delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(error => {
+          console.log("Error: " + error);
+        });
+    });
     this.setState({
       chargeList: [],
       chargeListCondensed: {}

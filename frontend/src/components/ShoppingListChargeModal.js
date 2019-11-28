@@ -44,7 +44,6 @@ export default class ShoppingListChargeModal extends Component {
         </Modal.Header>
         <Modal.Body>
           <ListGroup variant="flush">
-            {console.log(this.props.chargesByPerson)}
             {this.props.chargesByPerson === undefined
               ? null
               : Object.entries(this.props.chargesByPerson).map(
