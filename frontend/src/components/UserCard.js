@@ -5,6 +5,10 @@ import { Row, Col } from "react-bootstrap";
 import "./UserCard.css";
 
 class UserCard extends Component {
+  constructor(props) {
+    super(props);
+  }
+
   render() {
     return (
       <div>
@@ -20,13 +24,14 @@ class UserCard extends Component {
               />
             </Col>
             <Col md="9">
-              <Card.Title
-                className="user-title"
-                style={{ marginBottom: "0px" }}
-              >
-                Zachary
+
+              <Card.Title className="user-title" style={{ marginBottom: "0px" }}>
+                {this.props.user.first_name}
               </Card.Title>
-              <Card.Text className="user-subtitle">Sleeping</Card.Text>
+
+              <Card.Text className="user-subtitle">
+                {this.props.user.status}
+              </Card.Text>
             </Col>
           </Row>
         </Card.Body>

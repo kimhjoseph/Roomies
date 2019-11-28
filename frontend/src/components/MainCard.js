@@ -9,8 +9,24 @@ export default class MainCard extends Component {
     super(props);
 
     this.state = {
-      status: ""
+      users: {
+        first_name: "",
+        last_name: "",
+      }
     };
+
+    axios.get('http://localhost:4000/user/get')
+    .then(response => {
+      const user = response.data[0]
+      this.setState({ users: {
+        first_name: user.first_name,
+        last_name: user.last_name
+      }
+       });
+    })
+    .catch(function (error){
+        console.log(error);
+    });
   }
 
   render() {
@@ -20,7 +36,7 @@ export default class MainCard extends Component {
           <Card.Title className="greeting" style={{ fontSize: "28px" }}>
             Good Morning,
             <br />
-            Rondald
+            {this.state.users.first_name}
           </Card.Title>
           <div>
             {/* TODO: currently getting the image in a weird way, should be done better */}
