@@ -9,16 +9,17 @@ let ShoppingListItem = new Schema(
     description: {
       type: String,
       default: ""
-    }
-    // },
-    // apartment: {
-    //   type: Schema.Types.ObjectId,
-    //   ref: "Apartment"
-    // },
-    // users: {
-    //   type: [Schema.Types.ObjectId],
-    //   ref: "User"
-    // }
+    },
+    apartment: {
+      type: Schema.Types.ObjectId,
+      ref: "Apartment"
+    },
+    users: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User"
+      }
+    ]
   },
   {
     collection: "ShoppingListItems"

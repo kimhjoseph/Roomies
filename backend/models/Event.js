@@ -6,26 +6,21 @@ let Event = new Schema(
     description: {
       type: String
     },
-
     frequency: {
       type: Number
     },
-
     location: {
       type: String
     },
-
     time: {
       type: String
     },
-
     users: [
       {
         type: Schema.Types.ObjectId,
         ref: "User"
       }
     ],
-
     apartment: {
       type: Schema.Types.ObjectId,
       ref: "Apartment"
