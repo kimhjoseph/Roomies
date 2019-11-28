@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import axios from 'axios';
 
 import UserList from "./UserList";
 import NotificationCards from "./NotificationList";
@@ -17,16 +18,20 @@ export default class ShoppingList extends Component {
     this.handleUpdateInfo = this.handleUpdateInfo.bind(this);
     this.showChangeInfoModal = this.showChangeInfoModal.bind(this);
     this.updateName = this.updateName.bind(this);
+    this.handleImageAdded = this.handleImageAdded.bind(this)
 
     this.state = {
+      imagefile: dummy,
       changeInfoModal: false,
       userInfo: {
-        name: "Rondald",
+        firstname: "Rondald",
+        lastname: "Rondaldson",
         id: 90342,
         bio: "srrsly fuck the middle class"
       },
       newInfo: {
-        name: "",
+        firstname: "",
+        lastname: "",
         id: 0,
         bio: ""
       },
@@ -50,18 +55,50 @@ export default class ShoppingList extends Component {
     console.log(this.state.userInfo);
   }
 
+
   updateName(e) {
     const value = e.target.value;
-    console.log(value);
-    this.setState({
-      newInfo: {
-        name: value,
-        id: this.state.newInfo.id,
-        bio: this.state.newInfo.bio
-      }
-    });
-    console.log(this.state.newInfo.name);
+    axios.get('http://localhost:4000/user/get')
+    .then(response => {
+      const user = response.data[0];
+      this.setState({
+        newInfo: {
+          firstname: user.first_name,
+          lastname: user.last_name,
+          id: this.state.newInfo.id,
+          bio: this.state.newInfo.bio
+        }
+      });
+    })
+    .catch(function (error){
+        console.log(error);
+    })
+    
+    console.log(this.state.newInfo.firstname);
   }
+  
+  handleImageAdded(e){
+    e.preventDefault();
+
+    let reader = new FileReader();
+    let file = e.target.files[0];
+    console.log(file);
+
+    reader.onloadend = () => {
+      this.setState({
+        imagefile: file,
+        imagePreviewUrl: reader.result
+      });
+    }
+
+    var url = reader.readAsDataURL(file);
+    console.log(url)
+  }
+
+  clickImageUploader(){
+    document.getElementById("img").click();
+  }
+
 
   render() {
     return (
@@ -78,7 +115,8 @@ export default class ShoppingList extends Component {
 
         <Container style={{ height: "100%", alignContent: "center" }}>
           <div className="rounded-circle">
-            <img className="rounded-circle" src={dummy} />
+              <input type="image" src={this.state.imagefile} className="rounded-circle" onClick={this.clickImageUploader}/>
+              <input type="file" id="img" accept="image/*" onChange={this.handleImageAdded} style={{display: "none"}}/>
             <div className="name">{this.state.userInfo.name}</div>
             <button
               onClick={this.showChangeInfoModal}
