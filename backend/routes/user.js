@@ -63,7 +63,7 @@ router.get("/get_users", async function(req, res) {
 router.route("/get").get((req, res) => {
   User.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
     .then(users => {
-      console.log(users);
+
       res.json(users);
     })
     .catch(err => res.status(400).json("Error: " + err));

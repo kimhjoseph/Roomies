@@ -141,10 +141,9 @@ router.get('/get_items', async function(req, res) {
 	res.status(200).json(populatedItems);
 });
 
-router.route("/get").get((req, res) => {
+router.get('/get', async function(req, res) {
 	ChoreListItem.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
 		.then(chores => {
-			console.log(chores);
 		res.json(chores);
 		})
 		.catch(err => res.status(400).json("Error: " + err));

@@ -65,7 +65,9 @@ export default class ChoreAddItemModal extends Component {
                 as="select"
                 value={this.props.tempChore.userName}
                 onChange={this.props.updatePerson}
-              >{this.props.users
+              >
+                <option value="" disabled selected hidden>Choose a person</option>
+                {this.props.users
                 .map(item => {
                 return (
                   <option>{item.first_name} {item.last_name}</option>   
