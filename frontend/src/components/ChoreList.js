@@ -5,11 +5,13 @@ import ChoreAddItemModal from "./ChoreModal";
 import axios from "axios";
 import NavbarComponent from "./NavbarComponent";
 
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faCheckCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+
 export default class ChoreList extends Component {
   constructor(props) {
     super(props);
     this.click = this.click.bind(this);
-    this.check = this.check.bind(this);
 
     this.showAddChoreModal = this.showAddChoreModal.bind(this);
     this.handleAddChore = this.handleAddChore.bind(this);
@@ -44,8 +46,6 @@ export default class ChoreList extends Component {
       .get("http://localhost:4000/choreitem/get")
       .then(response => {
         this.setState({ allChores: response.data });
-        console.log("hi");
-        console.log(response.data);
       })
       .catch(function(error) {
         console.log(error);
@@ -64,6 +64,7 @@ export default class ChoreList extends Component {
     await axios
       .post("http://localhost:4000/choreitem/getmyitems", this.state.user)
       .then(response => {
+        console.log(response.data);
         this.setState({ myChores: response.data });
       })
       .catch(function(error) {
@@ -71,21 +72,23 @@ export default class ChoreList extends Component {
       });
   }
 
-  check() {
-    console.log(this.state.user);
-  }
-
-  click(item) {
-    console.log(item);
-    var array = this.state.myChores;
-    var index = array.indexOf(item);
-    if (index !== -1) {
-      array.splice(index, 1);
-      this.setState({
-        myChores: array
+  click(chore) {
+    axios
+      .delete("http://localhost:4000/choreitem/delete_item/" + chore.id)
+      .then(response => {
+        console.log(response);
+        var newChores = this.state.myChores.filter(i => i !== chore);
+        this.setState({
+          myChores: newChores
+        });
+        var chores = this.state.allChores.filter(i => i !== chore);
+        this.setState({
+          allChores: chores
+        });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
       });
-    }
-    console.log(array);
   }
 
   showAddChoreModal() {
@@ -107,8 +110,6 @@ export default class ChoreList extends Component {
       .get("http://localhost:4000/choreitem/get")
       .then(response => {
         this.setState({ allChores: response.data });
-        console.log("hi");
-        console.log(response.data);
       })
       .catch(function(error) {
         console.log(error);
@@ -174,7 +175,7 @@ export default class ChoreList extends Component {
         <NavbarComponent />
         <Container style={{ height: "100%", margin: "0px, 15px" }}>
           <Row style={{ height: "100%", alignContent: "center" }}>
-            <Col style={{ height: "90%" }}>
+            <Col style={{ height: "90%"}}>
               <div className="section-title">
                 {this.state.user.first_name}'s Chores{" "}
               </div>
@@ -182,23 +183,29 @@ export default class ChoreList extends Component {
                 <Table hover borderless className="chore-table">
                   <thead>
                     <tr className="chore-header">
+                      <th width="8px" padding="0px"></th>
                       <th>Chore</th>
                       <th>Days Left</th>
-                      <th>Completed</th>
+                      <th width="8px" padding="0px"></th>
                     </tr>
                   </thead>
                   <tbody>
                     {this.state.myChores.map(item => {
                       return (
                         <tr>
-                          <td>{item.description}</td>
+                          <td><FontAwesomeIcon
+                                icon={faTrashAlt}
+                                className="edit-button"
+                                onClick={() => this.click(item)}
+                              /></td>
+                          <td>{item.chore}</td>
                           <td>{item.days} days</td>
                           <td>
-                            <button
-                              type="button"
-                              className="btn btn-default btn-circle"
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className="edit-button"
                               onClick={() => this.click(item)}
-                            ></button>
+                            />
                           </td>
                         </tr>
                       );
@@ -227,6 +234,7 @@ export default class ChoreList extends Component {
                 <Table hover borderless className="chore-table">
                   <thead>
                     <tr className="chore-header">
+                      <th width="10px"></th>
                       <th>Chore</th>
                       <th>Days Left</th>
                       <th>Assigned To</th>
@@ -234,10 +242,19 @@ export default class ChoreList extends Component {
                   </thead>
                   <tbody>
                     {this.state.allChores.map(item => {
-                      if (item.user != this.state.user._id) {
+                      let name =
+                        this.state.user.first_name +
+                        " " +
+                        this.state.user.last_name;
+                      if (item.user != name) {
                         return (
                           <tr>
-                            <td>{item.description}</td>
+                            <td><FontAwesomeIcon
+                                icon={faTrashAlt}
+                                className="edit-button"
+                                onClick={() => this.click(item)}
+                              /></td>
+                            <td>{item.chore}</td>
                             <td>{item.days} days</td>
                             <td>{item.user}</td>
                           </tr>
