@@ -47,8 +47,7 @@ export default class ProfileChangeModal extends Component {
           <Form.Label>Name</Form.Label>
           <Form.Control
             type="name"
-            placeholder={this.props.userInfo.name}
-            value={this.props.newInfo.name}
+            placeholder={this.props.userInfo.firstname}
             onChange={this.props.updateName}
             />
           <Form.Text className="text-muted">
