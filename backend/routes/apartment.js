@@ -31,12 +31,16 @@ function makeId() {
  */
 
 router.post('/create_apartment', async function(req, res) {
-	try { let apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: makeId() }); } 
+	let apartment;
+	let user;
+
+	console.log(req.body);
+	try { apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: makeId() }); } 
 	catch(err) { res.status(400).send("Error creating apartment."); }
 
-	try { let user = await User.findOneAndUpdate({ email: req.user.email }, { apartment: apartment._id }, { new: true }); } 
+	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
 	catch(err) { res.status(400).send("Error adding information to user."); }
-	res.status(201).send(apartment.code);
+	res.status(201).json(apartment.code);
 });
 
 
@@ -51,10 +55,13 @@ router.post('/create_apartment', async function(req, res) {
 
 
 router.post('/join_apartment', async function(req, res) {
-	try { let apartment = await Apartment.findOne({ code: req.body.code }); } 
+	let apartment;
+	let user;
+
+	try { apartment = await Apartment.findOne({ code: req.body.code }); } 
 	catch(err) { res.status(400).send("Error finding apartment."); }
 
-	try { let user = await User.findOneAndUpdate({ email: req.user.email }, { apartment: apartment._id }, { new: true }); } 
+	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
 	catch(err) { res.status(400).send("Error adding information to user."); }
 	res.status(201).send("Success");
 });
@@ -71,9 +78,10 @@ router.post('/join_apartment', async function(req, res) {
  */
 
 router.get('/get_apartment', async function(req, res) {
-	try { let apartment = await Apartment.findById(req.user.apartment); } 
+	let apartment;
+	try { let apartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
 	catch(err) { res.status(400).send("Error finding apartment."); }
-	res.status(200).send(apartment);
+	res.status(200).json(apartment);
 });
 
 /**
@@ -86,15 +94,18 @@ router.get('/get_apartment', async function(req, res) {
  */
 
 router.post('/edit_apartment', async function(req, res) {
-	try { let oldApartment = await Apartment.findById(req.user.apartment); } 
+	let oldApartment;
+	try { oldApartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
 	catch (err) { res.status(400).send("Error finding apartment in database."); }
 
 	let updatedApartment = {
 		name: ((req.body.name != null) ? req.body.name : oldApartment.name),
 		address: ((req.body.address != null) ? req.body.address : oldApartment.address)
 	}
-	try { let newApartment = await Apartment.findByIdAndUpdate(req.user.apartment, updatedApartment, { new: true }); } 
-	catch(err) { res.status(400).send("Error editing chore item."); }
+
+	let newApartment;
+	try { newApartment = await Apartment.findByIdAndUpdate("5ddecc7a1c9d4400000141dd", updatedApartment, { new: true }); } 
+	catch(err) { res.status(400).send("Error editing apartment."); }
 	res.status(201).send("Success")
 });
 

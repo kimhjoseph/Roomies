@@ -20,19 +20,15 @@ const Apartment = require("../models/Apartment");
 
 router.post("/edit_info", async function(req, res) {
   let updatedData = {
-    first_name:
-      req.body.first_name != null ? req.body.first_name : req.user.first_name,
-    last_name:
-      req.body.last_name != null ? req.body.last_name : req.user.last_name,
-    email: req.body.email != null ? req.body.email : req.user.email,
-    status: req.body.status != null ? req.body.status : req.user.status
+    first_name: req.body.first_name != null ? req.body.first_name : "Joseph",
+    last_name: req.body.last_name != null ? req.body.last_name : "Kim",
+    email: req.body.email != null ? req.body.email : "jhk.joseph@gmail.com",
+    status: req.body.status != null ? req.body.status : "Busy"
   };
+
+  let user;
   try {
-    let user = await User.findOneAndUpdate(
-      { email: req.user.email },
-      updatedData,
-      { new: true }
-    );
+    user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, updatedData, { new: true });
   } catch (err) {
     console.log("Error updating user.");
     res.status(400).send(err);
@@ -50,22 +46,14 @@ router.post("/edit_info", async function(req, res) {
  */
 
 router.get("/get_users", async function(req, res) {
+  let users;
   try {
-    let users = await User.find({ apartment: req.user.apartment }).toArray();
+    users = await User.find({ apartment: "5ddecc7a1c9d4400000141dd" });
   } catch (err) {
     console.log("Error finding users in database.");
     res.status(400).send(err);
   }
   res.status(200).json(users);
-});
-
-// test get hard coded
-router.route("/get").get((req, res) => {
-  User.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
-    .then(users => {
-      res.json(users);
-    })
-    .catch(err => res.status(400).json("Error: " + err));
 });
 
 module.exports = router;
