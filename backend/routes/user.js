@@ -56,6 +56,17 @@ router.get('/login', async function(req, res) {
 });
 
 
+// going to leave this in here bc I don't know how we want to handle
+// logging user out if session exceeds max session length
+router.get('/dashboard', function (req, res) {
+    if (req.session.user && req.cookies.user_sid) {
+        res.sendFile(__dirname + '/public/dashboard.html');
+    } else {
+        res.redirect('/login');
+    }
+});
+
+
 // route for user logout
 router.get('/logout', function (req, res) {
     if (req.session.user && req.cookies.user_sid) {
