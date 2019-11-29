@@ -41,15 +41,15 @@ router.post("/add", async function(req, res) {
   });
 
   Promise.all(requests)
-    .then(() => {
-      let item = ShoppingListItem.create({
+    .then(async () => {
+      let item = await ShoppingListItem.create({
         item: req.body.item,
         description: req.body.notes,
         apartment: new ObjectId("5ddecc7a1c9d4400000141dd"),
         // apartment: req.user.apartment,
         users: userIds
       });
-      res.status(201).send("Success");
+      res.status(201).send(item._id);
     })
     .catch(() => {
       res.status(400).send("Error creating shopping list item.");

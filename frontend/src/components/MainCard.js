@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Card, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import "./MainCard.css";
 import dummy from "../images/dummy.jpg";
 import axios from "axios";
@@ -11,22 +11,24 @@ export default class MainCard extends Component {
     this.state = {
       users: {
         first_name: "",
-        last_name: "",
+        last_name: ""
       }
     };
 
-    axios.get('http://localhost:4000/user/get')
-    .then(response => {
-      const user = response.data[0]
-      this.setState({ users: {
-        first_name: user.first_name,
-        last_name: user.last_name
-      }
-       });
-    })
-    .catch(function (error){
+    axios
+      .get("http://localhost:4000/user/get")
+      .then(response => {
+        const user = response.data[0];
+        this.setState({
+          users: {
+            first_name: user.first_name,
+            last_name: user.last_name
+          }
+        });
+      })
+      .catch(function(error) {
         console.log(error);
-    });
+      });
   }
 
   render() {

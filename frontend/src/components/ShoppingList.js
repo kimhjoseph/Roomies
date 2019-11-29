@@ -25,6 +25,8 @@ export default class ShoppingList extends Component {
   constructor(props) {
     super(props);
 
+    this.getItems = this.getItems.bind(this);
+    this.getUsers = this.getUsers.bind(this);
     this.showAddItemModal = this.showAddItemModal.bind(this);
     this.showChargeModal = this.showChargeModal.bind(this);
     this.handleAddItem = this.handleAddItem.bind(this);
@@ -44,25 +46,48 @@ export default class ShoppingList extends Component {
       items: [],
       tempItem: {
         item: "",
-        people: "",
-        notes: ""
+        people: [],
+        notes: "",
+        itemID: undefined
       },
       chargeList: [],
       chargeListCondensed: {},
-      chargesByPerson: {}
+      chargesByPerson: {},
+      users: []
     };
   }
 
-  componentDidMount() {
+  getItems() {
+    console.log("Getting items from database...");
     axios
       .get("http://localhost:4000/shoppingitem/get")
       .then(response => {
-        console.log(response);
+        console.log("Successfully obtained items from database!");
+        console.log(response.data);
         this.setState({ items: response.data });
       })
       .catch(error => {
         console.log("Error: " + error);
       });
+  }
+
+  getUsers() {
+    console.log("Getting users from database...");
+    axios
+      .get("http://localhost:4000/user/get")
+      .then(response => {
+        console.log("Successfully obtained users from database!");
+        console.log(response.data);
+        this.setState({ users: response.data });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
+  }
+
+  componentDidMount() {
+    this.getItems();
+    this.getUsers();
   }
 
   showAddItemModal() {
@@ -74,36 +99,35 @@ export default class ShoppingList extends Component {
     this.setState({ chargeModal: !this.state.chargeModal });
   }
 
-  handleAddItem(tempItem) {
-    tempItem.people = tempItem.people.split(",").map(s => s.trim());
-    axios
+  handleAddItem = async tempItem => {
+    console.log("Adding item...");
+    await axios
       .post("http://localhost:4000/shoppingitem/add", tempItem)
       .then(response => {
         console.log(response);
+        var concatItem = {
+          item: tempItem.item,
+          people: tempItem.people,
+          notes: tempItem.notes,
+          itemID: response.data
+        };
         this.setState(currentState => {
           return {
-            items: currentState.items.concat([tempItem]),
+            items: currentState.items.concat([concatItem]),
             tempItem: {
               item: "",
-              people: "",
-              notes: ""
+              people: [],
+              notes: "",
+              itemID: undefined
             }
           };
         });
+        console.log("Successfully added item!");
       })
       .catch(error => {
         console.log("Error: " + error);
       });
-    // get item list again to give item an itemID
-    axios
-      .get("http://localhost:4000/shoppingitem/get")
-      .then(response => {
-        this.setState({ items: response.data });
-      })
-      .catch(error => {
-        console.log("Error: " + error);
-      });
-  }
+  };
 
   handleTransferToCharge(item) {
     var newItems = this.state.items.filter(i => i !== item);
@@ -128,10 +152,11 @@ export default class ShoppingList extends Component {
   }
 
   handleRemoveItem(item) {
+    console.log("Deleting shopping list item...");
     axios
       .delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
       .then(response => {
-        console.log(response);
+        console.log("Successfully deleted shopping list item!");
         var newItems = this.state.items.filter(i => i !== item);
         this.setState({
           items: newItems
@@ -143,16 +168,19 @@ export default class ShoppingList extends Component {
   }
 
   handleClearChargeList() {
+    console.log("Clearing charge list...");
     this.state.chargeList.forEach(item => {
       axios
         .delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
         .then(response => {
-          console.log(response);
+          console.log("Successfully deleted item!");
+          console.log(item);
         })
         .catch(error => {
           console.log("Error: " + error);
         });
     });
+    console.log("Successfully cleared charge list!");
     this.setState({
       chargeList: [],
       chargeListCondensed: {}
@@ -170,20 +198,31 @@ export default class ShoppingList extends Component {
       tempItem: {
         item: value,
         people: this.state.tempItem.people,
-        notes: this.state.tempItem.notes
+        notes: this.state.tempItem.notes,
+        itemID: this.state.tempItem.itemID
       }
     });
   }
 
   updatePeople(e) {
-    const value = e.target.value;
+    console.log("Updating new item people...");
+    const person = e.target.value;
+    var found = this.state.tempItem.people.find(i => i === person);
+    var people;
+    if (found === undefined) {
+      people = this.state.tempItem.people.concat([person]);
+    } else {
+      people = this.state.tempItem.people.filter(i => i !== person);
+    }
     this.setState({
       tempItem: {
         item: this.state.tempItem.item,
-        people: value,
-        notes: this.state.tempItem.notes
+        people: people.sort(),
+        notes: this.state.tempItem.notes,
+        itemID: this.state.tempItem.itemID
       }
     });
+    console.log("Successfully updated new item people!");
   }
 
   updateNotes(e) {
@@ -270,6 +309,7 @@ export default class ShoppingList extends Component {
         newCost = parseFloat(newCost).toFixed(2);
         map[people[0]] = { cost: newCost };
       }
+      return null;
     });
     this.setState({
       chargesByPerson: map
@@ -295,17 +335,27 @@ export default class ShoppingList extends Component {
                 <Card style={{ border: "none" }}>
                   <ListGroup variant="flush">
                     {this.state.items
-                      .sort((a, b) =>
-                        a.item.toString().toLowerCase() >
-                        b.item.toString().toLowerCase()
-                          ? 1
-                          : a.item.toString().toLowerCase() ===
-                              b.item.toString().toLowerCase() &&
-                            a.people.toString().toLowerCase() >
-                              b.people.toString().toLowerCase()
-                          ? 1
-                          : -1
-                      )
+                      .sort((a, b) => {
+                        var aStr = a.item.toString();
+                        var bStr = b.item.toString();
+                        if (aStr.toLowerCase() > bStr.toLowerCase()) {
+                          return 1;
+                        } else if (aStr.toLowerCase() === bStr.toLowerCase()) {
+                          for (var i = 0; i < aStr.length; i++) {
+                            if (aStr.charAt(i) > bStr.charAt(i)) {
+                              return 1;
+                            } else if (aStr.charAt(i) < bStr.charAt(i)) {
+                              return -1;
+                            }
+                          }
+                          return a.people.toString().toLowerCase() >
+                            b.people.toString().toLowerCase()
+                            ? 1
+                            : -1;
+                        } else {
+                          return -1;
+                        }
+                      })
                       .map(item => {
                         return (
                           <ListGroup.Item
@@ -327,11 +377,16 @@ export default class ShoppingList extends Component {
                                 />
                               </div>
                               <Card.Title>{item.item}</Card.Title>
-                              <Card.Subtitle className="mb-2 text-muted">
+                              <Card.Subtitle
+                                className="mb-2 text-muted"
+                                style={{ fontSize: "14px" }}
+                              >
                                 {item.people.join(", ")}
                               </Card.Subtitle>
                               {item.notes.length > 0 ? (
-                                <Card.Text>{item.notes}</Card.Text>
+                                <Card.Text style={{ fontSize: "14px" }}>
+                                  {item.notes}
+                                </Card.Text>
                               ) : null}
                             </Card.Body>
                           </ListGroup.Item>
@@ -356,7 +411,10 @@ export default class ShoppingList extends Component {
                           ([key, value]) => {
                             return (
                               <ListGroup.Item key={key}>
-                                <Card.Body as="custom-card-body">
+                                <Card.Body
+                                  as="custom-card-body"
+                                  style={{ fontSize: "14px" }}
+                                >
                                   <span className="price-input-dollar-sign">
                                     $
                                     <input
@@ -382,7 +440,9 @@ export default class ShoppingList extends Component {
                                     />
                                   </span>
                                   <Card.Title
-                                    style={{ margin: "0px 0px 6px 0px" }}
+                                    style={{
+                                      margin: "0px 0px 6px 0px"
+                                    }}
                                   >
                                     {key}
                                   </Card.Title>
@@ -418,7 +478,7 @@ export default class ShoppingList extends Component {
                                 Object.values(
                                   this.state.chargeListCondensed
                                 ).reduce((sum, i) => {
-                                  if (i.cost != undefined) {
+                                  if (i.cost !== undefined) {
                                     sum += parseFloat(i.cost);
                                   }
                                   if (!isNaN(sum)) return sum;
@@ -453,6 +513,7 @@ export default class ShoppingList extends Component {
           updateItem={this.updateItem}
           updatePeople={this.updatePeople}
           updateNotes={this.updateNotes}
+          users={this.state.users}
         />
         <ShoppingListChargeModal
           onClose={this.showChargeModal}
