@@ -68,7 +68,7 @@ export default class ShoppingListChargeModal extends Component {
                     : parseFloat(
                         Object.values(this.props.chargesByPerson).reduce(
                           (sum, i) => {
-                            if (i.cost != undefined) {
+                            if (i.cost !== undefined) {
                               sum += parseFloat(i.cost);
                             }
                             if (!isNaN(sum)) return sum;

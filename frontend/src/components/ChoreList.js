@@ -259,6 +259,8 @@ export default class ChoreList extends Component {
                             <td>{item.user}</td>
                           </tr>
                         );
+                      } else {
+                        return null;
                       }
                     })}
                   </tbody>

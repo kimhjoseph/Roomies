@@ -5,9 +5,9 @@ import { Row, Col } from "react-bootstrap";
 import "./UserCard.css";
 
 class UserCard extends Component {
-  constructor(props) {
-    super(props);
-  }
+  // constructor(props) {
+  //   super(props);
+  // }
 
   render() {
     return (
@@ -24,8 +24,10 @@ class UserCard extends Component {
               />
             </Col>
             <Col md="9">
-
-              <Card.Title className="user-title" style={{ marginBottom: "0px" }}>
+              <Card.Title
+                className="user-title"
+                style={{ marginBottom: "0px" }}
+              >
                 {this.props.user.first_name}
               </Card.Title>
 
