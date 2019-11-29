@@ -1,16 +1,15 @@
 import React, { Component } from "react";
-import { Table, Card } from "react-bootstrap";
-import dummy from "../images/dummy.jpg";
+import { Table, Card, Container, Row, Col } from "react-bootstrap";
 import "./Chores.css";
 import ChoreAddItemModal from "./ChoreModal";
-
-
+import axios from "axios";
+import NavbarComponent from "./NavbarComponent";
 
 export default class ChoreList extends Component {
   constructor(props) {
     super(props);
     this.click = this.click.bind(this);
-
+    this.check = this.check.bind(this);
 
     this.showAddChoreModal = this.showAddChoreModal.bind(this);
     this.handleAddChore = this.handleAddChore.bind(this);
@@ -21,81 +20,108 @@ export default class ChoreList extends Component {
 
     this.state = {
       addChoreModal: false,
-      chores: [
-        {
-          chore: "Dishes",
-          person: "Rondald",
-          days: "5",
-          complete: false
-        },
-        {
-          chore: "Trash",
-          person: "Audrey",
-          days: "2",
-          complete: false
-        },
-        {
-          chore: "Shopping",
-          person: "Zachary",
-          days: "3",
-          complete: false
-        },
-        {
-          chore: "Clean Bathroom",
-          person: "Rondald",
-          days: "2",
-          complete: false
-        }
-      ],
+      user: [],
+      users: [],
       tempChore: {
-          chore: "",
-          person: "",
-          days: "",
-          complete: false
-      }
+        userName: "",
+        description: "",
+        days: ""
+      },
+      hardChore: {
+        userName: "Audrey Pham",
+        description: "testing",
+        days: 10,
+        complete: false,
+        created: null
+      },
+      myChores: [],
+      allChores: []
     };
   }
 
+  async componentDidMount() {
+    await axios
+      .get("http://localhost:4000/choreitem/get")
+      .then(response => {
+        this.setState({ allChores: response.data });
+        console.log("hi");
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    await axios
+      .get("http://localhost:4000/user/get")
+      .then(response => {
+        this.setState({ users: response.data });
+        this.setState({ user: response.data[2] });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    await axios
+      .post("http://localhost:4000/choreitem/getmyitems", this.state.user)
+      .then(response => {
+        this.setState({ myChores: response.data });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  check() {
+    console.log(this.state.user);
+  }
+
   click(item) {
-    console.log("hi");
     console.log(item);
-    var array = this.state.chores;
+    var array = this.state.myChores;
     var index = array.indexOf(item);
     if (index !== -1) {
       array.splice(index, 1);
       this.setState({
-        chores: array
+        myChores: array
       });
+    }
+    console.log(array);
   }
-  console.log(array);
-}
 
   showAddChoreModal() {
     this.setState({ addChoreModal: !this.state.addChoreModal });
   }
 
-  handleAddChore(tempChore) {
-    console.log("called handleChoreItem");
-    console.log(tempChore);
-    this.setState(currentState => {
-      return {
-        chores: currentState.chores.concat([
-          {
-            chore: tempChore.chore,
-            person: tempChore.person, 
-            days: tempChore.days, 
-            complete: tempChore.complete
-          }
-        ]),
-        tempChore: {
-          chore: "",
-          person: "",
-          days: "",
-          complete: false
-        }
-      };
-    });
-    console.log(this.state.chores);
+  async handleAddChore(tempChore) {
+    await axios
+      .post("http://localhost:4000/choreitem/add", tempChore)
+      .then(response => {
+        console.log(response.data);
+        console.log("Successfully added chore.");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    await axios
+      .get("http://localhost:4000/choreitem/get")
+      .then(response => {
+        this.setState({ allChores: response.data });
+        console.log("hi");
+        console.log(response.data);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    await axios
+      .post("http://localhost:4000/choreitem/getmyitems", this.state.user)
+      .then(response => {
+        this.setState({ myChores: response.data });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   updateChore(e) {
@@ -103,14 +129,12 @@ export default class ChoreList extends Component {
     console.log(value);
     this.setState({
       tempChore: {
-        chore: value, 
-        person: this.state.tempChore.person,
-        days: this.state.tempChore.days,
-        complete: this.state.tempChore.complete
+        userName: this.state.tempChore.userName,
+        description: value,
+        days: this.state.tempChore.days
       }
     });
     console.log(this.state.tempChore);
-
   }
 
   updateDays(e) {
@@ -118,28 +142,25 @@ export default class ChoreList extends Component {
     console.log(value);
     this.setState({
       tempChore: {
-        chore: this.state.tempChore.chore, 
-        person: this.state.tempChore.person,
-        days: value,
-        complete: this.state.tempChore.complete
+        userName: this.state.tempChore.userName,
+        description: this.state.tempChore.description,
+        days: value
       }
     });
     console.log(this.state.tempChore);
-
   }
 
   updatePerson(e) {
     const value = e.target.value;
+    console.log(value);
     this.setState({
       tempChore: {
-        chore: this.state.tempChore.chore, 
-        person: value,
-        days: this.state.tempChore.days,
-        complete: this.state.tempChore.complete
+        userName: value,
+        description: this.state.tempChore.description,
+        days: this.state.tempChore.days
       }
     });
-    console.log(this.state.tempChore);
-
+    console.log("updated userName");
   }
 
   handleDisableClick = e => {
@@ -150,44 +171,85 @@ export default class ChoreList extends Component {
   render() {
     return (
       <div>
-        <div className='section-title'>Your Chores </div>
-        <Card className='chore-card' style={{marginTop: '5%'}}>
-          <Table hover borderless className="chore-table">
-            <thead>
-              <tr className="chore-header">
-                <th>Chore</th>
-                <th>Days Left</th>
-                <th>Completed</th>
-              </tr>
-            </thead>
-            <tbody
-            >{this.state.chores
-              .map(item => {
-              return (
-                <tr>
-                  <td>{item.chore}</td>
-                  <td>{item.days} days</td>
-                  <td>
-                    <button className="complete-button" type="button" class="btn btn-default btn-circle" onClick={() => this.click(item)}></button>
-                  </td>
-                </tr>
-                )   
-            })}
-            </tbody>
-          </Table>
-        </Card>
-        <button onClick={this.showAddChoreModal} className="chore-button">
-          Add Chore
-        </button>
-        <ChoreAddItemModal
-          onClose={this.showAddChoreModal}
-          show={this.state.addChoreModal}
-          handleAddChore={this.handleAddChore}
-          tempChore={this.state.tempChore}
-          updateChore={this.updateChore}
-          updateDays={this.updateDays}
-          updatePerson={this.updatePerson}
-        />
+        <NavbarComponent />
+        <Container style={{ height: "100%", margin: "0px, 15px" }}>
+          <Row style={{ height: "100%", alignContent: "center" }}>
+            <Col style={{ height: "90%" }}>
+              <div className="section-title">
+                {this.state.user.first_name}'s Chores{" "}
+              </div>
+              <Card className="chore-card" style={{ marginTop: "5%" }}>
+                <Table hover borderless className="chore-table">
+                  <thead>
+                    <tr className="chore-header">
+                      <th>Chore</th>
+                      <th>Days Left</th>
+                      <th>Completed</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.myChores.map(item => {
+                      return (
+                        <tr>
+                          <td>{item.description}</td>
+                          <td>{item.days} days</td>
+                          <td>
+                            <button
+                              type="button"
+                              className="btn btn-default btn-circle"
+                              onClick={() => this.click(item)}
+                            ></button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </Table>
+              </Card>
+
+              <button onClick={this.showAddChoreModal} className="chore-button">
+                Add Chore
+              </button>
+              <ChoreAddItemModal
+                onClose={this.showAddChoreModal}
+                show={this.state.addChoreModal}
+                handleAddChore={this.handleAddChore}
+                tempChore={this.state.tempChore}
+                users={this.state.users}
+                updateChore={this.updateChore}
+                updateDays={this.updateDays}
+                updatePerson={this.updatePerson}
+              />
+            </Col>
+            <Col style={{ height: "90%" }}>
+              <div className="section-title">Roomie Chores</div>
+              <Card className="chore-card" style={{ marginTop: "5%" }}>
+                <Table hover borderless className="chore-table">
+                  <thead>
+                    <tr className="chore-header">
+                      <th>Chore</th>
+                      <th>Days Left</th>
+                      <th>Assigned To</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {this.state.allChores.map(item => {
+                      if (item.user != this.state.user._id) {
+                        return (
+                          <tr>
+                            <td>{item.description}</td>
+                            <td>{item.days} days</td>
+                            <td>{item.user}</td>
+                          </tr>
+                        );
+                      }
+                    })}
+                  </tbody>
+                </Table>
+              </Card>
+            </Col>
+          </Row>
+        </Container>
       </div>
     );
   }

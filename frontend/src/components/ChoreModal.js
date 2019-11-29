@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Form, Modal } from "react-bootstrap";
-import dummy from "../images/dummy.jpg";
 import "./Chores.css";
 
 export default class ChoreAddItemModal extends Component {
@@ -46,7 +45,7 @@ export default class ChoreAddItemModal extends Component {
                 required
                 type="text"
                 placeholder="e.g. Dishes"
-                value={this.props.tempChore.chore}
+                value={this.props.tempChore.description}
                 onChange={this.props.updateChore}
               />
             </Form.Group>
@@ -62,13 +61,18 @@ export default class ChoreAddItemModal extends Component {
             </Form.Group>
             <Form.Group controlId="person">
               <Form.Label>Assign Chore to</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="e.g. Rondald"
-                value={this.props.tempChore.person}
+              <Form.Control 
+                as="select"
+                value={this.props.tempChore.userName}
                 onChange={this.props.updatePerson}
-              />
+              >
+                <option value="" disabled selected hidden>Choose a person</option>
+                {this.props.users
+                .map(item => {
+                return (
+                  <option>{item.first_name} {item.last_name}</option>   
+                )})}
+              </Form.Control>
             </Form.Group>
             <input
               type="submit"

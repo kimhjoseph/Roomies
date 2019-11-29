@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Table, Card, Button, ToggleButton, Modal, ButtonToolbar, Form} from "react-bootstrap";
+import {Modal, Form} from "react-bootstrap";
 
 import "./ProfileChangeModal.css"
 

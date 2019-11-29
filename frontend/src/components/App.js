@@ -4,7 +4,7 @@ import RoomiesLanding from "./RoomiesLanding";
 import RoomiesHome from "./RoomiesHome";
 import ShoppingList from "./ShoppingList";
 import Settings from "./Settings"
-import Chores from "./Chores";
+import ChoreList from "./ChoreList";
 import "./App.css";
 
 function App() {
@@ -24,7 +24,7 @@ function App() {
                 <RoomiesHome />
               </Route>
               <Route path="/chores">
-                <Chores/>
+                <ChoreList/>
               </Route>
               <Route path="/">
                 <RoomiesLanding />
