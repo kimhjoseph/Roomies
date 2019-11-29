@@ -1,9 +1,11 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
-const mongoose = require("mongoose");
-const ObjectId = mongoose.Types.ObjectId;
-const User = require("../models/User");
+
+const mongoose = require('mongoose');
+var bcrypt = require('bcrypt');
+const User = require('../models/User');
 const Apartment = require("../models/Apartment");
+
 
 //
 // edit_info (post)
@@ -17,6 +19,52 @@ const Apartment = require("../models/Apartment");
  * @param req contains the newUser object which contains first_name, last_name, email, status
  * @return            "Success"
  */
+
+// route for user signup
+router.post('/signup', async function(req, res) {
+    let user;
+    try {
+        const salt = bcrypt.genSaltSync();
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
+        user = await User.create({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            password: req.body.password
+        });
+    }
+    catch(err) { res.redirect('/signup'); }
+    req.session.user = user;
+    res.redirect('/dashboard');
+});
+
+
+// route for user Login
+router.get('/login', async function(req, res) {
+    var username = req.body.username,
+        password = req.body.password;
+
+    let user = await User.findOne({ username: username });
+    if (!user) {
+        res.redirect('/login');
+    } else if (!bcrypt.compareSync(req.body.password, user.password)) {
+        res.redirect('/login');
+    } else {
+        req.session.user = user;
+        res.redirect('/dashboard');
+    }
+});
+
+
+// route for user logout
+router.get('/logout', function (req, res) {
+    if (req.session.user && req.cookies.user_sid) {
+        res.clearCookie('user_sid');
+        res.redirect('/');
+    } else {
+        res.redirect('/login');
+    }
+});
 
 router.post("/edit_info", async function(req, res) {
   let updatedData = {
