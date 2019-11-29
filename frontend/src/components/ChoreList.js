@@ -234,7 +234,7 @@ export default class ChoreList extends Component {
                   </thead>
                   <tbody>
                     {this.state.allChores.map(item => {
-                      if (item.user != this.state.user._id) {
+                      if (item.user !== this.state.user._id) {
                         return (
                           <tr>
                             <td>{item.description}</td>
@@ -242,6 +242,8 @@ export default class ChoreList extends Component {
                             <td>{item.user}</td>
                           </tr>
                         );
+                      } else {
+                        return null;
                       }
                     })}
                   </tbody>

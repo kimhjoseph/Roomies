@@ -9,9 +9,11 @@ export default class ShoppingListAddItemModal extends Component {
     super(props);
 
     this.onClose = this.onClose.bind(this);
+    // this.toggleAllUsers = this.toggleAllUsers.bind(this);
 
     this.state = {
-      show: this.props.show
+      show: this.props.show,
+      allUsers: false
     };
   }
 
@@ -27,12 +29,48 @@ export default class ShoppingListAddItemModal extends Component {
     this.onClose();
   };
 
+  // toggleAllUsers() {
+  //   console.log("toggle all");
+  //   this.props.clearPeople();
+  //   if (this.state.allUsers === false) {
+  //     this.props.users
+  //       .sort((a, b) => {
+  //         var aFirst = a.first_name.toString();
+  //         var bFirst = b.first_name.toString();
+  //         if (aFirst.toLowerCase() > bFirst.toLowerCase()) {
+  //           return 1;
+  //         } else if (aFirst.toLowerCase() === bFirst.toLowerCase()) {
+  //           for (var i = 0; i < aFirst.length; i++) {
+  //             if (aFirst.charAt(i) > bFirst.charAt(i)) {
+  //               return 1;
+  //             } else if (aFirst.charAt(i) < bFirst.charAt(i)) {
+  //               return -1;
+  //             }
+  //           }
+  //           return a.last_name.toString().toLowerCase() >
+  //             b.last_name.toString().toLowerCase()
+  //             ? 1
+  //             : -1;
+  //         } else {
+  //           return -1;
+  //         }
+  //       })
+  //       .forEach(async user => {
+  //         var name = user.first_name + " " + user.last_name;
+  //         await this.props.updatePeople(name);
+  //       });
+  //   }
+  //   this.setState({
+  //     allUsers: !this.state.allUsers
+  //   });
+  // }
+
   render() {
     return (
       <Modal
         show={this.props.show}
         onHide={this.onClose}
-        size="lg"
+        size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
@@ -42,7 +80,10 @@ export default class ShoppingListAddItemModal extends Component {
         <Modal.Body>
           <Form>
             <Form.Group controlId="item">
-              <Form.Label>Item</Form.Label>
+              <Form.Label style={{ marginBottom: "0px" }}>Item</Form.Label>
+              <Form.Text className="text-muted" style={{ marginBottom: "8px" }}>
+                Enter the item you wish to add to the list
+              </Form.Text>
               <Form.Control
                 required
                 type="text"
@@ -50,25 +91,60 @@ export default class ShoppingListAddItemModal extends Component {
                 value={this.props.tempItem.item}
                 onChange={this.props.updateItem}
               />
-              <Form.Text className="text-muted">
-                Enter the item you wish to add to the list
-              </Form.Text>
             </Form.Group>
             <Form.Group controlId="people">
-              <Form.Label>People</Form.Label>
-              <Form.Control
-                required
-                type="text"
-                placeholder="e.g. John Doe, Rondald Rondaldson, ..."
-                value={this.props.tempItem.people}
-                onChange={this.props.updatePeople}
-              />
-              <Form.Text className="text-muted">
-                Who is this item for? (comma separated)
+              <Form.Label style={{ marginBottom: "0px" }}>People</Form.Label>
+              <Form.Text className="text-muted" style={{ marginBottom: "8px" }}>
+                Who is this item for?
               </Form.Text>
+              {/* <Form.Check
+                type="checkbox"
+                id="All"
+                label="Select All"
+                value={this.state.allUsers}
+                onChange={this.toggleAllUsers}
+              /> */}
+              {this.props.users
+                .sort((a, b) => {
+                  var aFirst = a.first_name.toString();
+                  var bFirst = b.first_name.toString();
+                  if (aFirst.toLowerCase() > bFirst.toLowerCase()) {
+                    return 1;
+                  } else if (aFirst.toLowerCase() === bFirst.toLowerCase()) {
+                    for (var i = 0; i < aFirst.length; i++) {
+                      if (aFirst.charAt(i) > bFirst.charAt(i)) {
+                        return 1;
+                      } else if (aFirst.charAt(i) < bFirst.charAt(i)) {
+                        return -1;
+                      }
+                    }
+                    return a.last_name.toString().toLowerCase() >
+                      b.last_name.toString().toLowerCase()
+                      ? 1
+                      : -1;
+                  } else {
+                    return -1;
+                  }
+                })
+                .map(user => {
+                  var name = user.first_name + " " + user.last_name;
+                  return (
+                    <Form.Check
+                      type="checkbox"
+                      id={user}
+                      label={name}
+                      value={name}
+                      onChange={this.props.updatePeople}
+                      // checked={this.state.allUsers}
+                    />
+                  );
+                })}
             </Form.Group>
             <Form.Group controlId="notes">
-              <Form.Label>Notes</Form.Label>
+              <Form.Label style={{ marginBottom: "0px" }}>Notes</Form.Label>
+              <Form.Text className="text-muted" style={{ marginBottom: "8px" }}>
+                Any additional information?
+              </Form.Text>
               <Form.Control
                 as="textarea"
                 rows="2"
