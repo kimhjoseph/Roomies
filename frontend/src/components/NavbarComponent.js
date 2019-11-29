@@ -7,7 +7,7 @@ export default class NavbarComponent extends Component {
   render() {
     return (
       <Navbar
-        expand="lg"
+        // expand="sm"
         sticky="top"
         variant="dark"
         className="navbar-component"
@@ -15,25 +15,24 @@ export default class NavbarComponent extends Component {
         <Navbar.Brand href="/home" className="home">
           Roomies
         </Navbar.Brand>
-        <Navbar.Toggle aria-controls="basic-navbar-nav" />
-        <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="mr-auto">
-              <Nav.Link href="/list">List</Nav.Link>
-              <Nav.Link href="/chores">Chores</Nav.Link>
-              <Nav.Link href="#calendar">Calendar</Nav.Link>
-            </Nav>
-            <Nav className="ml-auto">
-            <NavDropdown
-              title={<img src={dummy} />}
-              alignRight
-              id="basic-nav-dropdown"
-            >
-              <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Notifications</NavDropdown.Item>
-              <NavDropdown.Item href="/">Log Out</NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
+        {/* <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+        <Navbar.Collapse id="responsive-navbar-nav"> */}
+        <Nav className="mr-auto">
+          <Nav.Link href="/list">List</Nav.Link>
+          <Nav.Link href="/chores">Chores</Nav.Link>
+          <Nav.Link href="#calendar">Calendar</Nav.Link>
+        </Nav>
+        <Nav className="ml-auto">
+          <NavDropdown
+            title={<img src={dummy} />}
+            alignRight
+            id="basic-nav-dropdown"
+          >
+            <NavDropdown.Item href="/settings">Settings</NavDropdown.Item>
+            <NavDropdown.Item href="/">Log Out</NavDropdown.Item>
+          </NavDropdown>
+        </Nav>
+        {/* </Navbar.Collapse> */}
       </Navbar>
     );
   }
