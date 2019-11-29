@@ -10,7 +10,7 @@
   },
   "devDependencies": {},
   "scripts": {
-    "start": "concurrently \"cd backend && nodemon server.js\" \"cd frontend && npm start\"",
+    "start": "concurrently \"./node_modules/nodemon/bin/nodemon.js ./backend/server.js\" \"cd frontend && npm start\"",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
