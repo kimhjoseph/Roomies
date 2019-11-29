@@ -1,6 +1,5 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
-import { Container, Row, Col, Card, Button } from "react-bootstrap";
+import { Container } from "react-bootstrap";
 
 import UserList from "./UserList";
 import NotificationCards from "./NotificationList";

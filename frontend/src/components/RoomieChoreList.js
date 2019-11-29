@@ -1,8 +1,6 @@
 import React, { Component } from "react";
 import { Table, Card } from "react-bootstrap";
-import dummy from "../images/dummy.jpg";
 import "./Chores.css";
-import ChoreAddItemModal from "./ChoreModal";
 
 export default class RoomieChoreList extends Component {
   constructor(props) {

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const User = require('../models/User');
 const ChoreListItem = require('../models/ChoreListItem');
 
@@ -42,6 +43,41 @@ router.post('/add_item', async function(req, res) {
 	try { let item = await ChoreListItem.create({ description: req.body.description, completed: req.body.completed, user: user._id, apartment: req.user.apartment, created: req.body.created, days: req.body.days }); } 
 	catch(err) { res.status(400).send("Error creating chore list item."); }
 	res.status(201).send("Success");
+});
+
+router.post('/add', async function(req, res) {
+	var name = req.body.userName.split(" ");
+	var userFirstName = name[0];
+	var userLastName = name[1];
+	let user;  
+
+	try { 
+		user = await User.findOne( {first_name: userFirstName, last_name: userLastName}); 
+	}
+	catch(err) { res.status(400).send("Error finding user with matching first and last name."); }
+
+	if(!user) {
+		res.status(400).send("Error finding user with matching first and last name.");
+	}
+
+		const newChore = {
+			description: req.body.description, 
+			completed: req.body.completed, 
+			user: user._id, 
+			apartment: user.apartment,  
+			days: req.body.days
+		}
+
+	console.log(req.body.description);
+	let chore = new ChoreListItem(newChore);
+	chore.save()
+		.then(chore => {
+			res.status(201).send("Successfully added new chore!");
+		})
+		.catch(err => {
+			res.status(400).send("Error creating chore list item.");
+		});
+
 });
 
 
@@ -105,6 +141,15 @@ router.get('/get_items', async function(req, res) {
 	res.status(200).json(populatedItems);
 });
 
+router.route("/get").get((req, res) => {
+	ChoreListItem.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
+		.then(chores => {
+			console.log(chores);
+		res.json(chores);
+		})
+		.catch(err => res.status(400).json("Error: " + err));
+	});
+
 /**
  * Delete a ChoreListItem by object id.
  *
@@ -141,7 +186,7 @@ router.delete('/delete_all_items', async function(req, res) {
 /**
  * Retrieve all ChoreListItems by user id.
  *
- * Use axios.delete(.../choreitem/get_my_items)
+ * Use axios.get(.../choreitem/get_my_items)
  *
  * @param req user session variable with user _id
  * @return res containing a list of items retrieved.
@@ -158,5 +203,16 @@ router.get('/get_my_items', async function(req, res) {
 	}
 	res.status(200).json(UserItems);
 });
+
+
+router.post('/getmyitems', async function(req, res) {
+	console.log(req.body);
+	ChoreListItem.find({ user: new ObjectId(req.body._id )})
+		.then(myChores => {
+		console.log(myChores);
+		res.json(myChores);
+		})
+		.catch(err => res.status(400).json("Error: " + err));
+	});
 
 module.exports = router;
