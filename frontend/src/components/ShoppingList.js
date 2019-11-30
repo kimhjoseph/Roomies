@@ -18,6 +18,7 @@ import axios from "axios";
 import NavbarComponent from "./NavbarComponent";
 import ShoppingListAddItemModal from "./ShoppingListAddItemModal";
 import ShoppingListChargeModal from "./ShoppingListChargeModal";
+import LoadingComponent from "./LoadingComponent";
 
 import "./ShoppingList.css";
 
@@ -53,7 +54,8 @@ export default class ShoppingList extends Component {
       chargeList: [],
       chargeListCondensed: {},
       chargesByPerson: {},
-      users: []
+      users: [],
+      loading: true
     };
   }
 
@@ -64,7 +66,7 @@ export default class ShoppingList extends Component {
       .then(response => {
         console.log("Successfully obtained items from database!");
         console.log(response.data);
-        this.setState({ items: response.data });
+        this.setState({ items: response.data, loading: false });
       })
       .catch(error => {
         console.log("Error: " + error);
@@ -273,8 +275,14 @@ export default class ShoppingList extends Component {
           delete map[key];
       }
     });
+    const sortedMap = {};
+    Object.keys(map)
+      .sort()
+      .forEach(key => {
+        sortedMap[key] = map[key];
+      });
     this.setState({
-      chargeListCondensed: map
+      chargeListCondensed: sortedMap
     });
   }
 
@@ -334,64 +342,74 @@ export default class ShoppingList extends Component {
               <div className="scrollable">
                 <Card style={{ border: "none" }}>
                   <ListGroup variant="flush">
-                    {this.state.items
-                      .sort((a, b) => {
-                        var aStr = a.item.toString();
-                        var bStr = b.item.toString();
-                        if (aStr.toLowerCase() > bStr.toLowerCase()) {
-                          return 1;
-                        } else if (aStr.toLowerCase() === bStr.toLowerCase()) {
-                          for (var i = 0; i < aStr.length; i++) {
-                            if (aStr.charAt(i) > bStr.charAt(i)) {
-                              return 1;
-                            } else if (aStr.charAt(i) < bStr.charAt(i)) {
-                              return -1;
+                    {this.state.loading === false ? (
+                      this.state.items
+                        .sort((a, b) => {
+                          var aStr = a.item.toString();
+                          var bStr = b.item.toString();
+                          if (aStr.toLowerCase() > bStr.toLowerCase()) {
+                            return 1;
+                          } else if (
+                            aStr.toLowerCase() === bStr.toLowerCase()
+                          ) {
+                            for (var i = 0; i < aStr.length; i++) {
+                              if (aStr.charAt(i) > bStr.charAt(i)) {
+                                return 1;
+                              } else if (aStr.charAt(i) < bStr.charAt(i)) {
+                                return -1;
+                              }
                             }
+                            return a.people.toString().toLowerCase() >
+                              b.people.toString().toLowerCase()
+                              ? 1
+                              : -1;
+                          } else {
+                            return -1;
                           }
-                          return a.people.toString().toLowerCase() >
-                            b.people.toString().toLowerCase()
-                            ? 1
-                            : -1;
-                        } else {
-                          return -1;
-                        }
-                      })
-                      .map(item => {
-                        return (
-                          <ListGroup.Item
-                            key={item.item + " " + item.people.join(", ")}
-                          >
-                            <Card.Body as="custom-card-body">
-                              <div className="edit-functions">
-                                <FontAwesomeIcon
-                                  icon={faPlusCircle}
-                                  className="edit-button"
-                                  onClick={() =>
-                                    this.handleTransferToCharge(item)
-                                  }
-                                />
-                                <FontAwesomeIcon
-                                  icon={faTimesCircle}
-                                  className="edit-button"
-                                  onClick={() => this.handleRemoveItem(item)}
-                                />
-                              </div>
-                              <Card.Title>{item.item}</Card.Title>
-                              <Card.Subtitle
-                                className="mb-2 text-muted"
-                                style={{ fontSize: "14px" }}
-                              >
-                                {item.people.join(", ")}
-                              </Card.Subtitle>
-                              {item.notes.length > 0 ? (
-                                <Card.Text style={{ fontSize: "14px" }}>
-                                  {item.notes}
-                                </Card.Text>
-                              ) : null}
-                            </Card.Body>
-                          </ListGroup.Item>
-                        );
-                      })}
+                        })
+                        .map(item => {
+                          return (
+                            <ListGroup.Item
+                              key={item.item + " " + item.people.join(", ")}
+                            >
+                              <Card.Body as="custom-card-body">
+                                <div className="edit-functions">
+                                  <FontAwesomeIcon
+                                    icon={faPlusCircle}
+                                    className="edit-button"
+                                    onClick={() =>
+                                      this.handleTransferToCharge(item)
+                                    }
+                                  />
+                                  <FontAwesomeIcon
+                                    icon={faTimesCircle}
+                                    className="edit-button"
+                                    onClick={() => this.handleRemoveItem(item)}
+                                  />
+                                </div>
+                                <Card.Title>{item.item}</Card.Title>
+                                <Card.Subtitle
+                                  className="mb-2 text-muted"
+                                  style={{ fontSize: "14px" }}
+                                >
+                                  {item.people.join(", ")}
+                                </Card.Subtitle>
+                                {item.notes.length > 0 ? (
+                                  <Card.Text style={{ fontSize: "14px" }}>
+                                    {item.notes}
+                                  </Card.Text>
+                                ) : null}
+                              </Card.Body>
+                            </ListGroup.Item>
+                          );
+                        })
+                    ) : (
+                      <ListGroup.Item>
+                        <Card.Body>
+                          <LoadingComponent />
+                        </Card.Body>
+                      </ListGroup.Item>
+                    )}
                   </ListGroup>
                 </Card>
               </div>
