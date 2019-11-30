@@ -37,7 +37,7 @@ router.post('/signup', async function(req, res) {
 });
 
 
- router.post('/login', async function(req, res) {
+router.post('/login', async function(req, res) {
 
     console.log(req.body);
     var email = req.body.email,
@@ -50,8 +50,13 @@ router.post('/signup', async function(req, res) {
         res.status(400).send("Failure");
     } else {
         req.session.user = user;
+        console.log(req.session.user);
         res.status(201).send("Success");
     }
+});
+
+router.post('/logout', function(req, res) {
+  res.clearCookie('user_sid');
 });
 
 router.post("/edit_info", async function(req, res) {
@@ -95,6 +100,7 @@ router.get("/get_users", async function(req, res) {
 
 // test get hard coded
 router.route("/get").get((req, res) => {
+  console.log(req.session.user);
   User.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
     .then(users => {
       res.json(users);

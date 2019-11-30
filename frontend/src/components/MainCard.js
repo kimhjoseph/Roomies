@@ -4,6 +4,8 @@ import "./MainCard.css";
 import dummy from "../images/dummy.jpg";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 export default class MainCard extends Component {
   constructor(props) {
     super(props);

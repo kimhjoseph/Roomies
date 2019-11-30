@@ -6,6 +6,8 @@ import "./UserList.css";
 import axios from 'axios';
 import dummy from "../images/dummy.jpg";
 
+axios.defaults.withCredentials = true;
+
 class UserList extends Component {
   constructor(props) {
     super(props);
