@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 
 const mongoose = require('mongoose');
+const ObjectId = mongoose.Types.ObjectId;
 const User = require('../models/User');
 const Apartment = require('../models/Apartment');
 
@@ -14,10 +15,13 @@ const Apartment = require('../models/Apartment');
 function makeId() {
    var result = '';
    var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-   var charactersLength = characters.length;
+	 var charactersLength = characters.length;
+	 try{
    for ( var i = 0; i < 5; i++ ) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-   }
+	 }
+	}
+	catch(err)  { console.log("makeID wrong") }
    return result;
 }
 
@@ -30,15 +34,23 @@ function makeId() {
  * @return res contining the apartment code generated. 
  */
 
-router.post('/create_apartment', async function(req, res) {
-	try { let apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: makeId() }); } 
-	catch(err) { res.status(400).send("Error creating apartment."); }
+router.get('/create_apartment', async function(req, res) {
+    const newApt = {
+			_id: new ObjectId(), 
+			code: makeId()
+    };
 
-	try { let user = await User.findOneAndUpdate({ email: req.user.email }, { apartment: apartment._id }, { new: true }); } 
-	catch(err) { res.status(400).send("Error adding information to user."); }
-	res.status(201).send(apartment.code);
+    let apt = new Apartment(newApt);
+    apt
+      .save()
+      .then(apt => {
+				res.status(201).send("Successfully added new apartment!");
+				console.log(apt)
+      })
+      .catch(err => {
+        res.status(400).send("Error creating apartment.", err);
+      });
 });
-
 
 /**
  * Join an apartment.
@@ -51,12 +63,14 @@ router.post('/create_apartment', async function(req, res) {
 
 
 router.post('/join_apartment', async function(req, res) {
-	try { let apartment = await Apartment.findOne({ code: req.body.code }); } 
+	console.log(req.body);
+	let apartment;
+	try { apartment = await Apartment.findOne({ code: req.body.code });}
 	catch(err) { res.status(400).send("Error finding apartment."); }
 
-	try { let user = await User.findOneAndUpdate({ email: req.user.email }, { apartment: apartment._id }, { new: true }); } 
-	catch(err) { res.status(400).send("Error adding information to user."); }
-	res.status(201).send("Success");
+	try { let user = await User.findOneAndUpdate({ email: req.body.email }, { apartment: apartment._id }, { new: true }); } 
+	catch(err) { res.status(400).send(err); }
+	res.status(200).send("Success");
 });
 
 

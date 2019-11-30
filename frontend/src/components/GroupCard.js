@@ -3,10 +3,31 @@ import { Card, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
+import axios from "axios";
 
 export default class GroupCard extends Component {
   constructor(props) {
     super(props);
+    
+    this.createApartment = this.createApartment.bind(this);
+
+    this.state = {
+      user: {
+      email: "audrey.pham@gmail.com", 
+      code: "KZ6E9"
+      }
+    };
+  }
+
+  createApartment(user) {
+    axios
+      .post("http://localhost:4000/apartment/join_apartment", this.state.user)
+      .then(response => {
+        console.log("Successfully added chore.");
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   render() {
@@ -48,6 +69,7 @@ export default class GroupCard extends Component {
                 <Link to="/home">
                   <Button className="group-button2">Create Group</Button>
                 </Link>
+                <Button className="group-button2" onClick={() => this.createApartment(this.state.user)}>Check</Button>
               </div>
             </Card.Body>
           </Card>
