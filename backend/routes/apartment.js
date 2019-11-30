@@ -99,3 +99,62 @@ router.post('/edit_apartment', async function(req, res) {
 });
 
 module.exports = router;
+
+/*
+
+These are the routes from the updated backend!
+
+
+router.post('/create_apartment', async function(req, res) {
+	let apartment;
+	let user;
+
+	console.log(req.body);
+	try { apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: makeId() }); } 
+	catch(err) { res.status(400).send("Error creating apartment."); }
+
+	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
+	catch(err) { res.status(400).send("Error adding information to user."); }
+	res.status(201).json(apartment.code);
+});
+
+
+
+router.post('/join_apartment', async function(req, res) {
+	let apartment;
+	let user;
+
+	try { apartment = await Apartment.findOne({ code: req.body.code }); } 
+	catch(err) { res.status(400).send("Error finding apartment."); }
+
+	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
+	catch(err) { res.status(400).send("Error adding information to user."); }
+	res.status(201).send("Success");
+});
+
+
+router.get('/get_apartment', async function(req, res) {
+	let apartment;
+	try { let apartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
+	catch(err) { res.status(400).send("Error finding apartment."); }
+	res.status(200).json(apartment);
+});
+
+
+router.post('/edit_apartment', async function(req, res) {
+	let oldApartment;
+	try { oldApartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
+	catch (err) { res.status(400).send("Error finding apartment in database."); }
+
+	let updatedApartment = {
+		name: ((req.body.name != null) ? req.body.name : oldApartment.name),
+		address: ((req.body.address != null) ? req.body.address : oldApartment.address)
+	}
+
+	let newApartment;
+	try { newApartment = await Apartment.findByIdAndUpdate("5ddecc7a1c9d4400000141dd", updatedApartment, { new: true }); } 
+	catch(err) { res.status(400).send("Error editing apartment."); }
+	res.status(201).send("Success")
+});
+*/
+
