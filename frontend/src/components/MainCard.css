@@ -45,3 +45,13 @@ img {
   background: #76bcef;
   color: #ffffff;
 }
+
+.custom-status-button.active {
+  background: #76bcef;
+  color: #ffffff;
+}
+
+.custom-status-button:active {
+  background: #76bcef;
+  color: #ffffff;
+}

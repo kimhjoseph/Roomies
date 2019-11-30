@@ -19,21 +19,18 @@ const Apartment = require("../models/Apartment");
  */
 
 router.post("/edit_info", async function(req, res) {
-  console.log(req.body);
+
   let updatedData = {
-    first_name:
-      req.body.firstname,
-    last_name:
-      req.body.lastname,
-    email: req.body.email,
-    status: req.body.status
+    first_name: req.body.firstname != null ? req.body.firstname : "Joseph",
+    last_name: req.body.lastname != null ? req.body.lastname : "Kim",
+    email: req.body.email != null ? req.body.email : "jhk.joseph@gmail.com",
+    status: req.body.status != null ? req.body.status : "Busy",
+    profile_image: req.body.profile_image != null ? req.body.profile_image : "dummy image"
   };
+
+  let user;
   try {
-    let user = await User.findOneAndUpdate(
-      { email: req.user.email },
-      updatedData,
-      { new: true }
-    );
+    user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, updatedData, { new: true });
   } catch (err) {
     console.log("Error updating user.");
     res.status(400).send(err);
