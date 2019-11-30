@@ -1,7 +1,11 @@
 import React, { Component } from "react";
-import { Container } from "react-bootstrap";
+import ReactDOM from "react-dom";
+import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import axios from "axios";
 
+import UserList from "./UserList";
+import NotificationCards from "./NotificationList";
+import MainCard from "./MainCard";
 import NavbarComponent from "./NavbarComponent";
 import ProfileChangeModal from "./ProfileChangeModal";
 import dummy from "../images/dummy.jpg";
@@ -13,68 +17,117 @@ export default class ShoppingList extends Component {
 
     this.handleUpdateInfo = this.handleUpdateInfo.bind(this);
     this.showChangeInfoModal = this.showChangeInfoModal.bind(this);
-    this.updateName = this.updateName.bind(this);
+    this.updateFirstName = this.updateFirstName.bind(this);
+    this.updateLastName = this.updateLastName.bind(this);
+    this.updateEmail = this.updateEmail.bind(this);
+    this.updateProfilePic = this.updateProfilePic.bind(this);
     this.handleImageAdded = this.handleImageAdded.bind(this);
 
     this.state = {
       imagefile: dummy,
       changeInfoModal: false,
       userInfo: {
-        firstname: "Rondald",
-        lastname: "Rondaldson",
-        id: 90342,
-        bio: "srrsly fuck the middle class"
+        firstname: "",
+        lastname: "",
+        email: "",
+        profile_image: ""
       },
       newInfo: {
         firstname: "",
         lastname: "",
-        id: 0,
-        bio: ""
+        email: "",
+        profile_image: ""
       },
       userName: "Rondald"
     };
-  }
 
-  showChangeInfoModal() {
-    this.setState({ changeInfoModal: !this.state.changeInfoModal });
-  }
-
-  handleUpdateInfo(newInfo) {
-    console.log(newInfo);
-    this.setState({
-      userInfo: {
-        name: newInfo.name,
-        id: newInfo.id,
-        bio: newInfo.bio
-      }
-    });
-    console.log(this.state.userInfo);
-  }
-
-  updateName(e) {
     axios
       .get("http://localhost:4000/user/get")
       .then(response => {
         const user = response.data[0];
         this.setState({
-          newInfo: {
+          userInfo: {
             firstname: user.first_name,
             lastname: user.last_name,
-            id: this.state.newInfo.id,
-            bio: this.state.newInfo.bio
+            email: user.email,
+            profile_image: "damn"
           }
         });
       })
       .catch(function(error) {
         console.log(error);
       });
+  }
 
-    console.log(this.state.newInfo.firstname);
+  showChangeInfoModal() {
+    this.setState({ changeInfoModal: !this.state.changeInfoModal });
+  }
+
+  updateFirstName(e) {
+    const value = e.target.value;
+    const ln = this.state.newInfo.lastname;
+    const email = this.state.newInfo.email;
+    const pp = this.state.newInfo.profile_image
+      this.setState({
+        newInfo: {
+          firstname: value,
+          lastname: ln != "" ? ln : this.state.userInfo.lastname,
+          email: email != "" ? email : this.state.userInfo.email,
+          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+        }
+      });
+      console.log(this.state.newInfo);
+  }
+
+  updateLastName(e) {
+    const value = e.target.value;
+    const fn = this.state.newInfo.firstname;
+    const email = this.state.newInfo.email;
+    const pp = this.state.newInfo.profile_image
+      this.setState({
+        newInfo: {
+          firstname: fn != "" ? fn : this.state.userInfo.firstname,
+          lastname: value,
+          email: email != "" ? email : this.state.userInfo.email,
+          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+        }
+      });
+      console.log(this.state.newInfo);
+  }
+
+  updateEmail(e) {
+    const value = e.target.value;
+    const fn = this.state.newInfo.firstname;
+    const ln = this.state.newInfo.lastname;
+    const pp = this.state.newInfo.profile_image
+      this.setState({
+        newInfo: {
+          firstname: fn != "" ? fn : this.state.userInfo.firstname,
+          lastname: ln != "" ? ln : this.state.userInfo.lastname,
+          email: value,
+          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+        }
+      });
+      console.log(this.state.newInfo);
+  }
+
+  updateProfilePic(e) {
+    const value = e.target.value;
+
+    this.setState({
+      newInfo: {
+        firstname: this.state.userInfo.firstname,
+        lastname: this.state.userInfo.lastname,
+        email: this.state.userInfo.email,
+        profile_image: value
+      }
+    });
+
+    console.log(this.state.newInfo);
   }
 
   handleImageAdded(e) {
     e.preventDefault();
-
     let reader = new FileReader();
     let file = e.target.files[0];
     console.log(file);
@@ -91,8 +144,22 @@ export default class ShoppingList extends Component {
   }
 
   clickImageUploader() {
-    document.getElementById("img").click();
+    document.getElementById("profile_image").click();
   }
+
+  handleUpdateInfo = async newInfo => {
+    console.log(newInfo);
+    await axios
+      .post("http://localhost:4000/user/edit_info", newInfo)
+      .then(response=> {
+        this.setState({userInfo: newInfo})
+        console.log(this.state.userInfo)
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    console.log(this.state.newInfo);
+  };
 
   render() {
     return (
@@ -109,20 +176,22 @@ export default class ShoppingList extends Component {
 
         <Container style={{ height: "100%", alignContent: "center" }}>
           <div className="rounded-circle">
-            <input
-              type="image"
-              src={this.state.imagefile}
-              className="rounded-circle"
-              onClick={this.clickImageUploader}
-            />
-            <input
-              type="file"
-              id="img"
-              accept="image/*"
-              onChange={this.handleImageAdded}
-              style={{ display: "none" }}
-            />
-            <div className="name">{this.state.userInfo.name}</div>
+            <form method="post" enctype="multipart/form-data" action="/upload">
+              <input
+                type="image"
+                src={this.state.imagefile}
+                className="rounded-circle"
+                onClick={this.clickImageUploader}
+              />
+              <input
+                type="file"
+                id="profile_image"
+                accept="image/*"
+                onChange={this.handleImageAdded}
+                style={{ display: "none" }}
+              />
+            </form>
+            <div className="name">{this.state.userInfo.firstname} {this.state.userInfo.lastname}</div>
             <button
               onClick={this.showChangeInfoModal}
               className="change-info-button"
@@ -133,7 +202,10 @@ export default class ShoppingList extends Component {
               onClose={this.showChangeInfoModal}
               show={this.state.changeInfoModal}
               handleUpdateInfo={this.handleUpdateInfo}
-              updateName={this.updateName}
+              updateFirstName={this.updateFirstName}
+              updateLastName={this.updateLastName}
+              updateEmail={this.updateEmail}
+              updateProfilePic={this.updateProfilePic}
               userInfo={this.state.userInfo}
               newInfo={this.state.newInfo}
             />
