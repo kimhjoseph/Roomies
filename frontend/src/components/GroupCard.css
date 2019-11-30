@@ -10,9 +10,17 @@
     border-radius: 8px;
 }
 
+.group-text {
+    padding: 0px;
+    margin-bottom: 7px;
+    font-family: 'Noto Sans';
+    font-style: 'italic';
+    color: black;
+}
 .group-code-body.card-body {
     flex: 1 1 auto;
     padding: 3rem;
+    padding-bottom: 0px;
 }
 
 .group-button1.btn-primary {

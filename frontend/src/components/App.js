@@ -5,6 +5,9 @@ import RoomiesHome from "./RoomiesHome";
 import ShoppingList from "./ShoppingList";
 import Settings from "./Settings"
 import ChoreList from "./ChoreList";
+import SignUp from "./SignUp";
+import Login from "./Login";
+import GroupCard from "./GroupCard"
 import "./App.css";
 
 function App() {
@@ -14,6 +17,15 @@ function App() {
         <Router>
           <div>
             <Switch>
+            <Route path="/signup">
+                <SignUp />
+              </Route>
+              <Route path="/login">
+                <Login />
+              </Route>
+              <Route path="/join">
+                <GroupCard />
+              </Route>
               <Route path="/settings">
                 <Settings />
               </Route>
