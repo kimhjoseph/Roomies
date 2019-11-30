@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const Apartment = require("../models/Apartment");
+var bcrypt = require('bcrypt');
 
 //
 // edit_info (post)
@@ -17,6 +18,41 @@ const Apartment = require("../models/Apartment");
  * @param req contains the newUser object which contains first_name, last_name, email, status
  * @return            "Success"
  */
+
+router.post('/signup', async function(req, res) {
+    let user;
+    try {
+        const salt = bcrypt.genSaltSync();
+        req.body.password = bcrypt.hashSync(req.body.password, salt);
+        user = await User.create({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            email: req.body.email,
+            password: req.body.password
+        });
+    }
+    catch(err) {res.status(400).send(err);}
+    req.session.user = user;
+    res.status(201).send("Success");
+});
+
+
+ router.post('/login', async function(req, res) {
+
+    console.log(req.body);
+    var email = req.body.email,
+        password = req.body.password;
+
+    let user = await User.findOne({ email: email });
+    if (!user) {
+        res.status(400).send("Failure");
+    } else if (!bcrypt.compareSync(req.body.password, user.password)) {
+        res.status(400).send("Failure");
+    } else {
+        req.session.user = user;
+        res.status(201).send("Success");
+    }
+});
 
 router.post("/edit_info", async function(req, res) {
 
@@ -70,50 +106,6 @@ module.exports = router;
 
 
 /* This is the new file structure from backend with login capabilities!
-
-const express = require('express');
-const router = express.Router();
-const ObjectId = mongoose.Types.ObjectId;
-const mongoose = require('mongoose');
-var bcrypt = require('bcrypt');
-const User = require('../models/User');
-const Apartment = require("../models/Apartment");
-
-
-// route for user signup
-router.post('/signup', async function(req, res) {
-    let user;
-    try {
-        const salt = bcrypt.genSaltSync();
-        req.body.password = bcrypt.hashSync(req.body.password, salt);
-        user = await User.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            password: req.body.password
-        });
-    }
-    catch(err) { res.redirect('/signup'); }
-    req.session.user = user;
-    res.redirect('/dashboard');
-});
-
-
-// route for user Login
-router.get('/login', async function(req, res) {
-    var username = req.body.username,
-        password = req.body.password;
-
-    let user = await User.findOne({ username: username });
-    if (!user) {
-        res.redirect('/login');
-    } else if (!bcrypt.compareSync(req.body.password, user.password)) {
-        res.redirect('/login');
-    } else {
-        req.session.user = user;
-        res.redirect('/dashboard');
-    }
-});
 
 
 // going to leave this in here bc I don't know how we want to handle
