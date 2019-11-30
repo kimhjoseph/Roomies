@@ -14,6 +14,9 @@ let User = new Schema(
     email: {
       type: String
     },
+    password: {
+      type: String
+    },
     status: {
       type: String,
       enum: ["Busy", "Away", "At Home", "Asleep"],
