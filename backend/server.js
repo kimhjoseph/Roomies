@@ -13,7 +13,7 @@ const session = require('express-session');
 // MongoDB Connection
 mongoose.connect(
   "mongodb+srv://prad:TaskrMongoDB@cluster0-n2wtn.mongodb.net/Roomies?retryWrites=true&w=majority",
-  { useNewUrlParser: true }
+  { useNewUrlParser: true, useFindAndModify: false }
 );
 const connection = mongoose.connection;
 connection.on("error", console.error.bind(console, "MongoDB connection error"));

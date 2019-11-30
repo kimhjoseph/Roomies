@@ -44,15 +44,36 @@ export default class ProfileChangeModal extends Component {
       <Modal.Body>
       <Form>
         <Form.Group>
-          <Form.Label>Name</Form.Label>
+          <Form.Label>First Name</Form.Label>
           <Form.Control
             type="name"
-            placeholder={this.props.userInfo.name}
-            value={this.props.newInfo.name}
-            onChange={this.props.updateName}
+            placeholder={this.props.userInfo.firstname}
+            onChange={this.props.updateFirstName}
             />
           <Form.Text className="text-muted">
-            Enter Your Full Name
+            Enter Your New First Name
+          </Form.Text>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Last Name</Form.Label>
+          <Form.Control
+            type="name"
+            placeholder={this.props.userInfo.lastname}
+            onChange={this.props.updateLastName}
+            />
+          <Form.Text className="text-muted">
+            Enter Your New Last Name
+          </Form.Text>
+        </Form.Group>
+        <Form.Group>
+          <Form.Label>Email</Form.Label>
+          <Form.Control
+            type="name"
+            placeholder={this.props.userInfo.email}
+            onChange={this.props.updateEmail}
+            />
+          <Form.Text className="text-muted">
+            Enter Your New Email
           </Form.Text>
         </Form.Group>
         <button onClick={this.handleDisableClick} variant="primary" type="submit" className="profile-change-submit-button">
