@@ -83,47 +83,32 @@ router.post("/add", async function(req, res) {
  * @return res containing "Success"
  */
 
-router.post("/edit_item/:id", async function(req, res) {
-  try {
-    let oldItem = await ChoreListItem.findById(req.params.id);
-  } catch (err) {
-    res.status(400).send("Error finding item.");
-  }
+router.post('/edit_item/:id', async function(req, res) {
+  let oldItem;
+  try { oldItem = await ChoreListItem.findById(req.params.id); } 
+  catch (err) { res.status(400).send("Error finding item."); }
 
   let newUser;
   if (req.body.userName) {
     var name = req.body.userName.split(" ");
-    var userFirstName = userName[0];
-    var userLastName = userName[1];
+    var userFirstName = name[0];
+    var userLastName = name[1];
 
-    try {
-      let newUser = await User.findOne({
-        first_name: userFirstName,
-        last_name: userLastName
-      });
-    } catch (err) {
-      res.status(400).send("Error finding user with that first and last name.");
-    }
+    try { newUser = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
+    catch(err) { res.status(400).send("Error finding user with that first and last name."); }
   }
-
+  
   let updatedItem = {
-    description:
-      req.body.description != null ? req.body.description : oldItem.description,
-    completed:
-      req.body.completed != null ? req.body.completed : oldItem.completed,
-    user: newUser != null ? newUser._id : oldItem.user,
-    days: days != null ? req.body.days : oldItem.days
-  };
-  try {
-    let newItem = await ChoreListItem.findByIdAndUpdate(
-      req.params.id,
-      updatedItem,
-      { new: true }
-    );
-  } catch (err) {
-    res.status(400).send("Error editing chore item.");
+    description: ((req.body.description != null) ? req.body.description : oldItem.description),
+    completed: ((req.body.completed != null) ? req.body.completed : oldItem.completed),
+    user: ((newUser != null) ? newUser._id : oldItem.user),
+    days: ((req.body.days != null) ? req.body.days : oldItem.days)
   }
-  res.status(201).send("Success");
+
+  let newItem;
+  try { newItem = await ChoreListItem.findByIdAndUpdate(req.params.id, updatedItem, { new: true }); } 
+  catch(err) { res.status(400).send("Error editing chore item."); }
+  res.status(201).send("Success")
 });
 
 /**
@@ -283,34 +268,6 @@ router.post('/add', async function(req, res) {
 			res.status(400).send("Error creating chore list item.");
 		});
 
-});
-
-router.post('/edit_item/:id', async function(req, res) {
-	let oldItem;
-	try { oldItem = await ChoreListItem.findById(req.params.id); } 
-	catch (err) { res.status(400).send("Error finding item."); }
-
-	let newUser;
-	if (req.body.userName) {
-		var name = req.body.userName.split(" ");
-		var userFirstName = name[0];
-		var userLastName = name[1];
-
-		try { newUser = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
-		catch(err) { res.status(400).send("Error finding user with that first and last name."); }
-	}
-  
-	let updatedItem = {
-		description: ((req.body.description != null) ? req.body.description : oldItem.description),
-		completed: ((req.body.completed != null) ? req.body.completed : oldItem.completed),
-		user: ((newUser != null) ? newUser._id : oldItem.user),
-		days: ((req.body.days != null) ? req.body.days : oldItem.days)
-	}
-
-	let newItem;
-	try { newItem = await ChoreListItem.findByIdAndUpdate(req.params.id, updatedItem, { new: true }); } 
-	catch(err) { res.status(400).send("Error editing chore item."); }
-	res.status(201).send("Success")
 });
 
 
