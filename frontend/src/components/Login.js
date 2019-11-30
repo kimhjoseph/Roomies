@@ -1,10 +1,65 @@
 import React, { Component } from "react";
 import { Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 import "./Login.css";
+import axios from 'axios';
 
-export default class Login extends Component {
+class Login extends Component {
   // TODO: OAuth stuff will need to be added here
+
+
+
+
+  constructor(props){
+    super(props)
+
+    this.state = {
+      email: '',
+      password: ''
+    };
+
+    this.onChangeEmail = this.onChangeEmail.bind(this);
+    this.onChangePassword = this.onChangePassword.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+
+    }
+
+
+    onSubmit(e) {
+      e.preventDefault();
+
+      console.log(`Email: ${this.state.email}`);
+      console.log(`Password: ${this.state.password}`);
+
+
+      const newUser = {
+        email: this.state.email,
+        password: this.state.password
+      };
+
+      axios.post('http://localhost:4000/user/login', newUser)
+        .then(res => {
+          console.log(res.data);
+          if (res.data == "Success"){
+            console.log('here')
+            this.props.history.push("/home");
+          }
+          }) 
+
+
+
+    }
+
+
+    onChangeEmail(e){
+      this.setState({email: e.target.value})
+
+    };
+
+    onChangePassword(e){
+      this.setState({password: e.target.value})
+    };
 
   render() {
     return (
@@ -16,22 +71,22 @@ export default class Login extends Component {
           </h5>
         </div>
         <div className="inner-container">
-          <Form className="login-form" style={{ width: "60%" }}>
+          <Form className="login-form" style={{ width: "60%" }} onSubmit={this.onSubmit}>
             <div className="login-title">
               <h3>Welcome Back!</h3>
             </div>
             <Form.Group controlId="formBasicEmail">
-              <Form.Control type="email" placeholder="Email" />
+              <Form.Control type="email" placeholder="Email" value={this.state.email} onChange = {this.onChangeEmail}/>
             </Form.Group>
             <Form.Group controlId="formBasicPassword">
-              <Form.Control type="password" placeholder="Password" />
+              <Form.Control type="password" placeholder="Password" value={this.state.password} onChange = {this.onChangePassword}/>
             </Form.Group>
-            <Link to="/home">
-              <button className="custom-landing-button">Log In</button>
-            </Link>
+            <input type='submit' value='Log In' className="custom-sign-button" style={{align: "center"}}/>
           </Form>
         </div>
       </div>
     );
   }
 }
+
+export default withRouter(Login);
