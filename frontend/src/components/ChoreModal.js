@@ -29,13 +29,15 @@ export default class ChoreAddItemModal extends Component {
       <Modal
         show={this.props.show}
         onHide={this.onClose}
-        onSubmit={() => this.props.handleAddChore(this.props.tempChore)}        
+        onSubmit={() => this.props.handleAddChore(this.props.tempChore)}
         size="lg"
         aria-labelledby="contained-modal-title-vcenter"
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title id="contained-modal-title-vcenter">Add New Chore</Modal.Title>
+          <Modal.Title id="contained-modal-title-vcenter">
+            Add New Chore
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Form>
@@ -61,17 +63,21 @@ export default class ChoreAddItemModal extends Component {
             </Form.Group>
             <Form.Group controlId="person">
               <Form.Label>Assign Chore to</Form.Label>
-              <Form.Control 
+              <Form.Control
                 as="select"
                 value={this.props.tempChore.userName}
                 onChange={this.props.updatePerson}
               >
-                <option value="" disabled selected hidden>Choose a person</option>
-                {this.props.users
-                .map(item => {
-                return (
-                  <option>{item.first_name} {item.last_name}</option>   
-                )})}
+                <option value="" disabled selected hidden>
+                  Choose a person
+                </option>
+                {this.props.users.map(item => {
+                  return (
+                    <option>
+                      {item.first_name} {item.last_name}
+                    </option>
+                  );
+                })}
               </Form.Control>
             </Form.Group>
             <input

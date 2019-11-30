@@ -10,12 +10,29 @@
 }
 
 .modal-content {
-    font-family: Noto Sans;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 .chore-table.table-hover {
-    font-family: Noto Sans;
+    font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
 }
 
+.chore-section-title {
+    font-family: Sansita;
+	font-style: italic;
+	font-weight: 800;
+	font-size: 230%;
+    padding-top: 8%;
+    text-align: center;
+}
+
+.late {
+    color: red;
+    font-weight: 650;
+}
+
+.on-time {
+    color:black;
+}
 .chore-card {
     max-height: 300px;
     overflow: scroll;
@@ -28,7 +45,7 @@
 }
 
 .chore-header {
-	border-bottom: 2pt solid black;	
+    border-bottom: 2pt solid black;	
 }
 
 .btn.btn-default.btn-circle {
