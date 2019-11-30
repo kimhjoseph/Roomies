@@ -22,7 +22,7 @@ connection.once("open", function() {
   console.log("MongoDB database connection established successfully");
 });
 
-app.use(cors({credentials: true}));
+app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(cookieParser('secret'));
@@ -38,7 +38,7 @@ app.use(session({
 
 
 app.use((req, res, next) => {
-    res.header('Access-control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept, Authorization"
