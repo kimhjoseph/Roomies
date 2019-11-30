@@ -114,23 +114,9 @@ export default class ChoreList extends Component {
         console.log(error);
       });
 
-    await axios
-      .get("http://localhost:4000/choreitem/get")
-      .then(response => {
-        this.setState({ allChores: response.data });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    await this.getAllChores();
 
-    await axios
-      .post("http://localhost:4000/choreitem/getmyitems", this.state.user)
-      .then(response => {
-        this.setState({ myChores: response.data });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    await this.getMyChores();
   }
 
   updateChore(e) {

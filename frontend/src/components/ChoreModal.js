@@ -47,7 +47,6 @@ export default class ChoreAddItemModal extends Component {
                 required
                 type="text"
                 placeholder="e.g. Dishes"
-                value={this.props.tempChore.description}
                 onChange={this.props.updateChore}
               />
             </Form.Group>
@@ -57,7 +56,6 @@ export default class ChoreAddItemModal extends Component {
                 required
                 type="number"
                 placeholder="e.g. 7"
-                value={this.props.tempChore.days}
                 onChange={this.props.updateDays}
               />
             </Form.Group>
@@ -65,7 +63,6 @@ export default class ChoreAddItemModal extends Component {
               <Form.Label>Assign Chore to</Form.Label>
               <Form.Control
                 as="select"
-                value={this.props.tempChore.userName}
                 onChange={this.props.updatePerson}
               >
                 <option value="" disabled selected hidden>
