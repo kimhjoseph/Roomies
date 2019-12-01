@@ -29,7 +29,7 @@ router.post("/get_access", async function(request, response) {
     res.on("end", function() {
       var body = Buffer.concat(chunks);
       var jsonBody = JSON.parse(body.toString());
-      console.log(jsonBody);
+      // console.log(jsonBody);
       response.status(201).send(jsonBody);
     });
   });
@@ -62,7 +62,7 @@ router.post("/send_invoice", async function(req, res) {
     .then(response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
-      console.log(json);
+      // console.log(json);
       var invoice_draft = {
         "detail": {
           "invoice_number": json.invoice_number,
@@ -114,13 +114,15 @@ router.post("/send_invoice", async function(req, res) {
     .then(response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
-      console.log(json);
+      // console.log(json);
       return axios.post(json.href + "/send", null, config);
     })
     // invoice sent
     .then(response => {
-      let json = circularJSON.stringify(response);
-      res.status(202).send(JSON.parse(json));
+      let jsonString = circularJSON.stringify(response);
+      let json = JSON.parse(jsonString);
+      console.log(json);
+      res.status(202).send(json);
     })
     .catch(error => {
       console.log("Error: " + error);

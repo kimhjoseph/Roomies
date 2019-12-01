@@ -40,6 +40,7 @@ export default class ShoppingList extends Component {
     this.roundCost = this.roundCost.bind(this);
     this.handleRemoveItem = this.handleRemoveItem.bind(this);
     this.updateChargesByPerson = this.updateChargesByPerson.bind(this);
+    this.handleChargeItems = this.handleChargeItems.bind(this);
 
     this.state = {
       addItemModal: false,
@@ -169,24 +170,65 @@ export default class ShoppingList extends Component {
       });
   }
 
-  // handleChargeItems() {
-  //   axios
-  //     .post("http://localhost:4000/shoppingitem/charge")
-  //     .then(response => {
-
-  //       console.log("Successfully deleted shopping list item!");
-  //       var newItems = this.state.items.filter(i => i !== item);
-  //       this.setState({
-  //         items: newItems
-  //       });
-  //     })
-  //     .catch(error => {
-  //       console.log("Error: " + error);
-  //     });
-  // }
+  handleChargeItems = async () => {
+    console.log("Charging items...");
+    console.log("Getting access token...");
+    await axios
+      .post("http://localhost:4000/shoppingitem/get_access")
+      .then(async response => {
+        console.log("Obtained access token!");
+        await Object.entries(this.state.chargesByPerson).reduce(
+          async (previousPromise, [key, value]) => {
+            await previousPromise;
+            return new Promise(async (resolve, reject) => {
+              await console.log("Sending invoice to " + key + "...");
+              let invoiceeName = await key.split(" ");
+              let invoicee = await this.state.users.find(
+                i =>
+                  i.first_name === invoiceeName[0] &&
+                  i.last_name === invoiceeName[1]
+              );
+              var body = {
+                access_token: response.data.access_token,
+                invoicer: {
+                  first_name: "Joseph",
+                  last_name: "Kim",
+                  email: "jokim@gmail.com"
+                },
+                invoicee: {
+                  first_name: invoicee.first_name,
+                  last_name: invoicee.last_name,
+                  email: invoicee.email
+                },
+                amount: value
+              };
+              console.log(body);
+              await axios
+                .post("http://localhost:4000/shoppingitem/send_invoice", body)
+                .then(async response => {
+                  await console.log(
+                    "Successfully sent invoice to " + key + "!"
+                  );
+                  await resolve();
+                })
+                .catch(error => {
+                  reject();
+                });
+            });
+          },
+          Promise.resolve()
+        );
+      })
+      .then(async () => {
+        console.log("Successfully charged items!");
+        this.handleClearChargeList();
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
+  };
 
   handleClearChargeList = async () => {
-    // await this.handleChargeItems();
     console.log("Clearing charge list...");
     this.state.chargeList.forEach(item => {
       axios
@@ -532,12 +574,6 @@ export default class ShoppingList extends Component {
               <button onClick={this.showChargeModal} className="custom-button">
                 Charge
               </button>
-              {/* <input
-                type="submit"
-                onClick={this.handleClearChargeList}
-                className="custom-button"
-                value="Charge"
-              /> */}
             </Col>
           </Row>
         </Container>
@@ -554,7 +590,7 @@ export default class ShoppingList extends Component {
         <ShoppingListChargeModal
           onClose={this.showChargeModal}
           show={this.state.chargeModal}
-          handleClearChargeList={this.handleClearChargeList}
+          handleChargeItems={this.handleChargeItems}
           chargeListCondensed={this.state.chargeListCondensed}
           chargesByPerson={this.state.chargesByPerson}
         />
