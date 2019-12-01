@@ -132,13 +132,15 @@ router.get("/get_all_items", async function(req, res) {
   try {
     items = await ChoreListItem.find({
       apartment: req.session.user.apartment
-    }).populate();
+    }).populate("user");
+    console.log(items);
   } catch (err) {
     res.status(400).send("Error finding items in database.");
   }
 
   let populatedItems = [];
   items.forEach(item => {
+    console.log(item);
     var name = item.user.first_name + " " + item.user.last_name;
     var diffDays = getDaysRemaining(item.created, item.days);
     populatedItems.push({

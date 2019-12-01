@@ -69,10 +69,17 @@ export default class ChoreList extends Component {
   }
 
   async componentDidMount() {
+    await axios.get("http://localhost:4000/user/get_current_user")
+      .then(response => {
+        this.setState({ user: response.data });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+      
     await axios.get("http://localhost:4000/user/get")
       .then(response => {
         this.setState({ users: response.data });
-        this.setState({ user: response.data[2] });
       })
       .catch(function(error) {
         console.log(error);
