@@ -9,23 +9,62 @@ export default class CreateJoinApartment extends Component {
   constructor(props) {
     super(props);
     
-    this.createApartment = this.createApartment.bind(this);
+    this.onChangeCode = this.onChangeCode.bind(this);
 
     this.state = {
-      user: {
-      email: "audrey.pham@gmail.com", 
-      code: "KZ6E9"
-      }, 
-      apartment: ""
+      code: ''
     };
+
+    this.onChangeCode = this.onChangeCode.bind(this);
+    this.onSubmitCreate = this.onSubmitCreate.bind(this);
+    this.onSubmitJoin = this.onSubmitJoin.bind(this);
   }
 
+  // for create
+  onSubmitCreate(e) {
+    e.preventDefault();
+
+    axios.get("http://localhost:4000/apartment/create")
+      .then(res => {
+        if (res.data == "Success") {
+          this.props.history.push("/home");
+        }
+        else {
+          this.props.history.push("/join");
+        }
+    })
+  }
+
+  // for join
+  onSubmitJoin(e) {
+    e.preventDefault();
+
+    const existingApartment = {
+      code: this.state.code
+    };
+
+    axios.post("http://localhost:4000/apartment/join").
+      .then(res => {
+        if (res.data == "Success") {
+          this.props.history.push("/home");
+        }
+        else {
+          this.props.history.push("/join");
+        }
+      })
+  }
+
+  onChangeCode(e) {
+    this.setState(code: e.target.value);
+  }
+
+  /*
   createApartment(user) {
     axios
       .get("http://localhost:4000/apartment/create_apartment")
       .then(response => {
         console.log("Successfully created apartment.");
-        this.setState({ apartment: response.data});
+        this.setState({ apartment: res.data});
         console.log(this.state.apartment)
       })
       .catch(function(error) {
@@ -33,6 +72,7 @@ export default class CreateJoinApartment extends Component {
       });
 
   }
+  */
 
   render() {
     return (
@@ -65,7 +105,7 @@ export default class CreateJoinApartment extends Component {
               </div>
               <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
                 <Link to="/home">
-                  <Button className="group-button1">Join Group</Button>
+                  <Button className="group-button1" onClick={() => this.joinApartment()}>Join Group</Button>
                 </Link>
               </div>
               <Card.Text className="group-text">or</Card.Text>
