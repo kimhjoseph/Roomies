@@ -17,7 +17,7 @@ class UserList extends Component {
       users: [],
     };
 
-    axios.get('http://localhost:4000/user/get_users')
+    axios.get('http://localhost:4000/user/get')
     .then(res => {
       this.setState({ users: res.data
       });

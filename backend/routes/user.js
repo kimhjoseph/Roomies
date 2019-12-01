@@ -100,8 +100,6 @@ router.get("/get", async function(req, res) {
 });
 
 router.get("/get_current_user", function(req, res) {
-  console.log("Getting current user...");
-  console.log(req.session.user);
   res.status(200).json(req.session.user);
 });
 

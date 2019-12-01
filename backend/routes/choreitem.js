@@ -34,10 +34,15 @@ function getDaysRemaining(createdAt, days) {
  */
 
 router.post("/add", async function(req, res) {
-  let user;
+  var name = req.body.userName.split(" ");
+  var userFirstName = name[0];
+  var userLastName = name[1];
+  let newUser;
   try {
-    user = await User.findOne({
-      _id: req.session.user._id
+    newUser = await User.findOne({
+      first_name: userFirstName,
+      last_name: userLastName,
+      apartment: req.session.user.apartment
     });
   } catch (err) {
     res.status(400).send("Error finding user with that first and last name.");
@@ -47,7 +52,7 @@ router.post("/add", async function(req, res) {
   try {
     item = await ChoreListItem.create({
       description: req.body.description,
-      user: req.session.user._id,
+      user: newUser._id,
       apartment: req.session.user.apartment,
       days: req.body.days
     });
@@ -121,29 +126,26 @@ router.post("/edit/:id", async function(req, res) {
  * @return res containing a list of all ChoreListItems found.
  */
 
-// hard coded apartment
+
 router.get("/get_all_items", async function(req, res) {
-  console.log("Getting all items...");
-  console.log(req.session.user);
   ChoreListItem.find({ apartment: req.session.user.apartment })
     .populate("user")
     .then(chores => {
-      console.log("chores");
       let populatedItems = [];
       let name = "";
       chores.forEach(chore => {
         name = chore.user.first_name + " " + chore.user.last_name;
         var diffDays = getDaysRemaining(chore.created, chore.days);
+        var id = chore.user._id;
         populatedItems.push({
           chore: chore.description,
           id: chore._id,
-          user_id: chore.user._id,
+          user_id: id,
           user: name,
           days: diffDays
         });
       });
       res.status(200).json(populatedItems);
-      console.log(populatedItems);
     })
     .catch(err => res.status(400).json("Error: " + err));
 });

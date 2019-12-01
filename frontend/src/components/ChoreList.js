@@ -41,7 +41,7 @@ export default class ChoreList extends Component {
       .get("http://localhost:4000/user/get_current_user")
       .then(response => {
         this.setState({ user: response.data});
-        console.log(this.state.user);
+        console.log("Current user:" + this.state.user);
       })
       .catch(function(error) {
         console.log(error);
@@ -53,7 +53,7 @@ export default class ChoreList extends Component {
       .get("http://localhost:4000/choreitem/get_all_items")
       .then(response => {
         this.setState({ allChores: response.data });
-        console.log(this.state.allChores);
+        console.log("All chores: " + this.state.allChores);
       })
       .then(response => {
         this.setState({
