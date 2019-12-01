@@ -26,7 +26,7 @@ export default class ChoreList extends Component {
 
     this.state = {
       addChoreModal: false,
-      user: [],
+      user: "",
       users: [],
       tempChore: {
         userName: "",
@@ -36,12 +36,24 @@ export default class ChoreList extends Component {
       myChores: [],
       allChores: []
     };
+
+    axios
+      .get("http://localhost:4000/user/get_current_user")
+      .then(response => {
+        this.setState({ user: response.data});
+        console.log("Current user:" + this.state.user);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
   }
 
   getAllChores() {
-    axios.get("http://localhost:4000/choreitem/get_all_items")
+    axios
+      .get("http://localhost:4000/choreitem/get_all_items")
       .then(response => {
         this.setState({ allChores: response.data });
+        console.log("All chores: " + this.state.allChores);
       })
       .then(response => {
         this.setState({
@@ -54,7 +66,8 @@ export default class ChoreList extends Component {
   }
 
   getMyChores() {
-    axios.get("http://localhost:4000/choreitem/get_my_items")
+    axios
+      .get("http://localhost:4000/choreitem/get_my_items")
       .then(response => {
         this.setState({ myChores: response.data });
       })
@@ -69,10 +82,10 @@ export default class ChoreList extends Component {
   }
 
   async componentDidMount() {
-    await axios.get("http://localhost:4000/user/get")
+    await axios
+      .get("http://localhost:4000/user/get")
       .then(response => {
         this.setState({ users: response.data });
-        this.setState({ user: response.data[2] });
       })
       .catch(function(error) {
         console.log(error);
@@ -232,11 +245,7 @@ export default class ChoreList extends Component {
                   </thead>
                   <tbody>
                     {this.state.allChores.map((item, i) => {
-                      let name =
-                        this.state.user.first_name +
-                        " " +
-                        this.state.user.last_name;
-                      if (item.user != name) {
+                      if (item.user_id != this.state.user._id) {
                         return (
                           <tr className={item.days <= 0 ? "late" : "on-time"}>
                             <td>

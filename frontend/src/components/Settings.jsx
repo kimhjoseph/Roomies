@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
+import FormData from "form-data";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import axios from "axios";
 
@@ -22,43 +23,45 @@ export default class ShoppingList extends Component {
     this.updateEmail = this.updateEmail.bind(this);
     this.updateProfilePic = this.updateProfilePic.bind(this);
     this.handleImageAdded = this.handleImageAdded.bind(this);
+    this.b64toBlob = this.b64toBlob.bind(this);
 
     this.state = {
-      imagefile: dummy,
+      img: "",
       changeInfoModal: false,
       userInfo: {
         firstname: "",
         lastname: "",
         email: "",
-        profile_image: ""
+        img: ""
       },
       newInfo: {
         firstname: "",
         lastname: "",
         email: "",
-        profile_image: ""
+        img: ""
       },
       userName: "Rondald"
     };
-
-    axios
-      .get("http://localhost:4000/user/get")
-      .then(response => {
-        const user = response.data[0];
-        this.setState({
-          userInfo: {
-            firstname: user.first_name,
-            lastname: user.last_name,
-            email: user.email,
-            profile_image: "damn"
-          }
-        });
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
   }
 
+  async componentDidMount(){
+    await axios
+    .get("http://localhost:4000/user/get")
+    .then(response => {
+      const user = response.data[0];
+      this.setState({
+        userInfo: {
+          firstname: user.first_name,
+          lastname: user.last_name,
+          email: user.email
+        },
+        img: user.img
+      });
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+  }
   showChangeInfoModal() {
     this.setState({ changeInfoModal: !this.state.changeInfoModal });
   }
@@ -112,6 +115,7 @@ export default class ShoppingList extends Component {
   }
 
   updateProfilePic(e) {
+    
     const value = e.target.value;
 
     this.setState({
@@ -126,21 +130,55 @@ export default class ShoppingList extends Component {
     console.log(this.state.newInfo);
   }
 
-  handleImageAdded(e) {
-    e.preventDefault();
-    let reader = new FileReader();
-    let file = e.target.files[0];
-    console.log(file);
+  b64toBlob(b64Data, contentType, sliceSize) {
+    contentType = contentType || '';
+    sliceSize = sliceSize || 512;
 
-    reader.onloadend = () => {
-      this.setState({
-        imagefile: file,
-        imagePreviewUrl: reader.result
-      });
-    };
+    var byteCharacters = atob(b64Data);
+    var byteArrays = [];
 
-    var url = reader.readAsDataURL(file);
-    console.log(url);
+    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+        var slice = byteCharacters.slice(offset, offset + sliceSize);
+
+        var byteNumbers = new Array(slice.length);
+        for (var i = 0; i < slice.length; i++) {
+            byteNumbers[i] = slice.charCodeAt(i);
+        }
+
+        var byteArray = new Uint8Array(byteNumbers);
+
+        byteArrays.push(byteArray);
+    }
+
+  var blob = new Blob(byteArrays, {type: contentType});
+  return blob;
+}
+
+  async handleImageAdded(event) {
+    event.preventDefault();
+    var reader;
+    var newData;
+    var current = this;
+
+    if (event.target.files && event.target.files[0]) {
+      reader = new FileReader();
+      reader.onload = function(e) {
+        newData = reader.result;
+        current.setState({img:newData});
+      }
+      reader.readAsDataURL(event.target.files[0]);
+      
+      await axios
+        .post("http://localhost:4000/user/edit_info", this.state.img)
+        .then(response=> {
+          this.setState({img: this.state.img})
+          console.log(this.state.img);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+      document.getElementById("preview").setAttribute('src', this.state.img);
+    }
   }
 
   clickImageUploader() {
@@ -176,10 +214,10 @@ export default class ShoppingList extends Component {
 
         <Container style={{ height: "100%", alignContent: "center" }}>
           <div className="rounded-circle">
-            <form method="post" enctype="multipart/form-data" action="/upload">
               <input
+                id="preview"
                 type="image"
-                src={this.state.imagefile}
+                src={this.state.img}
                 className="rounded-circle"
                 onClick={this.clickImageUploader}
               />
@@ -190,7 +228,6 @@ export default class ShoppingList extends Component {
                 onChange={this.handleImageAdded}
                 style={{ display: "none" }}
               />
-            </form>
             <div className="name">{this.state.userInfo.firstname} {this.state.userInfo.lastname}</div>
             <button
               onClick={this.showChangeInfoModal}

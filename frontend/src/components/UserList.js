@@ -14,12 +14,22 @@ class UserList extends Component {
 
     this.state = {
       imagefile: dummy,
-      users: [],
+      user: '',
+      users: []
     };
 
-    axios.get('http://localhost:4000/user/get_users')
+    axios.get('http://localhost:4000/user/get')
     .then(res => {
       this.setState({ users: res.data
+      });
+    })
+    .catch(function (error){
+        console.log(error);
+    });
+
+    axios.get('http://localhost:4000/user/get_current_user')
+    .then(res => {
+      this.setState({ user: res.data
       });
     })
     .catch(function (error){
@@ -33,9 +43,14 @@ class UserList extends Component {
         <div className="user-list">
           <h2>Roomies</h2>
           {this.state.users.map((value, index) => {
-            return <UserCard 
+            if (value._id != this.state.user._id) {
+            return (<UserCard 
                   user = {value}
                   />
+            );
+            } else {
+              return null;
+            }
           })}
         </div>
       </Container>
