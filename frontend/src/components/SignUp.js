@@ -23,19 +23,10 @@ class SignUp extends Component {
     this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-
-
     }
-
 
     onSubmit(e) {
       e.preventDefault();
-
-      console.log(`First Name: ${this.state.first_name}`);
-      console.log(`Last Name: ${this.state.last_name}`);
-      console.log(`Email: ${this.state.email}`);
-      console.log(`Password: ${this.state.password}`);
-
 
       const newUser = {
         first_name : this.state.first_name,
@@ -48,13 +39,12 @@ class SignUp extends Component {
         .then(res => {
           console.log(res.data);
           if (res.data == "Success"){
-            console.log('here')
             this.props.history.push("/home");
           }
+          else {
+            this.props.history.push("/signup");
+          }
           }) 
-
-
-
     }
 
     onChangeFirst(e){
@@ -75,10 +65,6 @@ class SignUp extends Component {
     onChangePassword(e){
       this.setState({password: e.target.value})
     };
-
-
-
-
 
   render() {
     return (

@@ -7,9 +7,6 @@ import axios from 'axios';
 class Login extends Component {
   // TODO: OAuth stuff will need to be added here
 
-
-
-
   constructor(props){
     super(props)
 
@@ -21,17 +18,10 @@ class Login extends Component {
     this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-
-
     }
-
 
     onSubmit(e) {
       e.preventDefault();
-
-      console.log(`Email: ${this.state.email}`);
-      console.log(`Password: ${this.state.password}`);
-
 
       const newUser = {
         email: this.state.email,
@@ -40,17 +30,14 @@ class Login extends Component {
 
       axios.post('http://localhost:4000/user/login', newUser)
         .then(res => {
-          console.log(res.data);
           if (res.data == "Success"){
-            console.log('here')
             this.props.history.push("/home");
           }
-          }) 
-
-
-
+          else {
+            this.props.history.push("/login");
+          }
+          })
     }
-
 
     onChangeEmail(e){
       this.setState({email: e.target.value})

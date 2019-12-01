@@ -22,6 +22,8 @@ import LoadingComponent from "./LoadingComponent";
 
 import "./ShoppingList.css";
 
+axios.defaults.withCredentials = true;
+
 export default class ShoppingList extends Component {
   constructor(props) {
     super(props);
@@ -60,12 +62,8 @@ export default class ShoppingList extends Component {
   }
 
   getItems() {
-    console.log("Getting items from database...");
-    axios
-      .get("http://localhost:4000/shoppingitem/get")
+    axios.get("http://localhost:4000/shoppingitem/get")
       .then(response => {
-        console.log("Successfully obtained items from database!");
-        console.log(response.data);
         this.setState({ items: response.data, loading: false });
       })
       .catch(error => {
@@ -74,12 +72,8 @@ export default class ShoppingList extends Component {
   }
 
   getUsers() {
-    console.log("Getting users from database...");
-    axios
-      .get("http://localhost:4000/user/get")
+    axios.get("http://localhost:4000/user/get")
       .then(response => {
-        console.log("Successfully obtained users from database!");
-        console.log(response.data);
         this.setState({ users: response.data });
       })
       .catch(error => {
@@ -102,11 +96,9 @@ export default class ShoppingList extends Component {
   }
 
   handleAddItem = async tempItem => {
-    console.log("Adding item...");
     await axios
       .post("http://localhost:4000/shoppingitem/add", tempItem)
       .then(response => {
-        console.log(response);
         var concatItem = {
           item: tempItem.item,
           people: tempItem.people,
@@ -172,8 +164,7 @@ export default class ShoppingList extends Component {
   handleClearChargeList() {
     console.log("Clearing charge list...");
     this.state.chargeList.forEach(item => {
-      axios
-        .delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
+      axios.delete("http://localhost:4000/shoppingitem/delete/" + item.itemID)
         .then(response => {
           console.log("Successfully deleted item!");
           console.log(item);

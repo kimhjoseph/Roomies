@@ -8,6 +8,8 @@ import NavbarComponent from "./NavbarComponent";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheckCircle, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
 
+axios.defaults.withCredentials = true;
+
 export default class ChoreList extends Component {
   constructor(props) {
     super(props);
@@ -37,8 +39,7 @@ export default class ChoreList extends Component {
   }
 
   getAllChores() {
-    axios
-      .get("http://localhost:4000/choreitem/get")
+    axios.get("http://localhost:4000/choreitem/get_all_items")
       .then(response => {
         this.setState({ allChores: response.data });
       })
@@ -53,8 +54,7 @@ export default class ChoreList extends Component {
   }
 
   getMyChores() {
-    axios
-      .post("http://localhost:4000/choreitem/getmyitems", this.state.user)
+    axios.get("http://localhost:4000/choreitem/get_my_items")
       .then(response => {
         this.setState({ myChores: response.data });
       })
@@ -69,8 +69,7 @@ export default class ChoreList extends Component {
   }
 
   async componentDidMount() {
-    await axios
-      .get("http://localhost:4000/user/get")
+    await axios.get("http://localhost:4000/user/get")
       .then(response => {
         this.setState({ users: response.data });
         this.setState({ user: response.data[2] });
@@ -114,9 +113,7 @@ export default class ChoreList extends Component {
         console.log(error);
       });
 
-    await this.getAllChores();
-
-    await this.getMyChores();
+    await Promise.all([this.getAllChores(), this.getMyChores()]);
   }
 
   updateChore(e) {

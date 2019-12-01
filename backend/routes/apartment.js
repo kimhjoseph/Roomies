@@ -22,7 +22,7 @@ function makeId() {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
     }
   } catch (err) {
-    console.log("makeID wrong");
+    console.log("Could not generate ID.");
   }
   return result;
 }
@@ -35,22 +35,17 @@ function makeId() {
  * @return res contining the apartment object created.
  */
 
-router.get("/create_apartment", async function(req, res) {
-  const newApt = {
-    _id: new ObjectId(),
-    code: makeId()
-  };
+ router.get('/create', async function(req, res) {
+  let apartment;
+  let user;
 
-  let apt = new Apartment(newApt);
-  apt
-    .save()
-    .then(apt => {
-			res.json(apt);
-      res.status(201).send("Successfully added new apartment!");
-    })
-    .catch(err => {
-      res.status(400).send("Error creating apartment.", err);
-    });
+  try { apartment = await Apartment.create({ code: makeId() }); } 
+  catch(err) { res.status(400).send("Error creating apartment."); }
+
+  try { user = await User.findOneAndUpdate({ email: req.session.user.email }, { apartment: apartment._id }, { new: true }); } 
+  catch(err) { res.status(400).send("Error adding information to user."); }
+  req.session.user = user;
+  res.status(200).send(apartment.code);
 });
 
 /**
@@ -62,26 +57,17 @@ router.get("/create_apartment", async function(req, res) {
  * @return user opject with udpated apartment field on completion
  */
 
-router.post("/join_apartment", async function(req, res) {
-	let apartment;
-	let user;
-  try {
-    apartment = await Apartment.findOne({ code: req.body.code });
-  } catch (err) {
-    res.status(400).send("Error finding apartment.");
-  }
+ router.post('/join', async function(req, res) {
+  let apartment;
+  let user;
 
-  try {
-    user = await User.findOneAndUpdate(
-      { email: req.body.email },
-      { apartment: apartment._id },
-      { new: true }
-    );
-  } catch (err) {
-    res.status(400).send(err);
-	}
-	res.json(user);
-  res.status(200).send("Successfully joined apartment!");
+  try { apartment = await Apartment.findOne({ code: req.body.code }); } 
+  catch(err) { res.status(400).send("Error finding apartment."); }
+
+  try { user = await User.findOneAndUpdate({ email: req.session.user.email }, { apartment: apartment._id }, { new: true }); } 
+  catch(err) { res.status(400).send("Error adding information to user."); }
+  req.session.user = user;
+  res.status(201).send("Success");
 });
 
 /**
@@ -93,12 +79,11 @@ router.post("/join_apartment", async function(req, res) {
  * @return res continaing the retrieved Apartment object.
  */
 
-
 router.get('/get_apartment', async function(req, res) {
-	let apartment;
-	try { let apartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
-	catch(err) { res.status(400).send("Error finding apartment."); }
-	res.status(200).json(apartment);
+  let apartment;
+  try { let apartment = await Apartment.findById(req.session.user.apartment); } 
+  catch(err) { res.status(400).send("Error finding apartment."); }
+  res.status(200).json(apartment);
 });
 
 /**
@@ -110,9 +95,9 @@ router.get('/get_apartment', async function(req, res) {
  * @return res continaing the retrieved Apartment object.
  */
 
-router.post("/edit_apartment", async function(req, res) {
+router.post("/edit", async function(req, res) {
   try {
-    let oldApartment = await Apartment.findById(req.user.apartment);
+    let oldApartment = await Apartment.findById(req.session.user.apartment);
   } catch (err) {
     res.status(400).send("Error finding apartment in database.");
   }
@@ -135,48 +120,4 @@ router.post("/edit_apartment", async function(req, res) {
 
 module.exports = router;
 
-/*
-
-These are the routes from the updated backend!
-
-
-router.post('/create_apartment', async function(req, res) {
-	let apartment;
-	let user;
-
-	console.log(req.body);
-	try { apartment = await Apartment.create({ _id: req.body.id, name: req.body.name, address: req.body.address, code: makeId() }); } 
-	catch(err) { res.status(400).send("Error creating apartment."); }
-
-	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
-	catch(err) { res.status(400).send("Error adding information to user."); }
-	res.status(201).json(apartment.code);
-});
-
-
-
-router.post('/join_apartment', async function(req, res) {
-	let apartment;
-	let user;
-
-	try { apartment = await Apartment.findOne({ code: req.body.code }); } 
-	catch(err) { res.status(400).send("Error finding apartment."); }
-
-	try { user = await User.findOneAndUpdate({ email: "jhk.joseph@gmail.com" }, { apartment: apartment._id }, { new: true }); } 
-	catch(err) { res.status(400).send("Error adding information to user."); }
-	res.status(201).send("Success");
-});
-
-
-router.get('/get_apartment', async function(req, res) {
-	let apartment;
-	try { let apartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
-	catch(err) { res.status(400).send("Error finding apartment."); }
-	res.status(200).json(apartment);
-});
-
-
-module.exports = router;
-
-*/
 
