@@ -4,7 +4,129 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const ShoppingListItem = require("../models/ShoppingListItem");
-const Apartment = require("../models/Apartment");
+const axios = require("axios");
+var querystring = require("querystring");
+var https = require("https");
+const circularJSON = require("circular-json");
+
+router.post("/get_access", async function(request, response) {
+  var options = {
+    "method": "POST",
+    "hostname": "api.sandbox.paypal.com",
+    "path": "/v1/oauth2/token",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization":
+        "Basic QWZzVk94R1ZvTmxrR1VicDN3TVRaZTJxVHp2U3lnTUNGTDlEc3VVOFk4bFFGVVBZVW1QUXpYLWVFWlRmRVRtNGVRZHVnUWR3X19NbGROVms6RU5DbTh3dXROeUJhTFJWeVp0b1hORllkWE9jaUE5TldURnBMa2owcHJsVmR6WGdYMm0zWm9Mb0EyT1dPS0NoYUpaaHFmY3p5RGstUkEyNGk="
+    }
+  };
+
+  var req = await https.request(options, function(res) {
+    var chunks = [];
+    res.on("data", function(chunk) {
+      chunks.push(chunk);
+    });
+    res.on("end", function() {
+      var body = Buffer.concat(chunks);
+      var jsonBody = JSON.parse(body.toString());
+      console.log(jsonBody);
+      response.status(201).send(jsonBody);
+    });
+  });
+
+  try {
+    await req.write(
+      querystring.stringify({ grant_type: "client_credentials" })
+    );
+    req.end();
+  } catch {
+    response.status(400).send("Error getting access token.");
+  }
+});
+
+router.post("/send_invoice", async function(req, res) {
+  var config = {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + req.body.access_token
+    }
+  };
+  // get invoice number
+  await axios
+    .post(
+      "https://api.sandbox.paypal.com/v2/invoicing/generate-next-invoice-number",
+      null,
+      config
+    )
+    // create invoice draft
+    .then(response => {
+      let jsonString = circularJSON.stringify(response.data);
+      let json = JSON.parse(jsonString);
+      console.log(json);
+      var invoice_draft = {
+        "detail": {
+          "invoice_number": json.invoice_number,
+          "invoice_date": "2018-11-12",
+          "currency_code": "USD"
+        },
+        "invoicer": {
+          "name": {
+            "given_name": "Joseph",
+            "surname": "Kim"
+          },
+          "email_address": "jokim@gmail.com"
+        },
+        "primary_recipients": [
+          {
+            "billing_info": {
+              "name": {
+                "given_name": "Joseph",
+                "surname": "Kim"
+              },
+              "email_address": "jhk.joseph@gmail.com"
+            }
+          }
+        ],
+        "items": [
+          {
+            "name": "Roomies Shopping List Charge",
+            "quantity": "1",
+            "unit_amount": {
+              "currency_code": "USD",
+              "value": "10.00"
+            }
+          }
+        ],
+        "amount": {
+          "currency_code": "USD",
+          "value": "10.00",
+          "breakdown": {}
+        }
+      };
+      let bodyString = JSON.stringify(invoice_draft);
+      return axios.post(
+        "https://api.sandbox.paypal.com/v2/invoicing/invoices",
+        bodyString,
+        config
+      );
+    })
+    // send invoice
+    .then(response => {
+      let jsonString = circularJSON.stringify(response.data);
+      let json = JSON.parse(jsonString);
+      console.log(json);
+      return axios.post(json.href + "/send", null, config);
+    })
+    // invoice sent
+    .then(response => {
+      let json = circularJSON.stringify(response);
+      res.status(202).send(JSON.parse(json));
+    })
+    .catch(error => {
+      console.log("Error: " + error);
+      res.status(401).send(error);
+    });
+});
 
 // add (post)
 // get (get)
@@ -121,7 +243,6 @@ router.delete("/delete/:id", async function(req, res) {
 // });
 
 module.exports = router;
-
 
 /*
 

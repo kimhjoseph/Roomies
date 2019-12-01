@@ -169,7 +169,24 @@ export default class ShoppingList extends Component {
       });
   }
 
-  handleClearChargeList() {
+  // handleChargeItems() {
+  //   axios
+  //     .post("http://localhost:4000/shoppingitem/charge")
+  //     .then(response => {
+
+  //       console.log("Successfully deleted shopping list item!");
+  //       var newItems = this.state.items.filter(i => i !== item);
+  //       this.setState({
+  //         items: newItems
+  //       });
+  //     })
+  //     .catch(error => {
+  //       console.log("Error: " + error);
+  //     });
+  // }
+
+  handleClearChargeList = async () => {
+    // await this.handleChargeItems();
     console.log("Clearing charge list...");
     this.state.chargeList.forEach(item => {
       axios
@@ -187,7 +204,7 @@ export default class ShoppingList extends Component {
       chargeList: [],
       chargeListCondensed: {}
     });
-  }
+  };
 
   handleDisableClick = e => {
     e.stopPropagation();
@@ -224,6 +241,7 @@ export default class ShoppingList extends Component {
         itemID: this.state.tempItem.itemID
       }
     });
+    console.log(people);
     console.log("Successfully updated new item people!");
   }
 
