@@ -8,16 +8,19 @@ const axios = require("axios");
 var querystring = require("querystring");
 var https = require("https");
 const circularJSON = require("circular-json");
+require("dotenv").config();
+
+var PayPalBasicAuth = process.env.PayPalBasicAuth;
 
 router.post("/get_access", async function(request, response) {
+  console.log(PayPalBasicAuth);
   var options = {
     "method": "POST",
     "hostname": "api.sandbox.paypal.com",
     "path": "/v1/oauth2/token",
     "headers": {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization":
-        "Basic QWZzVk94R1ZvTmxrR1VicDN3TVRaZTJxVHp2U3lnTUNGTDlEc3VVOFk4bFFGVVBZVW1QUXpYLWVFWlRmRVRtNGVRZHVnUWR3X19NbGROVms6RU5DbTh3dXROeUJhTFJWeVp0b1hORllkWE9jaUE5TldURnBMa2owcHJsVmR6WGdYMm0zWm9Mb0EyT1dPS0NoYUpaaHFmY3p5RGstUkEyNGk="
+      "Authorization": "Basic " + PayPalBasicAuth
     }
   };
 
@@ -45,6 +48,7 @@ router.post("/get_access", async function(request, response) {
 });
 
 router.post("/send_invoice", async function(req, res) {
+  // console.log(req);
   var config = {
     headers: {
       "Content-Type": "application/json",
@@ -59,7 +63,7 @@ router.post("/send_invoice", async function(req, res) {
       config
     )
     // create invoice draft
-    .then(response => {
+    .then(async response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
       // console.log(json);
@@ -71,19 +75,19 @@ router.post("/send_invoice", async function(req, res) {
         },
         "invoicer": {
           "name": {
-            "given_name": req.session.user.first_name, // "Joseph",
-            "surname": req.session.user.last_name // "Kim"
+            "given_name": req.session.user.first_name,
+            "surname": req.session.user.last_name
           },
-          "email_address": req.session.user.email // "jokim@gmail.com"
+          "email_address": req.session.user.email
         },
         "primary_recipients": [
           {
             "billing_info": {
               "name": {
-                "given_name": req.body.invoicee.first_name, // "Joseph",
-                "surname": req.body.invoicee.last_name // "Kim"
+                "given_name": req.body.invoicee.first_name,
+                "surname": req.body.invoicee.last_name
               },
-              "email_address": req.body.invoicee.email // "jhk.joseph@gmail.com"
+              "email_address": req.body.invoicee.email
             }
           }
         ],
@@ -126,7 +130,7 @@ router.post("/send_invoice", async function(req, res) {
     })
     .catch(error => {
       console.log("Error: " + error);
-      res.status(401).send(error);
+      res.status(400).send(error);
     });
 });
 

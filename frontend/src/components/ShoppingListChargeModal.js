@@ -21,6 +21,7 @@ export default class ShoppingListChargeModal extends Component {
   onClose = e => {
     if (e !== undefined) e.preventDefault();
     this.props.onClose();
+    this.setState({ chargeDisabled: false, charge: "Charge" });
   };
 
   handleDisableClick = async e => {
@@ -41,6 +42,7 @@ export default class ShoppingListChargeModal extends Component {
     e.preventDefault();
     await this.props.handleChargeItems();
     this.onClose();
+    window.clearInterval(this.interval);
     this.setState({ chargeDisabled: false, charge: "Charge" });
   };
 

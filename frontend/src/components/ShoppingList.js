@@ -165,82 +165,81 @@ export default class ShoppingList extends Component {
   }
 
   handleChargeItems = async () => {
-    console.log("Charging items...");
-    console.log("Getting access token...");
-    await axios
-      .post("http://localhost:4000/shoppingitem/get_access")
-      .then(async response => {
-        console.log("Successfully obtained access token!");
-
-        //////////
-        // console.log("Getting current user info...");
-        // var invoicer = {
-        //   first_name: "Joseph",
-        //   last_name: "Kim",
-        //   email: "jokim@gmail.com"
-        // };
-        // await axios
-        //   .get("http://localhost:4000/user/get_current_user")
-        //   .then(async response => {
-        //     await console.log("Successfully obtained current user info!");
-        //     invoicer.first_name = response.data.first_name;
-        //     invoicer.last_name = response.data.last_name;
-        //     invoicer.email = response.data.email;
-        //   })
-        //   .catch(error => {
-        //     console.log("Error: " + error);
-        //   });
-        //////////
-
-        await Object.entries(this.state.chargesByPerson).reduce(
-          async (previousPromise, [key, value]) => {
-            await previousPromise;
-            return new Promise(async (resolve, reject) => {
-              await console.log("Sending invoice to " + key + "...");
-              let invoiceeName = await key.split(" ");
-              let invoicee = await this.state.users.find(
-                i =>
-                  i.first_name === invoiceeName[0] &&
-                  i.last_name === invoiceeName[1]
-              );
-              var body = {
-                access_token: response.data.access_token,
-                // invoicer: {
-                //   first_name: invoicer.first_name, // "Joseph",
-                //   last_name: invoicer.last_name, // "Kim",
-                //   email: invoicer.email // "jokim@gmail.com"
-                // },
-                invoicee: {
-                  first_name: invoicee.first_name,
-                  last_name: invoicee.last_name,
-                  email: invoicee.email
-                },
-                amount: value
-              };
-              console.log(body);
-              await axios
-                .post("http://localhost:4000/shoppingitem/send_invoice", body)
-                .then(async response => {
-                  await console.log(
-                    "Successfully sent invoice to " + key + "!"
-                  );
-                  await resolve();
-                })
-                .catch(error => {
-                  reject();
-                });
+    if (Object.entries(this.state.chargesByPerson).length !== 0) {
+      console.log("Charging items...");
+      console.log("Getting access token...");
+      await axios
+        .post("http://localhost:4000/shoppingitem/get_access")
+        .then(async response => {
+          console.log("Successfully obtained access token!");
+          console.log("Getting current user...");
+          var user = {};
+          await axios
+            .get("http://localhost:4000/user/get_current_user")
+            .then(response => {
+              console.log("Successfully obtained current user!");
+              user = response.data;
+            })
+            .catch(error => {
+              console.log("Error: " + error);
             });
-          },
-          Promise.resolve()
-        );
-      })
-      .then(async () => {
-        console.log("Successfully charged items!");
-        this.handleClearChargeList();
-      })
-      .catch(error => {
-        console.log("Error: " + error);
-      });
+          await Object.entries(this.state.chargesByPerson).reduce(
+            async (previousPromise, [key, value]) => {
+              await previousPromise;
+              return new Promise(async (resolve, reject) => {
+                await console.log("Sending invoice to " + key + "...");
+                let invoiceeName = await key.split(" ");
+                let invoicee = await this.state.users.find(
+                  i =>
+                    i.first_name === invoiceeName[0] &&
+                    i.last_name === invoiceeName[1]
+                );
+                if (
+                  user.first_name === invoicee.first_name &&
+                  user.last_name === invoicee.last_name &&
+                  user.email == invoicee.email
+                ) {
+                  await console.log("Skipping charge on current user...");
+                  await resolve();
+                } else {
+                  var body = {
+                    access_token: response.data.access_token,
+                    invoicee: {
+                      first_name: invoicee.first_name,
+                      last_name: invoicee.last_name,
+                      email: invoicee.email
+                    },
+                    amount: value.cost
+                  };
+                  console.log(body);
+                  await axios
+                    .post(
+                      "http://localhost:4000/shoppingitem/send_invoice",
+                      body
+                    )
+                    .then(async response => {
+                      await console.log(
+                        "Successfully sent invoice to " + key + "!"
+                      );
+                      await resolve();
+                    })
+                    .catch(error => {
+                      reject();
+                    });
+                }
+              });
+            },
+            Promise.resolve()
+          );
+        })
+        .then(async () => {
+          console.log("Successfully charged items!");
+          this.handleClearChargeList();
+        })
+        .catch(error => {
+          console.log("Error: " + error);
+        });
+    }
   };
 
   handleClearChargeList = async () => {
@@ -417,7 +416,19 @@ export default class ShoppingList extends Component {
               <div className="scrollable">
                 <Card style={{ border: "none" }}>
                   <ListGroup variant="flush">
-                    {this.state.loading === false ? (
+                    {this.state.loading === true ? (
+                      <ListGroup.Item>
+                        <Card.Body>
+                          <LoadingComponent />
+                        </Card.Body>
+                      </ListGroup.Item>
+                    ) : this.state.items.length === 0 ? (
+                      <ListGroup.Item>
+                        <Card.Body>
+                          <Card.Title>No items to purchase!</Card.Title>
+                        </Card.Body>
+                      </ListGroup.Item>
+                    ) : (
                       this.state.items
                         .sort((a, b) => {
                           var aStr = a.item.toString();
@@ -478,12 +489,6 @@ export default class ShoppingList extends Component {
                             </ListGroup.Item>
                           );
                         })
-                    ) : (
-                      <ListGroup.Item>
-                        <Card.Body>
-                          <LoadingComponent />
-                        </Card.Body>
-                      </ListGroup.Item>
                     )}
                   </ListGroup>
                 </Card>
