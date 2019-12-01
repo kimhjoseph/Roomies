@@ -99,31 +99,33 @@ export default class ShoppingList extends Component {
   }
 
   handleAddItem = async tempItem => {
-    await axios
-      .post("http://localhost:4000/shoppingitem/add", tempItem)
-      .then(response => {
-        var concatItem = {
-          item: tempItem.item,
-          people: tempItem.people,
-          notes: tempItem.notes,
-          itemID: response.data
-        };
-        this.setState(currentState => {
-          return {
-            items: currentState.items.concat([concatItem]),
-            tempItem: {
-              item: "",
-              people: [],
-              notes: "",
-              itemID: undefined
-            }
+    if (tempItem.item.length !== 0 && tempItem.people.length !== 0) {
+      await axios
+        .post("http://localhost:4000/shoppingitem/add", tempItem)
+        .then(response => {
+          var concatItem = {
+            item: tempItem.item,
+            people: tempItem.people,
+            notes: tempItem.notes,
+            itemID: response.data
           };
+          this.setState(currentState => {
+            return {
+              items: currentState.items.concat([concatItem]),
+              tempItem: {
+                item: "",
+                people: [],
+                notes: "",
+                itemID: undefined
+              }
+            };
+          });
+          console.log("Successfully added item!");
+        })
+        .catch(error => {
+          console.log("Error: " + error);
         });
-        console.log("Successfully added item!");
-      })
-      .catch(error => {
-        console.log("Error: " + error);
-      });
+    }
   };
 
   handleTransferToCharge(item) {
@@ -200,6 +202,9 @@ export default class ShoppingList extends Component {
                   user.email == invoicee.email
                 ) {
                   await console.log("Skipping charge on current user...");
+                  await resolve();
+                } else if (value.cost === 0) {
+                  await console.log("Skipping $0 charge...");
                   await resolve();
                 } else {
                   var body = {
@@ -365,10 +370,13 @@ export default class ShoppingList extends Component {
     Object.entries(this.state.chargeListCondensed).map(([key, value]) => {
       var people = key.split(", ");
       // more than one person
-      if (people.length > 1 && value.cost !== undefined) {
+      if (people.length > 1) {
         console.log(key);
-        var divided = parseFloat(value.cost) / people.length;
-        divided = parseFloat(divided).toFixed(2);
+        var divided = 0;
+        if (value.cost !== undefined) {
+          divided = parseFloat(value.cost) / people.length;
+          divided = parseFloat(divided).toFixed(2);
+        }
         people.forEach(person => {
           console.log(person);
           if (map[person] !== undefined && map[person].cost !== undefined) {
@@ -381,9 +389,12 @@ export default class ShoppingList extends Component {
         });
       }
       // one person
-      else if (value.cost !== undefined) {
+      else {
         console.log(key);
-        var newCost = value.cost;
+        var newCost = 0;
+        if (value.cost !== undefined) {
+          newCost = value.cost;
+        }
         if (map[people[0]] !== undefined && map[people[0]].cost !== undefined) {
           var oldCost = parseFloat(map[people[0]].cost);
           newCost = parseFloat(newCost) + oldCost;
@@ -392,6 +403,35 @@ export default class ShoppingList extends Component {
         map[people[0]] = { cost: newCost };
       }
       return null;
+
+      // // more than one person
+      // if (people.length > 1 && value.cost !== undefined) {
+      //   console.log(key);
+      //   var divided = parseFloat(value.cost) / people.length;
+      //   divided = parseFloat(divided).toFixed(2);
+      //   people.forEach(person => {
+      //     console.log(person);
+      //     if (map[person] !== undefined && map[person].cost !== undefined) {
+      //       var newCost = parseFloat(map[person].cost) + parseFloat(divided);
+      //       newCost = parseFloat(newCost).toFixed(2);
+      //       map[person] = { cost: newCost };
+      //     } else {
+      //       map[person] = { cost: divided };
+      //     }
+      //   });
+      // }
+      // // one person
+      // else if (value.cost !== undefined) {
+      //   console.log(key);
+      //   var newCost = value.cost;
+      //   if (map[people[0]] !== undefined && map[people[0]].cost !== undefined) {
+      //     var oldCost = parseFloat(map[people[0]].cost);
+      //     newCost = parseFloat(newCost) + oldCost;
+      //   }
+      //   newCost = parseFloat(newCost).toFixed(2);
+      //   map[people[0]] = { cost: newCost };
+      // }
+      // return null;
     });
     this.setState({
       chargesByPerson: map
@@ -425,7 +465,7 @@ export default class ShoppingList extends Component {
                     ) : this.state.items.length === 0 ? (
                       <ListGroup.Item>
                         <Card.Body>
-                          <Card.Title>No items to purchase!</Card.Title>
+                          <Card.Title>Your list is empty!</Card.Title>
                         </Card.Body>
                       </ListGroup.Item>
                     ) : (
