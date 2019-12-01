@@ -33,18 +33,32 @@ function getDaysRemaining(createdAt, days) {
  * @return "Successfully added chore!"
  */
 
-router.post('/add', async function(req, res) {
+router.post("/add", async function(req, res) {
   var name = req.body.userName.split(" ");
   var userFirstName = name[0];
   var userLastName = name[1];
 
   let user;
-  try { user = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
-  catch(err) { res.status(400).send("Error finding user with that first and last name."); }
+  try {
+    user = await User.findOne({
+      first_name: userFirstName,
+      last_name: userLastName
+    });
+  } catch (err) {
+    res.status(400).send("Error finding user with that first and last name.");
+  }
 
   let item;
-  try { item = await ChoreListItem.create({ description: req.body.description, user: user._id, apartment: req.session.user.apartment, days: req.body.days }); } 
-  catch(err) { res.status(400).send("Error creating chore list item."); }
+  try {
+    item = await ChoreListItem.create({
+      description: req.body.description,
+      user: user._id,
+      apartment: req.session.user.apartment,
+      days: req.body.days
+    });
+  } catch (err) {
+    res.status(400).send("Error creating chore list item.");
+  }
   res.status(201).send("Success");
 });
 
@@ -57,10 +71,13 @@ router.post('/add', async function(req, res) {
  * @return res containing "Success"
  */
 
-router.post('/edit/:id', async function(req, res) {
+router.post("/edit/:id", async function(req, res) {
   let oldItem;
-  try { oldItem = await ChoreListItem.findById(req.params.id); } 
-  catch (err) { res.status(400).send("Error finding item."); }
+  try {
+    oldItem = await ChoreListItem.findById(req.params.id);
+  } catch (err) {
+    res.status(400).send("Error finding item.");
+  }
 
   let newUser;
   if (req.body.userName) {
@@ -68,21 +85,36 @@ router.post('/edit/:id', async function(req, res) {
     var userFirstName = name[0];
     var userLastName = name[1];
 
-    try { newUser = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
-    catch(err) { res.status(400).send("Error finding user with that first and last name."); }
-  }
-  
-  let updatedItem = {
-    description: ((req.body.description != null) ? req.body.description : oldItem.description),
-    completed: ((req.body.completed != null) ? req.body.completed : oldItem.completed),
-    user: ((newUser != null) ? newUser._id : oldItem.user),
-    days: ((req.body.days != null) ? req.body.days : oldItem.days)
+    try {
+      newUser = await User.findOne({
+        first_name: userFirstName,
+        last_name: userLastName
+      });
+    } catch (err) {
+      res.status(400).send("Error finding user with that first and last name.");
+    }
   }
 
+  let updatedItem = {
+    description:
+      req.body.description != null ? req.body.description : oldItem.description,
+    completed:
+      req.body.completed != null ? req.body.completed : oldItem.completed,
+    user: newUser != null ? newUser._id : oldItem.user,
+    days: req.body.days != null ? req.body.days : oldItem.days
+  };
+
   let newItem;
-  try { newItem = await ChoreListItem.findByIdAndUpdate(req.params.id, updatedItem, { new: true }); } 
-  catch(err) { res.status(400).send("Error editing chore item."); }
-  res.status(201).send("Success")
+  try {
+    newItem = await ChoreListItem.findByIdAndUpdate(
+      req.params.id,
+      updatedItem,
+      { new: true }
+    );
+  } catch (err) {
+    res.status(400).send("Error editing chore item.");
+  }
+  res.status(201).send("Success");
 });
 
 /**
@@ -95,16 +127,26 @@ router.post('/edit/:id', async function(req, res) {
  */
 
 // hard coded apartment
-router.get('/get_all_items', async function(req, res) {
+router.get("/get_all_items", async function(req, res) {
   let items;
-  try { items = await ChoreListItem.find({ apartment: req.session.user.apartment }).populate(); } 
-  catch(err) { res.status(400).send("Error finding items in database."); }
+  try {
+    items = await ChoreListItem.find({
+      apartment: req.session.user.apartment
+    }).populate();
+  } catch (err) {
+    res.status(400).send("Error finding items in database.");
+  }
 
   let populatedItems = [];
-  items.forEach((item) => {
+  items.forEach(item => {
     var name = item.user.first_name + " " + item.user.last_name;
     var diffDays = getDaysRemaining(item.created, item.days);
-    populatedItems.push({id: item._id, chore: item.description, user: name, days: diffDays});
+    populatedItems.push({
+      id: item._id,
+      chore: item.description,
+      user: name,
+      days: diffDays
+    });
   });
   res.status(200).json(populatedItems);
 });
@@ -177,15 +219,18 @@ router.delete("/delete_all_items", async function(req, res) {
  * @return res containing a list of items retrieved and populated.
  */
 
- router.get('/get_my_items', async function(req, res) {
+router.get("/get_my_items", async function(req, res) {
   let items;
-  try { items = await ChoreListItem.find({ user: req.session.user._id }); }
-  catch(err) { res.status(400).send("Error finding items in database."); }
+  try {
+    items = await ChoreListItem.find({ user: req.session.user._id });
+  } catch (err) {
+    res.status(400).send("Error finding items in database.");
+  }
 
   let userItems = [];
-  items.forEach((item) => {
-    var diffDays = getDaysRemaining(item.created, item.days)
-    userItems.push({id: item._id, chore: item.description, , days: diffDays}); 
+  items.forEach(item => {
+    var diffDays = getDaysRemaining(item.created, item.days);
+    userItems.push({ id: item._id, chore: item.description, days: diffDays });
   });
   res.status(200).json(userItems);
 });
