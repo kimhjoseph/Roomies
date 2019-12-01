@@ -5,7 +5,7 @@ import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
 import axios from "axios";
 
-export default class GroupCard extends Component {
+export default class CreateJoinApartment extends Component {
   constructor(props) {
     super(props);
     
