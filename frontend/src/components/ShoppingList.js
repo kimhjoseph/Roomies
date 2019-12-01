@@ -373,7 +373,7 @@ export default class ShoppingList extends Component {
       if (people.length > 1) {
         console.log(key);
         var divided = 0;
-        if (value.cost !== undefined) {
+        if (value.cost !== undefined && !isNaN(value.cost)) {
           divided = parseFloat(value.cost) / people.length;
           divided = parseFloat(divided).toFixed(2);
         }
@@ -392,7 +392,7 @@ export default class ShoppingList extends Component {
       else {
         console.log(key);
         var newCost = 0;
-        if (value.cost !== undefined) {
+        if (value.cost !== undefined && !isNaN(value.cost)) {
           newCost = value.cost;
         }
         if (map[people[0]] !== undefined && map[people[0]].cost !== undefined) {
@@ -619,8 +619,8 @@ export default class ShoppingList extends Component {
                                   if (i.cost !== undefined) {
                                     sum += parseFloat(i.cost);
                                   }
-                                  if (!isNaN(sum)) return sum;
-                                  return 0;
+                                  if (isNaN(sum)) return 0;
+                                  return sum;
                                 }, 0)
                               ).toFixed(2)}
                             </Card.Text>

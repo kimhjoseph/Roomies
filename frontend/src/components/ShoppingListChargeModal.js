@@ -89,8 +89,8 @@ export default class ShoppingListChargeModal extends Component {
                             if (i.cost !== undefined) {
                               sum += parseFloat(i.cost);
                             }
-                            if (!isNaN(sum)) return sum;
-                            return 0;
+                            if (isNaN(sum)) return 0;
+                            return sum;
                           },
                           0
                         )

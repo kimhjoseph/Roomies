@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import "./Login.css";
 import axios from "axios";
-import { withRouter } from "react-router-dom";
+import { Link, withRouter } from "react-router-dom";
 
 class SignUp extends Component {
   // TODO: OAuth stuff will need to be added here
@@ -64,23 +64,37 @@ class SignUp extends Component {
     return (
       <div className="main">
         <div className="inner-container">
-          <h1 style={{ fontSize: "70px" }}>Roomies</h1>
-          <h5 className="login-sub" style={{ margin: "0px 0px 24px 0px" }}>
-            It's time to make your Roommates Great
-          </h5>
+          <div style={{ width: "85%" }}>
+            <h1 style={{ fontSize: "70px", paddingBottom: "0px" }}>Roomies</h1>
+            <h5
+              className="login-sub"
+              style={{ width: "95%", margin: "0px 0px 24px 0px" }}
+            >
+              It's time to make your Roommates Great
+            </h5>
+          </div>
         </div>
         <div className="inner-container">
-          <Form onSubmit={this.onSubmit}>
+          <Form
+            onSubmit={this.onSubmit}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              width: "90%"
+            }}
+          >
             <div>
-              <h3>Create your account</h3>
+              <h3 style={{ marginBottom: "12px" }}>Create your account</h3>
             </div>
-            <Form.Row>
+            <Form.Row style={{ display: "flex", flexDirection: "row" }}>
               <Col>
                 <Form.Group>
                   <Form.Control
                     placeholder="First name"
                     value={this.state.first_name}
                     onChange={this.onChangeFirst}
+                    style={{ width: "160px" }}
                   />
                 </Form.Group>
               </Col>
@@ -90,6 +104,7 @@ class SignUp extends Component {
                     placeholder="Last name"
                     value={this.state.last_name}
                     onChange={this.onChangeLast}
+                    style={{ width: "160px" }}
                   />
                 </Form.Group>
               </Col>
@@ -100,6 +115,7 @@ class SignUp extends Component {
                 placeholder="Email"
                 value={this.state.email}
                 onChange={this.onChangeEmail}
+                style={{ width: "330px" }}
               />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
@@ -109,14 +125,25 @@ class SignUp extends Component {
                 placeholder="Password"
                 value={this.state.password}
                 onChange={this.onChangePassword}
+                style={{ width: "330px" }}
               />
             </Form.Group>
-            <input
-              type="submit"
-              value="Sign Up"
-              className="custom-sign-button"
-              style={{ align: "center" }}
-            />
+            <div style={{ display: "flex", flexDirection: "row" }}>
+              <input
+                type="submit"
+                value="Sign Up"
+                className="custom-sign-button"
+                style={{ width: "160px", marginRight: "5px" }}
+              />
+              <Link to="/">
+                <button
+                  className="custom-sign-button"
+                  style={{ width: "160px", marginLeft: "5px" }}
+                >
+                  Back
+                </button>
+              </Link>
+            </div>
           </Form>
         </div>
       </div>
