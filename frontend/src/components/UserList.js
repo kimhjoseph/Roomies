@@ -15,29 +15,18 @@ class UserList extends Component {
     this.state = {
       imagefile: dummy,
       users: [],
-      userInfo: {
-        firstname: "Rondald",
-        lastname: "Rondaldson",
-        id: 90342,
-        bio: "srrsly fuck the middle class"
-      },
-      newInfo: {
-        firstname: "",
-        lastname: "",
-        id: 0,
-        bio: ""
-      }
     };
 
-    axios.get('http://localhost:4000/user/get')
-    .then(response => {
-      this.setState({ users: response.data
-       });
+    axios.get('http://localhost:4000/user/get_users')
+    .then(res => {
+      this.setState({ users: res.data
+      });
     })
     .catch(function (error){
         console.log(error);
     });
   }
+
   render() {
     return (
       <Container>

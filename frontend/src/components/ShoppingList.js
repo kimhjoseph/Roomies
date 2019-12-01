@@ -22,6 +22,8 @@ import LoadingComponent from "./LoadingComponent";
 
 import "./ShoppingList.css";
 
+axios.defaults.withCredentials = true;
+
 export default class ShoppingList extends Component {
   constructor(props) {
     super(props);
@@ -61,12 +63,9 @@ export default class ShoppingList extends Component {
   }
 
   getItems() {
-    console.log("Getting items from database...");
     axios
       .get("http://localhost:4000/shoppingitem/get")
       .then(response => {
-        console.log("Successfully obtained items from database!");
-        console.log(response.data);
         this.setState({ items: response.data, loading: false });
       })
       .catch(error => {
@@ -75,12 +74,9 @@ export default class ShoppingList extends Component {
   }
 
   getUsers() {
-    console.log("Getting users from database...");
     axios
       .get("http://localhost:4000/user/get")
       .then(response => {
-        console.log("Successfully obtained users from database!");
-        console.log(response.data);
         this.setState({ users: response.data });
       })
       .catch(error => {
@@ -103,11 +99,9 @@ export default class ShoppingList extends Component {
   }
 
   handleAddItem = async tempItem => {
-    console.log("Adding item...");
     await axios
       .post("http://localhost:4000/shoppingitem/add", tempItem)
       .then(response => {
-        console.log(response);
         var concatItem = {
           item: tempItem.item,
           people: tempItem.people,
@@ -176,7 +170,28 @@ export default class ShoppingList extends Component {
     await axios
       .post("http://localhost:4000/shoppingitem/get_access")
       .then(async response => {
-        console.log("Obtained access token!");
+        console.log("Successfully obtained access token!");
+
+        //////////
+        // console.log("Getting current user info...");
+        // var invoicer = {
+        //   first_name: "Joseph",
+        //   last_name: "Kim",
+        //   email: "jokim@gmail.com"
+        // };
+        // await axios
+        //   .get("http://localhost:4000/user/get_current_user")
+        //   .then(async response => {
+        //     await console.log("Successfully obtained current user info!");
+        //     invoicer.first_name = response.data.first_name;
+        //     invoicer.last_name = response.data.last_name;
+        //     invoicer.email = response.data.email;
+        //   })
+        //   .catch(error => {
+        //     console.log("Error: " + error);
+        //   });
+        //////////
+
         await Object.entries(this.state.chargesByPerson).reduce(
           async (previousPromise, [key, value]) => {
             await previousPromise;
@@ -190,11 +205,11 @@ export default class ShoppingList extends Component {
               );
               var body = {
                 access_token: response.data.access_token,
-                invoicer: {
-                  first_name: "Joseph",
-                  last_name: "Kim",
-                  email: "jokim@gmail.com"
-                },
+                // invoicer: {
+                //   first_name: invoicer.first_name, // "Joseph",
+                //   last_name: invoicer.last_name, // "Kim",
+                //   email: invoicer.email // "jokim@gmail.com"
+                // },
                 invoicee: {
                   first_name: invoicee.first_name,
                   last_name: invoicee.last_name,

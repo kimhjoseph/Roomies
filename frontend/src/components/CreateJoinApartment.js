@@ -3,35 +3,65 @@ import { Card, Button, Container } from "react-bootstrap";
 import { Link } from "react-router-dom";
 import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
+import { withRouter } from "react-router-dom";
 import axios from "axios";
 
-export default class CreateJoinApartment extends Component {
+axios.defaults.withCredentials = true;
+
+class CreateJoinApartment extends Component {
   constructor(props) {
     super(props);
-    
-    this.createApartment = this.createApartment.bind(this);
+
+    this.onChangeCode = this.onChangeCode.bind(this);
 
     this.state = {
-      user: {
-      email: "audrey.pham@gmail.com", 
-      code: "KZ6E9"
-      }, 
-      apartment: ""
+      user: "",
+      code: ""
     };
+
+    this.onChangeCode = this.onChangeCode.bind(this);
+    this.onSubmitCreate = this.onSubmitCreate.bind(this);
+    this.onSubmitJoin = this.onSubmitJoin.bind(this);
   }
 
-  createApartment(user) {
+  // for create
+  onSubmitCreate(e) {
     axios
-      .get("http://localhost:4000/apartment/create_apartment")
-      .then(response => {
-        console.log("Successfully created apartment.");
-        this.setState({ apartment: response.data});
-        console.log(this.state.apartment)
+      .get("http://localhost:4000/apartment/create")
+      .then(res => {
+        console.log(res);
+        if (res.data == "Success") {
+          this.props.history.push("/home");
+        } else {
+          this.props.history.push("/join");
+        }
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+  }
+
+  // for join
+  onSubmitJoin(e) {
+    axios
+      .post("http://localhost:4000/apartment/join", this.state)
+      .then(res => {
+        if (res.data == "Success") {
+          this.props.history.push("/home");
+        } else {
+          this.props.history.push("/join");
+        }
       })
       .catch(function(error) {
         console.log(error);
       });
 
+    console.log(this.state.code);
+  }
+
+  onChangeCode(e) {
+    this.setState({ code: e.target.value });
+    console.log(this.state.code);
   }
 
   render() {
@@ -60,19 +90,26 @@ export default class CreateJoinApartment extends Component {
                     type="group-code-text"
                     name="group-code"
                     placeholder="ABC123"
+                    onChange={this.onChangeCode}
                   />
                 </form>
               </div>
               <div style={{ paddingTop: "10px", paddingBottom: "10px" }}>
-                <Link to="/home">
-                  <Button className="group-button1">Join Group</Button>
-                </Link>
+                <Button
+                  className="group-button1"
+                  onClick={() => this.onSubmitJoin()}
+                >
+                  Join Group
+                </Button>
               </div>
               <Card.Text className="group-text">or</Card.Text>
               <div style={{ paddingBottom: "10px" }}>
-                <Link to="/home">
-                  <Button className="group-button2" onClick={() => this.createApartment()}>Create Group</Button>
-                </Link>
+                <Button
+                  className="group-button2"
+                  onClick={() => this.onSubmitCreate()}
+                >
+                  Create Group
+                </Button>
               </div>
             </Card.Body>
           </Card>
@@ -81,3 +118,4 @@ export default class CreateJoinApartment extends Component {
     );
   }
 }
+export default withRouter(CreateJoinApartment);
