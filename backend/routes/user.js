@@ -66,7 +66,7 @@ router.post("/edit_info", async function(req, res) {
     last_name: req.body.lastname != null ? req.body.lastname : req.session.user.last_name,
     email: req.body.email != null ? req.body.email : req.session.user.email,
     status: req.body.status != null ? req.body.status : req.session.user.status,
-    profile_image: req.body.profile_image != null ? req.body.profile_image : "dummy image"
+    img: req.body.img != null ? req.body.img : "dummy image"
   };
 
   let user;
