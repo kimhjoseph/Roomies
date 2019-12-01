@@ -34,15 +34,10 @@ function getDaysRemaining(createdAt, days) {
  */
 
 router.post("/add", async function(req, res) {
-  var name = req.body.userName.split(" ");
-  var userFirstName = name[0];
-  var userLastName = name[1];
-
   let user;
   try {
     user = await User.findOne({
-      first_name: userFirstName,
-      last_name: userLastName
+      _id: req.session.user._id
     });
   } catch (err) {
     res.status(400).send("Error finding user with that first and last name.");
@@ -52,7 +47,7 @@ router.post("/add", async function(req, res) {
   try {
     item = await ChoreListItem.create({
       description: req.body.description,
-      user: user._id,
+      user: req.session.user._id,
       apartment: req.session.user.apartment,
       days: req.body.days
     });
@@ -128,34 +123,12 @@ router.post("/edit/:id", async function(req, res) {
 
 // hard coded apartment
 router.get("/get_all_items", async function(req, res) {
-  let items;
-  try {
-    items = await ChoreListItem.find({
-      apartment: req.session.user.apartment
-    }).populate();
-  } catch (err) {
-    res.status(400).send("Error finding items in database.");
-  }
-
-  let populatedItems = [];
-  items.forEach(item => {
-    var name = item.user.first_name + " " + item.user.last_name;
-    var diffDays = getDaysRemaining(item.created, item.days);
-    populatedItems.push({
-      id: item._id,
-      chore: item.description,
-      user: name,
-      days: diffDays
-    });
-  });
-  res.status(200).json(populatedItems);
-});
-
-/*
-router.get("/get_all_items", async function(req, res) {
-  ChoreListItem.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
+  console.log("Getting all items...");
+  console.log(req.session.user);
+  ChoreListItem.find({ apartment: req.session.user.apartment })
     .populate("user")
     .then(chores => {
+      console.log("chores");
       let populatedItems = [];
       let name = "";
       chores.forEach(chore => {
@@ -164,15 +137,17 @@ router.get("/get_all_items", async function(req, res) {
         populatedItems.push({
           chore: chore.description,
           id: chore._id,
+          user_id: chore.user._id,
           user: name,
           days: diffDays
         });
       });
       res.status(200).json(populatedItems);
+      console.log(populatedItems);
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
-*/
+
 
 /**
  * Delete a ChoreListItem by object id.
@@ -218,26 +193,8 @@ router.delete("/delete_all_items", async function(req, res) {
  * @param req user session variable with user _id
  * @return res containing a list of items retrieved and populated.
  */
-
 router.get("/get_my_items", async function(req, res) {
-  let items;
-  try {
-    items = await ChoreListItem.find({ user: req.session.user._id });
-  } catch (err) {
-    res.status(400).send("Error finding items in database.");
-  }
-
-  let userItems = [];
-  items.forEach(item => {
-    var diffDays = getDaysRemaining(item.created, item.days);
-    userItems.push({ id: item._id, chore: item.description, days: diffDays });
-  });
-  res.status(200).json(userItems);
-});
-
-/*
-router.get("/get_my_items", async function(req, res) {
-  ChoreListItem.find({ user: new ObjectId(req.body._id) })
+  ChoreListItem.find({ user: req.session.user._id })
     .then(myChores => {
       let populatedItems = [];
       myChores.forEach(chore => {
@@ -252,6 +209,6 @@ router.get("/get_my_items", async function(req, res) {
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
-*/
+
 
 module.exports = router;
