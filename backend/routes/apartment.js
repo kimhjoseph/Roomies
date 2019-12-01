@@ -1,55 +1,56 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
 
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
-const User = require('../models/User');
-const Apartment = require('../models/Apartment');
+const User = require("../models/User");
+const Apartment = require("../models/Apartment");
 
-// 
-	// create_apartment (get)
-	// join_apartment (post)
-	// get_apartment (get)
-	// edit_apartment (post)
+//
+// create_apartment (get)
+// join_apartment (post)
+// get_apartment (get)
+// edit_apartment (post)
 
 function makeId() {
-   var result = '';
-   var characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	 var charactersLength = characters.length;
-	 try{
-   for ( var i = 0; i < 5; i++ ) {
+  var result = "";
+  var characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  var charactersLength = characters.length;
+  try {
+    for (var i = 0; i < 5; i++) {
       result += characters.charAt(Math.floor(Math.random() * charactersLength));
-	 }
-	}
-	catch(err)  { console.log("makeID wrong") }
-   return result;
+    }
+  } catch (err) {
+    console.log("makeID wrong");
+  }
+  return result;
 }
 
 /**
  * Create a new Apartment.
  *
- * Use axios.post(.../apartment/create_apartment, newApartment)
+ * Use axios.get(.../apartment/create_apartment, newApartment)
  *
- * @param req contains the new Apartment with description, frequency, user first_name and last_name, completed and priority.
- * @return res contining the apartment code generated. 
+ * @return res contining the apartment object created.
  */
 
-router.get('/create_apartment', async function(req, res) {
-    const newApt = {
-			_id: new ObjectId(), 
-			code: makeId()
-    };
+router.get("/create_apartment", async function(req, res) {
+  const newApt = {
+    _id: new ObjectId(),
+    code: makeId()
+  };
 
-    let apt = new Apartment(newApt);
-    apt
-      .save()
-      .then(apt => {
-				res.status(201).send("Successfully added new apartment!");
-				console.log(apt)
-      })
-      .catch(err => {
-        res.status(400).send("Error creating apartment.", err);
-      });
+  let apt = new Apartment(newApt);
+  apt
+    .save()
+    .then(apt => {
+			res.json(apt);
+      res.status(201).send("Successfully added new apartment!");
+    })
+    .catch(err => {
+      res.status(400).send("Error creating apartment.", err);
+    });
 });
 
 /**
@@ -58,22 +59,30 @@ router.get('/create_apartment', async function(req, res) {
  * Use axios.post(.../apartment/join_apartment, code)
  *
  * @param req contains the code of the apartment to be joined.
- * @return "Success" on completion
+ * @return user opject with udpated apartment field on completion
  */
 
-
-router.post('/join_apartment', async function(req, res) {
-	console.log(req.body);
+router.post("/join_apartment", async function(req, res) {
 	let apartment;
-	try { apartment = await Apartment.findOne({ code: req.body.code });}
-	catch(err) { res.status(400).send("Error finding apartment."); }
+	let user;
+  try {
+    apartment = await Apartment.findOne({ code: req.body.code });
+  } catch (err) {
+    res.status(400).send("Error finding apartment.");
+  }
 
-	try { let user = await User.findOneAndUpdate({ email: req.body.email }, { apartment: apartment._id }, { new: true }); } 
-	catch(err) { res.status(400).send(err); }
-	res.status(200).send("Success");
+  try {
+    user = await User.findOneAndUpdate(
+      { email: req.body.email },
+      { apartment: apartment._id },
+      { new: true }
+    );
+  } catch (err) {
+    res.status(400).send(err);
+	}
+	res.json(user);
+  res.status(200).send("Successfully joined apartment!");
 });
-
-
 
 /**
  * Retrieve an apartment of a user.
@@ -84,10 +93,13 @@ router.post('/join_apartment', async function(req, res) {
  * @return res continaing the retrieved Apartment object.
  */
 
-router.get('/get_apartment', async function(req, res) {
-	try { let apartment = await Apartment.findById(req.user.apartment); } 
-	catch(err) { res.status(400).send("Error finding apartment."); }
-	res.status(200).send(apartment);
+router.get("/get_apartment", async function(req, res) {
+  try {
+    let apartment = await Apartment.findById(req.user.apartment);
+  } catch (err) {
+    res.status(400).send("Error finding apartment.");
+  }
+  res.status(200).send(apartment);
 });
 
 /**
@@ -99,17 +111,27 @@ router.get('/get_apartment', async function(req, res) {
  * @return res continaing the retrieved Apartment object.
  */
 
-router.post('/edit_apartment', async function(req, res) {
-	try { let oldApartment = await Apartment.findById(req.user.apartment); } 
-	catch (err) { res.status(400).send("Error finding apartment in database."); }
+router.post("/edit_apartment", async function(req, res) {
+  try {
+    let oldApartment = await Apartment.findById(req.user.apartment);
+  } catch (err) {
+    res.status(400).send("Error finding apartment in database.");
+  }
 
-	let updatedApartment = {
-		name: ((req.body.name != null) ? req.body.name : oldApartment.name),
-		address: ((req.body.address != null) ? req.body.address : oldApartment.address)
-	}
-	try { let newApartment = await Apartment.findByIdAndUpdate(req.user.apartment, updatedApartment, { new: true }); } 
-	catch(err) { res.status(400).send("Error editing chore item."); }
-	res.status(201).send("Success")
+  let updatedApartment = {
+    name: req.body.name != null ? req.body.name : oldApartment.name,
+    address: req.body.address != null ? req.body.address : oldApartment.address
+  };
+  try {
+    let newApartment = await Apartment.findByIdAndUpdate(
+      req.user.apartment,
+      updatedApartment,
+      { new: true }
+    );
+  } catch (err) {
+    res.status(400).send("Error editing chore item.");
+  }
+  res.status(201).send("Success");
 });
 
 module.exports = router;
@@ -171,4 +193,3 @@ router.post('/edit_apartment', async function(req, res) {
 	res.status(201).send("Success")
 });
 */
-

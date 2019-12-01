@@ -15,19 +15,23 @@ export default class GroupCard extends Component {
       user: {
       email: "audrey.pham@gmail.com", 
       code: "KZ6E9"
-      }
+      }, 
+      apartment: ""
     };
   }
 
   createApartment(user) {
     axios
-      .post("http://localhost:4000/apartment/join_apartment", this.state.user)
+      .get("http://localhost:4000/apartment/create_apartment")
       .then(response => {
-        console.log("Successfully added chore.");
+        console.log("Successfully created apartment.");
+        this.setState({ apartment: response.data});
+        console.log(this.state.apartment)
       })
       .catch(function(error) {
         console.log(error);
       });
+
   }
 
   render() {
@@ -67,9 +71,8 @@ export default class GroupCard extends Component {
               <Card.Text className="group-text">or</Card.Text>
               <div style={{ paddingBottom: "10px" }}>
                 <Link to="/home">
-                  <Button className="group-button2">Create Group</Button>
+                  <Button className="group-button2" onClick={() => this.createApartment()}>Create Group</Button>
                 </Link>
-                <Button className="group-button2" onClick={() => this.createApartment(this.state.user)}>Check</Button>
               </div>
             </Card.Body>
           </Card>
