@@ -1,0 +1,66 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`snapshot tests 1`] = `
+<div>
+  <header
+    style={
+      Object {
+        "backgroundColor": "#F9F9F9",
+      }
+    }
+  >
+    <div>
+      <div
+        className="main"
+      >
+        <div
+          className="inner-container"
+        >
+          <h1
+            style={
+              Object {
+                "fontSize": "70px",
+              }
+            }
+          >
+            Roomies
+          </h1>
+          <h5
+            style={
+              Object {
+                "margin": "0px 0px 24px 0px",
+              }
+            }
+          >
+            It's time to make your Roommates Great
+          </h5>
+        </div>
+        <div
+          className="inner-container"
+        >
+          <a
+            href="/login"
+            onClick={[Function]}
+          >
+            <button
+              className="custom-landing-button"
+            >
+              Login
+            </button>
+          </a>
+          <a
+            href="/signup"
+            onClick={[Function]}
+          >
+            <button
+              className="custom-landing-button"
+            >
+              Signup
+            </button>
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
+`;
