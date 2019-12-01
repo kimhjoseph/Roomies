@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const Apartment = require("../models/Apartment");
-var bcrypt = require('bcrypt');
+var bcrypt = require("bcryptjs");
 
 //
 // edit_info (post)
@@ -19,51 +19,55 @@ var bcrypt = require('bcrypt');
  * @return            "Success"
  */
 
-router.post('/signup', async function(req, res) {
-    let user;
-    try {
-        const salt = bcrypt.genSaltSync();
-        req.body.password = bcrypt.hashSync(req.body.password, salt);
-        user = await User.create({
-            first_name: req.body.first_name,
-            last_name: req.body.last_name,
-            email: req.body.email,
-            password: req.body.password
-        });
-    }
-    catch(err) {res.status(400).send(err);}
+router.post("/signup", async function(req, res) {
+  let user;
+  try {
+    const salt = bcrypt.genSaltSync();
+    req.body.password = bcrypt.hashSync(req.body.password, salt);
+    user = await User.create({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      email: req.body.email,
+      password: req.body.password
+    });
+  } catch (err) {
+    res.status(400).send(err);
+  }
+  req.session.user = user;
+  res.status(201).send("Success");
+});
+
+router.post("/login", async function(req, res) {
+  console.log(req.body);
+  var email = req.body.email,
+    password = req.body.password;
+
+  let user = await User.findOne({ email: email });
+  if (!user) {
+    res.status(400).send("Failure");
+  } else if (!bcrypt.compareSync(req.body.password, user.password)) {
+    res.status(400).send("Failure");
+  } else {
     req.session.user = user;
+    console.log(req.session.user);
     res.status(201).send("Success");
+  }
 });
 
-
-router.post('/login', async function(req, res) {
-
-    console.log(req.body);
-    var email = req.body.email,
-        password = req.body.password;
-
-    let user = await User.findOne({ email: email });
-    if (!user) {
-        res.status(400).send("Failure");
-    } else if (!bcrypt.compareSync(req.body.password, user.password)) {
-        res.status(400).send("Failure");
-    } else {
-        req.session.user = user;
-        console.log(req.session.user);
-        res.status(201).send("Success");
-    }
-});
-
-router.post('/logout', function(req, res) {
-  res.clearCookie('user_sid');
+router.post("/logout", function(req, res) {
+  res.clearCookie("user_sid");
 });
 
 router.post("/edit_info", async function(req, res) {
-
   let updatedData = {
-    first_name: req.body.firstname != null ? req.body.firstname : req.session.user.first_name,
-    last_name: req.body.lastname != null ? req.body.lastname : req.session.user.last_name,
+    first_name:
+      req.body.firstname != null
+        ? req.body.firstname
+        : req.session.user.first_name,
+    last_name:
+      req.body.lastname != null
+        ? req.body.lastname
+        : req.session.user.last_name,
     email: req.body.email != null ? req.body.email : req.session.user.email,
     status: req.body.status != null ? req.body.status : req.session.user.status,
     img: req.body.img != null ? req.body.img : "dummy image"
@@ -71,7 +75,11 @@ router.post("/edit_info", async function(req, res) {
 
   let user;
   try {
-    user = await User.findOneAndUpdate({ email: req.session.user.email }, updatedData, { new: true });
+    user = await User.findOneAndUpdate(
+      { email: req.session.user.email },
+      updatedData,
+      { new: true }
+    );
   } catch (err) {
     console.log("Error updating user.");
     res.status(400).send(err);
