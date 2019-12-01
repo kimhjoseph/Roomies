@@ -15,14 +15,14 @@ export default class RoomiesLanding extends Component {
           </h5>
         </div>
         <div className="inner-container">
-          <Link to="/home">
+          <Link to="/login">
             <button className="custom-landing-button">
-              Continue With Facebook
+              Login
             </button>
           </Link>
-          <Link to="/home">
+          <Link to="/signup">
             <button className="custom-landing-button">
-              Continue With Google
+              Signup
             </button>
           </Link>
         </div>
@@ -30,3 +30,4 @@ export default class RoomiesLanding extends Component {
     );
   }
 }
+

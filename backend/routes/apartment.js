@@ -93,13 +93,12 @@ router.post("/join_apartment", async function(req, res) {
  * @return res continaing the retrieved Apartment object.
  */
 
-router.get("/get_apartment", async function(req, res) {
-  try {
-    let apartment = await Apartment.findById(req.user.apartment);
-  } catch (err) {
-    res.status(400).send("Error finding apartment.");
-  }
-  res.status(200).send(apartment);
+
+router.get('/get_apartment', async function(req, res) {
+	let apartment;
+	try { let apartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
+	catch(err) { res.status(400).send("Error finding apartment."); }
+	res.status(200).json(apartment);
 });
 
 /**
@@ -177,19 +176,7 @@ router.get('/get_apartment', async function(req, res) {
 });
 
 
-router.post('/edit_apartment', async function(req, res) {
-	let oldApartment;
-	try { oldApartment = await Apartment.findById("5ddecc7a1c9d4400000141dd"); } 
-	catch (err) { res.status(400).send("Error finding apartment in database."); }
+module.exports = router;
 
-	let updatedApartment = {
-		name: ((req.body.name != null) ? req.body.name : oldApartment.name),
-		address: ((req.body.address != null) ? req.body.address : oldApartment.address)
-	}
-
-	let newApartment;
-	try { newApartment = await Apartment.findByIdAndUpdate("5ddecc7a1c9d4400000141dd", updatedApartment, { new: true }); } 
-	catch(err) { res.status(400).send("Error editing apartment."); }
-	res.status(201).send("Success")
-});
 */
+
