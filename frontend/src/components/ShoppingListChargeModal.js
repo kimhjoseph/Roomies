@@ -12,20 +12,38 @@ export default class ShoppingListChargeModal extends Component {
     this.onClose = this.onClose.bind(this);
 
     this.state = {
-      show: this.props.show
+      show: this.props.show,
+      charge: "Charge",
+      chargeDisabled: false
     };
   }
 
   onClose = e => {
     if (e !== undefined) e.preventDefault();
     this.props.onClose();
+    this.setState({ chargeDisabled: false, charge: "Charge" });
   };
 
-  handleDisableClick = e => {
+  handleDisableClick = async e => {
+    const stopper = "Charging...";
+    this.interval = window.setInterval(() => {
+      this.state.charge === "Charge"
+        ? this.setState({ chargeDisabled: true, charge: "Charging" })
+        : this.state.charge === stopper
+        ? this.setState({ chargeDisabled: true, charge: "Charging" })
+        : this.setState(currentState => {
+            return {
+              chargeDisabled: true,
+              charge: currentState.charge + "."
+            };
+          });
+    }, 400);
     e.stopPropagation();
     e.preventDefault();
-    this.props.handleClearChargeList();
+    await this.props.handleChargeItems();
     this.onClose();
+    window.clearInterval(this.interval);
+    this.setState({ chargeDisabled: false, charge: "Charge" });
   };
 
   render() {
@@ -81,14 +99,15 @@ export default class ShoppingListChargeModal extends Component {
               </Card.Body>
             </ListGroup.Item>
           </ListGroup>
-          <button onClick={this.onClose} className="modal-custom-button">
+          <button onClick={this.onClose} className="modal-custom-charge-button">
             Cancel
           </button>
           <input
             type="submit"
+            disabled={this.state.chargeDisabled}
             onClick={this.handleDisableClick}
-            className="modal-custom-button"
-            value="Charge"
+            className="modal-custom-charge-button"
+            value={this.state.charge}
           />
         </Modal.Body>
       </Modal>

@@ -4,7 +4,135 @@ const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const ShoppingListItem = require("../models/ShoppingListItem");
-const Apartment = require("../models/Apartment");
+const axios = require("axios");
+var querystring = require("querystring");
+var https = require("https");
+const circularJSON = require("circular-json");
+require("dotenv").config();
+
+var PayPalBasicAuth = process.env.PayPalBasicAuth;
+
+router.post("/get_access", async function(request, response) {
+  console.log(PayPalBasicAuth);
+  var options = {
+    "method": "POST",
+    "hostname": "api.sandbox.paypal.com",
+    "path": "/v1/oauth2/token",
+    "headers": {
+      "Content-Type": "application/x-www-form-urlencoded",
+      "Authorization": "Basic " + PayPalBasicAuth
+    }
+  };
+
+  var req = await https.request(options, function(res) {
+    var chunks = [];
+    res.on("data", function(chunk) {
+      chunks.push(chunk);
+    });
+    res.on("end", function() {
+      var body = Buffer.concat(chunks);
+      var jsonBody = JSON.parse(body.toString());
+      // console.log(jsonBody);
+      response.status(201).send(jsonBody);
+    });
+  });
+
+  try {
+    await req.write(
+      querystring.stringify({ grant_type: "client_credentials" })
+    );
+    req.end();
+  } catch {
+    response.status(400).send("Error getting access token.");
+  }
+});
+
+router.post("/send_invoice", async function(req, res) {
+  // console.log(req);
+  var config = {
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + req.body.access_token
+    }
+  };
+  // get invoice number
+  await axios
+    .post(
+      "https://api.sandbox.paypal.com/v2/invoicing/generate-next-invoice-number",
+      null,
+      config
+    )
+    // create invoice draft
+    .then(async response => {
+      let jsonString = circularJSON.stringify(response.data);
+      let json = JSON.parse(jsonString);
+      // console.log(json);
+      var invoice_draft = {
+        "detail": {
+          "invoice_number": json.invoice_number,
+          "invoice_date": "2019-11-30",
+          "currency_code": "USD"
+        },
+        "invoicer": {
+          "name": {
+            "given_name": req.session.user.first_name,
+            "surname": req.session.user.last_name
+          },
+          "email_address": req.session.user.email
+        },
+        "primary_recipients": [
+          {
+            "billing_info": {
+              "name": {
+                "given_name": req.body.invoicee.first_name,
+                "surname": req.body.invoicee.last_name
+              },
+              "email_address": req.body.invoicee.email
+            }
+          }
+        ],
+        "items": [
+          {
+            "name": "Roomies Shopping List Charge",
+            "quantity": "1",
+            "unit_amount": {
+              "currency_code": "USD",
+              "value": req.body.amount
+            }
+          }
+        ],
+        "amount": {
+          "currency_code": "USD",
+          "value": req.body.amount,
+          "breakdown": {}
+        }
+      };
+      let bodyString = JSON.stringify(invoice_draft);
+      return axios.post(
+        "https://api.sandbox.paypal.com/v2/invoicing/invoices",
+        bodyString,
+        config
+      );
+    })
+    // send invoice
+    .then(response => {
+      let jsonString = circularJSON.stringify(response.data);
+      let json = JSON.parse(jsonString);
+      // console.log(json);
+      return axios.post(json.href + "/send", null, config);
+    })
+    // invoice sent
+    .then(response => {
+      let jsonString = circularJSON.stringify(response);
+      let json = JSON.parse(jsonString);
+      console.log(json);
+      res.status(202).send(json);
+    })
+    .catch(error => {
+      console.log("Error: " + error);
+      res.status(400).send(error);
+    });
+});
 
 // add (post)
 // get (get)
@@ -86,40 +214,6 @@ router.route("/get").get((req, res) => {
     .catch(error => res.status(400).json("Error: " + error));
 });
 
-/*
-router.post('/edit_item/:id', async function(req, res) {
-  let oldItem;
-  try { oldItem = await ShoppingListItem.findById(req.params.id); }
-  catch (err) { res.status(400).send("Error finding apartment in database."); }
-
-  let userIds = [];
-  req.body.users.forEach(async (user) => {
-    var name = userName.split(" ");
-    var userFirstName = name[0];
-    var userLastName = name[1];
-
-    let user;
-    try { user = await User.findOne({ first_name: userFirstName, last_name: userLastName }); }
-    catch(err) { res.status(400).send("Error finding user with that first and last name."); }
-    userIds.push(user._id);
-  });
-
-  let updatedItem = {
-    name: ((req.body.name != null) ? req.body.name : oldItem.name),
-    description: ((req.body.description != null) ? req.body.description : oldItem.description),
-    quantity: ((req.body.quantity != null) ? req.body.quantity : oldItem.quantity),
-    price: ((req.body.price != null) ? req.body.price : oldItem.price),
-    completed: ((req.body.completed != null) ? req.body.completed : oldItem.completed),
-    users: ((req.body.users != null) ? userIds : oldItem.users),
-  }
-
-  let newItem;
-  try { newItem = await ShoppingListItem.findByIdAndUpdate(req.params.id, updatedItem, { new: true }); } 
-  catch(err) { res.status(400).send("Error editing shopping list item."); }
-  res.status(201).send("Success") 
-});
-*/
-
 /**
  * Delete a ShoppingListItem by object id.
  *
@@ -137,19 +231,5 @@ router.delete("/delete/:id", async function(req, res) {
   }
   res.status(200).send("Success");
 });
-
-// router.post('charge_users', async function(req, res) {
-// 	try { let completedItems = await ShoppingListItem.find({ completed: true }).toArray(); }
-// 	catch(err) { res.status(400).send("Error finding items."); }
-
-// 	let charges = {};
-// 	for (let item in completedItems) {
-// 		let individualCharge = item.price / item.users.length;
-// 		for (let userID in item.users) {
-// 			if (userID in charges) { charges[userID] += individualCharge; }
-// 			else { charges[userID] = individualCharge; }
-// 		}
-// 	}
-// });
 
 module.exports = router;
