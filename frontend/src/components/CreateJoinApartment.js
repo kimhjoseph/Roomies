@@ -5,6 +5,8 @@ import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 export default class CreateJoinApartment extends Component {
   constructor(props) {
     super(props);
@@ -33,6 +35,9 @@ export default class CreateJoinApartment extends Component {
           this.props.history.push("/join");
         }
     })
+    .catch(function (error){
+        console.log(error);
+    });
   }
 
   // for join
@@ -43,7 +48,7 @@ export default class CreateJoinApartment extends Component {
       code: this.state.code
     };
 
-    axios.post("http://localhost:4000/apartment/join").
+    axios.post("http://localhost:4000/apartment/join", existingApartment).
       .then(res => {
         if (res.data == "Success") {
           this.props.history.push("/home");
@@ -52,6 +57,9 @@ export default class CreateJoinApartment extends Component {
           this.props.history.push("/join");
         }
       })
+      .catch(function (error){
+        console.log(error);
+    });
   }
 
   onChangeCode(e) {
