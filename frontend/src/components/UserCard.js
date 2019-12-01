@@ -5,10 +5,6 @@ import { Row, Col } from "react-bootstrap";
 import "./UserCard.css";
 
 class UserCard extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
-
   render() {
     return (
       <div>
