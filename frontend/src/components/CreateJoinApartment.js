@@ -5,6 +5,7 @@ import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
 import { withRouter } from "react-router-dom";
 import axios from "axios";
+import CreateJoinModal from "./CreateJoinModal";
 
 axios.defaults.withCredentials = true;
 
@@ -15,6 +16,7 @@ class CreateJoinApartment extends Component {
     this.onChangeCode = this.onChangeCode.bind(this);
 
     this.state = {
+      codeModal: false,
       user: "",
       code: ""
     };
@@ -22,6 +24,16 @@ class CreateJoinApartment extends Component {
     this.onChangeCode = this.onChangeCode.bind(this);
     this.onSubmitCreate = this.onSubmitCreate.bind(this);
     this.onSubmitJoin = this.onSubmitJoin.bind(this);
+    this.showAddModal = this.showAddModal.bind(this);
+    this.handleContinue = this.handleContinue.bind(this);
+  }
+
+  showAddModal() {
+    this.setState({ codeModal: !this.state.codeModal });
+  }
+  
+  handleContinue() {
+    this.props.history.push("/home");
   }
 
   // for create
@@ -30,9 +42,11 @@ class CreateJoinApartment extends Component {
       .get("http://localhost:4000/apartment/create")
       .then(res => {
         console.log(res);
-        if (res.data == "Success") {
-          this.props.history.push("/home");
+        if (res.statusText == "OK") {
+          this.setState({ code: res.data});
+          this.showAddModal();
         } else {
+          console.log("error creating");
           this.props.history.push("/join");
         }
       })
@@ -110,6 +124,12 @@ class CreateJoinApartment extends Component {
                 >
                   Create Group
                 </Button>
+                <CreateJoinModal
+                onClose={this.showAddModal}
+                show={this.state.codeModal}
+                handleContinue={this.handleContinue}
+                code={this.state.code}
+              />
               </div>
             </Card.Body>
           </Card>

@@ -61,7 +61,7 @@ router.get("/create", async function(req, res) {
   req.session.user = user;
   console.log("Sucessfully change req.session.user");
   console.log(req.session.user);
-  res.status(200).json("Success");
+  res.status(200).json(apartment.code);
 });
 
 /**
