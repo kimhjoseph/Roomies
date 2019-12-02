@@ -1,5 +1,4 @@
-To start the server independently of the frontend, run
-	nodemon server
+To start the server independently of the frontend, run `nodemon server`.
 
 Test Cases:
 
