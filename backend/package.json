@@ -23,7 +23,6 @@
     "express": "^4.17.1",
     "express-session": "^1.17.0",
     "googleapis": "^39.2.0",
-<<<<<<< HEAD
     "gridfs-stream": "^1.1.1",
     "mocha": "^6.2.2",
     "mongoose": "^5.7.9",
@@ -31,17 +30,13 @@
     "multer-gridfs-storage": "^4.0.1",
     "nodemon": "^2.0.1",
     "passport": "^0.4.0",
-    "passport-facebook-token": "^3.3.0"
-=======
+    "passport-facebook-token": "^3.3.0",
     "https": "^1.0.0",
-    "mocha": "^6.2.2",
-    "mongoose": "^5.7.9",
     "querystring": "^0.2.0",
     "request": "^2.88.0"
   },
   "devDependencies": {
     "electron-rebuild": "^1.8.8",
     "sinon": "^7.5.0"
->>>>>>> cd46d487aac1c17574f74021e4caeb4919166813
   }
 }
