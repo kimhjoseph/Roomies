@@ -7,9 +7,9 @@ beforeEach(() => {
   testSession = session('http://localhost:4000');
 });
 
-it('should sign in', (done) => {
-  testSession.post('/user/login')
-    .send({ email: 'test@gmail.com', password: 'test' })
+it('should sign up', (done) => {
+  testSession.post('/user/signup')
+    .send({ first_name: 'Test', last_name: 'User', email: 'test@gmail.com', password: 'test' })
     .expect(201)
     .end(done);
 });
@@ -102,5 +102,4 @@ describe('after authenticating session', () => {
   	  .expect(200)
   	  .end(done)
   });
-
 });
