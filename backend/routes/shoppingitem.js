@@ -8,9 +8,7 @@
  * @const
  */
 
-
 const express = require("express");
-
 
 /**
  * Express router to mount shopping item related functions on.
@@ -31,7 +29,6 @@ require("dotenv").config();
 
 var PayPalClientID = process.env.PayPalClientID;
 var PayPalClientSecret = process.env.PayPalClientSecret;
-
 
 /**
  * Route for gaining access token from paypal.
@@ -78,7 +75,6 @@ router.post("/get_access", async function(request, response) {
     response.status(400).send("Error getting access token.");
   }
 });
-
 
 /**
  * Route for sending invoices to users through paypal.
@@ -178,8 +174,6 @@ router.post("/send_invoice", async function(req, res) {
     });
 });
 
-
-
 /**
  * Route for adding a shopping list item to an apartment.
  * @name post/add
@@ -227,7 +221,6 @@ router.post("/add", async function(req, res) {
     });
 });
 
-
 /**
  * Route for retrieving all shopping list items of an apartment.
  * @name get/get
@@ -261,7 +254,6 @@ router.route("/get").get((req, res) => {
     .catch(error => res.status(400).json("Error: " + error));
 });
 
-
 /**
  * Route for deleting a shopping list item.
  * @name delete/delete
@@ -272,7 +264,6 @@ router.route("/get").get((req, res) => {
  * @param {callback} middleware - Express middleware.
  * @return {string} "Success".
  */
-
 
 router.delete("/delete/:id", async function(req, res) {
   try {
