@@ -108,7 +108,7 @@ router.post("/join", async function(req, res) {
 router.get("/get_apartment", async function(req, res) {
   let apartment;
   try {
-    let apartment = await Apartment.findById(req.session.user.apartment);
+    apartment = await Apartment.findById(new ObjectId(req.session.user.apartment));
   } catch (err) {
     res.status(400).send("Error finding apartment.");
   }

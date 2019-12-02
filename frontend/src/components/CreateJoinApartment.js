@@ -30,7 +30,7 @@ class CreateJoinApartment extends Component {
   showAddModal() {
     this.setState({ codeModal: !this.state.codeModal });
   }
-  
+
   handleContinue() {
     this.props.history.push("/home");
   }
@@ -42,7 +42,7 @@ class CreateJoinApartment extends Component {
       .then(res => {
         console.log(res);
         if (res.statusText == "OK") {
-          this.setState({ code: res.data});
+          this.setState({ code: res.data });
           this.showAddModal();
         } else {
           console.log("error creating");
@@ -124,11 +124,11 @@ class CreateJoinApartment extends Component {
                   Create Group
                 </Button>
                 <CreateJoinModal
-                onClose={this.showAddModal}
-                show={this.state.codeModal}
-                handleContinue={this.handleContinue}
-                code={this.state.code}
-              />
+                  onClose={this.showAddModal}
+                  show={this.state.codeModal}
+                  handleContinue={this.handleContinue}
+                  code={this.state.code}
+                />
               </div>
             </Card.Body>
           </Card>
