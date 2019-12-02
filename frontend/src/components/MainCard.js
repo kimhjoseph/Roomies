@@ -150,7 +150,7 @@ export default class MainCard extends Component {
       document.getElementById("Busy-Button").className = "custom-status-button";
     } else if (status == "Away") {
       document.getElementById("Home-Button").className =
-        "custom-status-button active";
+        "custom-status-button";
       document.getElementById("Away-Button").className =
         "custom-status-button active";
       document.getElementById("Sleeping-Button").className =
