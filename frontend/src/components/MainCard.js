@@ -231,16 +231,6 @@ export default class MainCard extends Component {
               Busy
             </button>
           </div>
-          <Card.Text style={{ marginBottom: "8px" }}>
-            <strong>Chores assigned:</strong>
-            <br />
-            Sweeping (14 day(s) late)
-          </Card.Text>
-          <Card.Text style={{ marginBottom: "8px" }}>
-            <strong>Upcoming Event:</strong>
-            <br />
-            Thanksgiving Potluck (11/24 at 5PM)
-          </Card.Text>
         </Card.Body>
       </Card>
     );
