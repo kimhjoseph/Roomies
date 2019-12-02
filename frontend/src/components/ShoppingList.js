@@ -458,13 +458,17 @@ export default class ShoppingList extends Component {
                   <ListGroup variant="flush">
                     {this.state.loading === true ? (
                       <ListGroup.Item>
-                        <Card.Body>
+                        <Card.Body
+                          style={{ height: "75px", textAlign: "center" }}
+                        >
                           <LoadingComponent />
                         </Card.Body>
                       </ListGroup.Item>
                     ) : this.state.items.length === 0 ? (
                       <ListGroup.Item>
-                        <Card.Body>
+                        <Card.Body
+                          style={{ height: "75px", textAlign: "center" }}
+                        >
                           <Card.Title>Your list is empty!</Card.Title>
                         </Card.Body>
                       </ListGroup.Item>
@@ -498,7 +502,13 @@ export default class ShoppingList extends Component {
                             <ListGroup.Item
                               key={item.item + " " + item.people.join(", ")}
                             >
-                              <Card.Body as="custom-card-body">
+                              <Card.Body
+                                style={{
+                                  // justifyContent: "flex-start",
+                                  // height: "75px",
+                                  padding: "0px"
+                                }}
+                              >
                                 <div className="edit-functions">
                                   <FontAwesomeIcon
                                     icon={faPlusCircle}
@@ -606,11 +616,29 @@ export default class ShoppingList extends Component {
                           }
                         )}
                         <ListGroup.Item>
-                          <Card.Body as="custom-card-body">
-                            <Card.Title style={{ textAlign: "right" }}>
+                          <Card.Body
+                            style={{
+                              display: "flex",
+                              flexDirection: "column",
+                              justifyContent: "space-evenly",
+                              height: "75px",
+                              padding: "0px"
+                            }}
+                          >
+                            <Card.Title
+                              style={{
+                                textAlign: "right",
+                                marginBottom: "6px"
+                              }}
+                            >
                               Total
                             </Card.Title>
-                            <Card.Text style={{ textAlign: "right" }}>
+                            <Card.Text
+                              style={{
+                                textAlign: "right",
+                                marginBottom: "6px"
+                              }}
+                            >
                               $
                               {parseFloat(
                                 Object.values(

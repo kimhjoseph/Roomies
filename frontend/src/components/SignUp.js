@@ -14,7 +14,9 @@ class SignUp extends Component {
       first_name: "",
       last_name: "",
       email: "",
-      password: ""
+      password: "",
+      validated: false,
+      error: false
     };
 
     this.onChangeFirst = this.onChangeFirst.bind(this);
@@ -27,21 +29,36 @@ class SignUp extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    const newUser = {
-      first_name: this.state.first_name,
-      last_name: this.state.last_name,
-      email: this.state.email,
-      password: this.state.password
-    };
-
-    axios.post("http://localhost:4000/user/signup", newUser).then(res => {
-      console.log(res.data);
-      if (res.data == "Success") {
-        this.props.history.push("/join");
-      } else {
-        this.props.history.push("/signup");
-      }
-    });
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.setState({
+        validated: true
+      });
+    } else {
+      const newUser = {
+        first_name: this.state.first_name,
+        last_name: this.state.last_name,
+        email: this.state.email,
+        password: this.state.password
+      };
+      axios
+        .post("http://localhost:4000/user/signup", newUser)
+        .then(res => {
+          console.log(res.data);
+          if (res.data == "Success") {
+            this.props.history.push("/join");
+          } else {
+            this.props.history.push("/signup");
+          }
+        })
+        .catch(error => {
+          this.setState({
+            error: true
+          });
+        });
+    }
   }
 
   onChangeFirst(e) {
@@ -76,6 +93,8 @@ class SignUp extends Component {
         </div>
         <div className="inner-container">
           <Form
+            noValidate
+            validated={this.state.validated}
             onSubmit={this.onSubmit}
             style={{
               display: "flex",
@@ -91,6 +110,7 @@ class SignUp extends Component {
               <Col>
                 <Form.Group>
                   <Form.Control
+                    required
                     placeholder="First name"
                     value={this.state.first_name}
                     onChange={this.onChangeFirst}
@@ -101,6 +121,7 @@ class SignUp extends Component {
               <Col>
                 <Form.Group>
                   <Form.Control
+                    required
                     placeholder="Last name"
                     value={this.state.last_name}
                     onChange={this.onChangeLast}
@@ -111,6 +132,7 @@ class SignUp extends Component {
             </Form.Row>
             <Form.Group controlId="formBasicEmail">
               <Form.Control
+                required
                 type="email"
                 placeholder="Email"
                 value={this.state.email}
@@ -121,6 +143,7 @@ class SignUp extends Component {
             </Form.Group>
             <Form.Group controlId="formBasicPassword">
               <Form.Control
+                required
                 type="password"
                 placeholder="Password"
                 value={this.state.password}
@@ -128,6 +151,17 @@ class SignUp extends Component {
                 style={{ width: "330px" }}
               />
             </Form.Group>
+            {this.state.error === true ? (
+              <p
+                style={{
+                  fontFamily: "Sansita",
+                  fontStyle: "normal",
+                  color: "#dc3545"
+                }}
+              >
+                An error has occurred: Please try again later.
+              </p>
+            ) : null}
             <div style={{ display: "flex", flexDirection: "row" }}>
               <input
                 type="submit"

@@ -12,7 +12,9 @@ class Login extends Component {
 
     this.state = {
       email: "",
-      password: ""
+      password: "",
+      validated: false,
+      badLogin: false
     };
 
     this.onChangeEmail = this.onChangeEmail.bind(this);
@@ -23,18 +25,33 @@ class Login extends Component {
   onSubmit(e) {
     e.preventDefault();
 
-    const newUser = {
-      email: this.state.email,
-      password: this.state.password
-    };
-
-    axios.post("http://localhost:4000/user/login", newUser).then(res => {
-      if (res.data == "Success") {
-        this.props.history.push("/home");
-      } else {
-        this.props.history.push("/login");
-      }
-    });
+    const form = e.currentTarget;
+    if (form.checkValidity() === false) {
+      e.preventDefault();
+      e.stopPropagation();
+      this.setState({
+        validated: true
+      });
+    } else {
+      const newUser = {
+        email: this.state.email,
+        password: this.state.password
+      };
+      axios
+        .post("http://localhost:4000/user/login", newUser)
+        .then(res => {
+          if (res.data == "Success") {
+            this.props.history.push("/home");
+          } else {
+            this.props.history.push("/login");
+          }
+        })
+        .catch(error => {
+          this.setState({
+            badLogin: true
+          });
+        });
+    }
   }
 
   onChangeEmail(e) {
@@ -61,6 +78,8 @@ class Login extends Component {
         </div>
         <div className="inner-container">
           <Form
+            noValidate
+            validated={this.state.validated}
             className="login-form"
             style={{
               display: "flex",
@@ -75,6 +94,7 @@ class Login extends Component {
             </div>
             <Form.Group controlId="formBasicEmail" style={{ width: "330px" }}>
               <Form.Control
+                required
                 type="email"
                 placeholder="Email"
                 value={this.state.email}
@@ -86,12 +106,24 @@ class Login extends Component {
               style={{ width: "330px" }}
             >
               <Form.Control
+                required
                 type="password"
                 placeholder="Password"
                 value={this.state.password}
                 onChange={this.onChangePassword}
               />
             </Form.Group>
+            {this.state.badLogin === true ? (
+              <p
+                style={{
+                  fontFamily: "Sansita",
+                  fontStyle: "normal",
+                  color: "#dc3545"
+                }}
+              >
+                Incorrect email and/or password
+              </p>
+            ) : null}
             <div style={{ display: "flex", flexDirection: "row" }}>
               <input
                 type="submit"
