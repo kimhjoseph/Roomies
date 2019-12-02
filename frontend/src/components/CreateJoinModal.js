@@ -41,7 +41,13 @@ export default class CreateJoinModal extends Component {
             New Apartment Created!
           </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center"
+          }}
+        >
           <h4 className="create-modal" style={{ fontSize: "20px" }}>
             Invite your roomies with this code:
           </h4>
