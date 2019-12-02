@@ -1,6 +1,5 @@
 import React, { Component } from "react";
 import { Card, Button, Container } from "react-bootstrap";
-import { Link } from "react-router-dom";
 import "./GroupCard.css";
 import NavbarLogo from "./NavLogo";
 import { withRouter } from "react-router-dom";

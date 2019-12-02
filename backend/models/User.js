@@ -29,7 +29,8 @@ let User = new Schema(
     },
 
     picture: {
-      type: Object
+      type: Schema.Types.ObjectId,
+      ref: "uploads.files"
     }
   },
   {

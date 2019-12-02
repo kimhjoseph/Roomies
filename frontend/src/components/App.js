@@ -8,6 +8,7 @@ import ChoreList from "./ChoreList";
 import SignUp from "./SignUp";
 import Login from "./Login";
 import CreateJoinApartment from "./CreateJoinApartment"
+import ReactUploadImage from "./ImageUpload"
 import "./App.css";
 
 function App() {
@@ -19,6 +20,9 @@ function App() {
             <Switch>
             <Route path="/signup">
                 <SignUp />
+              </Route>
+              <Route path="/testimage">
+                <ReactUploadImage />
               </Route>
               <Route path="/login">
                 <Login />
