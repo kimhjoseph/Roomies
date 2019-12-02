@@ -160,8 +160,7 @@ export default class MainCard extends Component {
         "custom-status-button";
       document.getElementById("Busy-Button").className = "custom-status-button";
     } else if (status == "Away") {
-      document.getElementById("Home-Button").className =
-        "custom-status-button";
+      document.getElementById("Home-Button").className = "custom-status-button";
       document.getElementById("Away-Button").className =
         "custom-status-button active";
       document.getElementById("Sleeping-Button").className =
@@ -197,7 +196,7 @@ export default class MainCard extends Component {
             <img
               id="main-img"
               className="rounded-circle"
-              style={{ height: "125px", width: "125px" }}
+              style={{ height: "125px", width: "125px", margin: "15px" }}
               alt=""
             ></img>
           </div>
