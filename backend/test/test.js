@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 it('should sign up', (done) => {
-  testSession.post('/user/signupd')
+  testSession.post('/user/signup')
     .send({ first_name: 'Test', last_name: 'User', email: 'test@gmail.com', password: 'test' })
     .expect(201)
     .end(done);
@@ -51,8 +51,14 @@ describe('after authenticating session', () => {
       .end(done)
   });
 
-  it('should return current user', (done) => {
-  	authenticatedSession.get('/user/get_current_user')
+  it('should update status', (done) => {
+  	let data = {
+  		status: "Away"
+  	}
+
+  	authenticatedSession.get('/user/edit_info')
+  	  .send(data)
+  	  .set('Accept', 'application/json')
   	  .expect(200)
   	  .end(done)
   });
