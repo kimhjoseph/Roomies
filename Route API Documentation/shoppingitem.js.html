@@ -1,4 +1,32 @@
-/** Express router providing shopping item related routes
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: shoppingitem.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: shoppingitem.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/** Express router providing shopping item related routes
  * @module routes/shoppingitem
  * @requires express
  */
@@ -29,8 +57,7 @@ var https = require("https");
 const circularJSON = require("circular-json");
 require("dotenv").config();
 
-var PayPalClientID = process.env.PayPalClientID;
-var PayPalClientSecret = process.env.PayPalClientSecret;
+var PayPalBasicAuth = process.env.PayPalBasicAuth;
 
 
 /**
@@ -45,18 +72,18 @@ var PayPalClientSecret = process.env.PayPalClientSecret;
  */
 
 router.post("/get_access", async function(request, response) {
-  var base64encodedData = await new Buffer(
-    PayPalClientID + ":" + PayPalClientSecret
-  ).toString("base64");
+  console.log("test");
+  console.log(PayPalBasicAuth);
   var options = {
     "method": "POST",
     "hostname": "api.sandbox.paypal.com",
     "path": "/v1/oauth2/token",
     "headers": {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " + base64encodedData
+      "Authorization": "Basic " + PayPalBasicAuth
     }
   };
+
   var req = await https.request(options, function(res) {
     var chunks = [];
     res.on("data", function(chunk) {
@@ -65,10 +92,11 @@ router.post("/get_access", async function(request, response) {
     res.on("end", function() {
       var body = Buffer.concat(chunks);
       var jsonBody = JSON.parse(body.toString());
-      console.log(jsonBody);
+      // console.log(jsonBody);
       response.status(201).send(jsonBody);
     });
   });
+
   try {
     await req.write(
       querystring.stringify({ grant_type: "client_credentials" })
@@ -92,13 +120,13 @@ router.post("/get_access", async function(request, response) {
  */
 
 router.post("/send_invoice", async function(req, res) {
+  // console.log(req);
   var config = {
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + req.body.access_token
     }
   };
-  console.log(config);
   // get invoice number
   await axios
     .post(
@@ -109,8 +137,8 @@ router.post("/send_invoice", async function(req, res) {
     // create invoice draft
     .then(async response => {
       let jsonString = circularJSON.stringify(response.data);
-      let json = JSON.parse(jsonString);
-      console.log(json);
+      let json = JSON.parse(jsonString);f
+      // console.log(json);
       var invoice_draft = {
         "detail": {
           "invoice_number": json.invoice_number,
@@ -162,7 +190,7 @@ router.post("/send_invoice", async function(req, res) {
     .then(response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
-      console.log(json);
+      // console.log(json);
       return axios.post(json.href + "/send", null, config);
     })
     // invoice sent
@@ -236,7 +264,7 @@ router.post("/add", async function(req, res) {
  * @inner
  * @param {string} path - Express path
  * @param {callback} middleware - Express middleware.
- * @return {List<ShoppingListItem>} List of shopping list items.
+ * @return {List&lt;ShoppingListItem>} List of shopping list items.
  */
 
 router.route("/get").get((req, res) => {
@@ -284,3 +312,26 @@ router.delete("/delete/:id", async function(req, res) {
 });
 
 module.exports = router;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Modules</h3><ul><li><a href="module-routes_apartment.html">routes/apartment</a></li><li><a href="module-routes_choreitem.html">routes/choreitem</a></li><li><a href="module-routes_event.html">routes/event</a></li><li><a href="module-routes_shoppingitem.html">routes/shoppingitem</a></li><li><a href="module-routes_user.html">routes/user</a></li></ul><h3>Namespaces</h3><ul><li><a href="module-routes_apartment-apartmentRouter.html">apartmentRouter</a></li><li><a href="module-routes_choreitem-choreitemRouter.html">choreitemRouter</a></li><li><a href="module-routes_event-eventRouter.html">eventRouter</a></li><li><a href="module-routes_shoppingitem-shoppingitemRouter.html">shoppingitemRouter</a></li><li><a href="module-routes_user-userRouter.html">userRouter</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 3.6.3</a> on Mon Dec 02 2019 03:56:56 GMT-0800 (Pacific Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
