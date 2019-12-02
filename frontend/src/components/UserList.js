@@ -6,6 +6,8 @@ import "./UserList.css";
 import axios from 'axios';
 import dummy from "../images/dummy.jpg";
 
+axios.defaults.withCredentials = true;
+
 class UserList extends Component {
   constructor(props) {
     super(props);
@@ -13,29 +15,18 @@ class UserList extends Component {
     this.state = {
       imagefile: dummy,
       users: [],
-      userInfo: {
-        firstname: "Rondald",
-        lastname: "Rondaldson",
-        id: 90342,
-        bio: "srrsly fuck the middle class"
-      },
-      newInfo: {
-        firstname: "",
-        lastname: "",
-        id: 0,
-        bio: ""
-      }
     };
 
     axios.get('http://localhost:4000/user/get')
-    .then(response => {
-      this.setState({ users: response.data
-       });
+    .then(res => {
+      this.setState({ users: res.data
+      });
     })
     .catch(function (error){
         console.log(error);
     });
   }
+
   render() {
     return (
       <Container>

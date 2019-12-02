@@ -1,21 +1,20 @@
 import React, { Component } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import "./Login.css";
-import axios from 'axios';
-import { withRouter } from 'react-router-dom';
+import axios from "axios";
+import { withRouter } from "react-router-dom";
 
 class SignUp extends Component {
   // TODO: OAuth stuff will need to be added here
 
-
-  constructor(props){
-    super(props)
+  constructor(props) {
+    super(props);
 
     this.state = {
-      first_name: '',
-      last_name: '',
-      email: '',
-      password: ''
+      first_name: "",
+      last_name: "",
+      email: "",
+      password: ""
     };
 
     this.onChangeFirst = this.onChangeFirst.bind(this);
@@ -23,62 +22,43 @@ class SignUp extends Component {
     this.onChangeEmail = this.onChangeEmail.bind(this);
     this.onChangePassword = this.onChangePassword.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+  }
 
+  onSubmit(e) {
+    e.preventDefault();
 
-    }
-
-
-    onSubmit(e) {
-      e.preventDefault();
-
-      console.log(`First Name: ${this.state.first_name}`);
-      console.log(`Last Name: ${this.state.last_name}`);
-      console.log(`Email: ${this.state.email}`);
-      console.log(`Password: ${this.state.password}`);
-
-
-      const newUser = {
-        first_name : this.state.first_name,
-        last_name: this.state.last_name,
-        email: this.state.email,
-        password: this.state.password
-      };
-
-      axios.post('http://localhost:4000/user/signup', newUser)
-        .then(res => {
-          console.log(res.data);
-          if (res.data == "Success"){
-            console.log('here')
-            this.props.history.push("/home");
-          }
-          }) 
-
-
-
-    }
-
-    onChangeFirst(e){
-      this.setState({first_name: e.target.value})
-
+    const newUser = {
+      first_name: this.state.first_name,
+      last_name: this.state.last_name,
+      email: this.state.email,
+      password: this.state.password
     };
 
-    onChangeLast(e){
-      this.setState({last_name: e.target.value})
+    axios.post("http://localhost:4000/user/signup", newUser).then(res => {
+      console.log(res.data);
+      if (res.data == "Success") {
+        this.props.history.push("/join");
+      } else {
+        this.props.history.push("/signup");
+      }
+    });
+  }
 
-    };
+  onChangeFirst(e) {
+    this.setState({ first_name: e.target.value });
+  }
 
-    onChangeEmail(e){
-      this.setState({email: e.target.value})
+  onChangeLast(e) {
+    this.setState({ last_name: e.target.value });
+  }
 
-    };
+  onChangeEmail(e) {
+    this.setState({ email: e.target.value });
+  }
 
-    onChangePassword(e){
-      this.setState({password: e.target.value})
-    };
-
-
-
-
+  onChangePassword(e) {
+    this.setState({ password: e.target.value });
+  }
 
   render() {
     return (
@@ -89,7 +69,7 @@ class SignUp extends Component {
             It's time to make your Roommates Great
           </h5>
         </div>
-        <div className="inner-container" >
+        <div className="inner-container">
           <Form onSubmit={this.onSubmit}>
             <div>
               <h3>Create your account</h3>
@@ -97,23 +77,46 @@ class SignUp extends Component {
             <Form.Row>
               <Col>
                 <Form.Group>
-                  <Form.Control placeholder="First name" value={this.state.first_name} onChange = {this.onChangeFirst}/>
+                  <Form.Control
+                    placeholder="First name"
+                    value={this.state.first_name}
+                    onChange={this.onChangeFirst}
+                  />
                 </Form.Group>
               </Col>
               <Col>
                 <Form.Group>
-                  <Form.Control placeholder="Last name" value={this.state.last_name} onChange = {this.onChangeLast}/>
+                  <Form.Control
+                    placeholder="Last name"
+                    value={this.state.last_name}
+                    onChange={this.onChangeLast}
+                  />
                 </Form.Group>
               </Col>
             </Form.Row>
             <Form.Group controlId="formBasicEmail">
-              <Form.Control type="email" placeholder="Email" value={this.state.email} onChange = {this.onChangeEmail} />
+              <Form.Control
+                type="email"
+                placeholder="Email"
+                value={this.state.email}
+                onChange={this.onChangeEmail}
+              />
               <Form.Text className="text-muted"></Form.Text>
             </Form.Group>
             <Form.Group controlId="formBasicPassword">
-              <Form.Control type="password" placeholder="Password" value={this.state.password} onChange = {this.onChangePassword}/>
+              <Form.Control
+                type="password"
+                placeholder="Password"
+                value={this.state.password}
+                onChange={this.onChangePassword}
+              />
             </Form.Group>
-            <input type='submit' value='Sign Up' className="custom-sign-button" style={{align: "center"}}/>
+            <input
+              type="submit"
+              value="Sign Up"
+              className="custom-sign-button"
+              style={{ align: "center" }}
+            />
           </Form>
         </div>
       </div>
@@ -122,5 +125,3 @@ class SignUp extends Component {
 }
 
 export default withRouter(SignUp);
-
-

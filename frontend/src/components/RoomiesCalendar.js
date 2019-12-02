@@ -3,208 +3,239 @@ import NavbarComponent from "./NavbarComponent";
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
-
-const CALENDAR_ID = 'zprong@g.ucla.edu'
-const GOOGLE_API_KEY = 'AIzaSyBz0SoAI26Bq_scJlGfUbOdSj53gaDASOc'
-const CLIENT_ID = '634944295130-etf1ek4s58mdbl378f0mh2dk99eb8bq3.apps.googleusercontent.com'
-const SCOPES = ['https://www.googleapis.com/auth/calendar'];
-let url = `https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${GOOGLE_API_KEY}`
+import axios from "axios";
+import CalendarCreateEventModal from "./CalendarCreateEventModal";
+import "react-datepicker/dist/react-datepicker.css";
+import "./RoomiesCalendar.css";
+axios.defaults.withCredentials = true;
 const localizer = momentLocalizer(moment)
-
-export function getEvents (callback) {
-
-  // request
-  //   .get(url)
-  //   .end((err, resp) => {
-  //     if (!err) {
-  //       const events = []
-  //       JSON.parse(resp.text).items.map((event) => {
-  //         events.push({
-  //           start: event.start.date || event.start.dateTime,
-  //           end: event.end.date || event.end.dateTime,
-  //           title: event.summary,
-  //         })
-  //       })
-  //       callback(events)
-  //     }
-  //   })
-
-
-//   window.gapi
-//   .load('client:auth2', () => {
-//     window.gapi
-//     .client
-//     .init({
-//       apiKey: GOOGLE_API_KEY,
-//       clientId: CLIENT_ID,
-//       discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-//       scope: SCOPES
-//     })
-//   gapi.client.init({
-//     'apiKey': GOOGLE_API_KEY,
-//     // Your API key will be automatically added to the Discovery Document URLs.
-//     'discoveryDocs': ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-//     // clientId and scope are optional if auth is not required.
-//     'clientId': CLIENT_ID,
-//     'scope': SCOPES,
-//   }).then(function() {
-//     // 3. Initialize and make the API request.
-//     return gapi.client.people.people.get({
-//       'resourceName': 'people/me',
-//       'requestMask.includeField': 'person.names'
-//     });
-//   }).then(function(response) {
-//     console.log(response.result);
-//   }, function(reason) {
-//     console.log('Error: ' + reason.result.error.message);
-//   });
-//   };
-// // 1. Load the JavaScript client library.
-// gapi.load('client', start);
-//   });
-  return;
-}
 
 class RoomiesCalendar extends React.Component {
   constructor () {
     super()
     this.state = {
       events: [],
-      isSignedIn: false,
-      gapi: false,
-      onLoadCallback: null,
-      calendar: 'primary',
-    }
-    this.updateSigninStatus = this.updateSigninStatus.bind(this);
-    this.initClient = this.initClient.bind(this);
-    this.handleSignoutClick = this.handleSignoutClick.bind(this);
-    this.handleAuthClick = this.handleAuthClick.bind(this);
-    // this.createEvent = this.createEvent.bind(this);
-    this.listUpcomingEvents = this.listUpcomingEvents.bind(this);
-    // this.createEventFromNow = this.createEventFromNow.bind(this);
-    this.listenSign = this.listenSign.bind(this);
-    this.onLoad = this.onLoad.bind(this);
-    this.setCalendar = this.setCalendar.bind(this);
+      loading: true,
+      tempEvent: {
+        title: "",
+        start: (new Date()).toJSON(),
+        end: (new Date()).toJSON(),
+        allDay: true,
+        users: [],
+        eventId: undefined
+      },
+      users: [],
+      addEventModal: false,
+    };
+    this.getEvents = this.getEvents.bind(this);
+    this.getUsers = this.getUsers.bind(this);
+    this.handleAddEvent = this.handleAddEvent.bind(this);
+    this.handleClick = this.handleClick.bind(this);
+    this.updateTitle = this.updateTitle.bind(this);
+    this.toggleAllDay = this.toggleAllDay.bind(this);
+    this.updateStart = this.updateStart.bind(this);
+    this.updateEnd = this.updateEnd.bind(this);
+    this.updateUsers = this.updateUsers.bind(this);
+    this.showAddEventModal = this.showAddEventModal.bind(this);
   }
   componentDidMount () {
-    // getEvents((events) => {
-    //     this.setState({events})
-    // })
-    const script = document.createElement("script");
-    script.src = "https://apis.google.com/js/api.js";
-    const script2 = document.createElement("script");
-    script2.src = "https://apis.google.com/js/platform.js";
-    document.body.appendChild(script);
-    document.body.appendChild(script2);
-    this.setState({ gapi: window['gapi'] });
-    // this.setState({events: events});
-    script2.onload = () => {
-        window['gapi'].load('client:auth2', this.initClient);
-    };
-    // let events = this.listUpcomingEvents(25);
+    // Fetch events from backend
+    this.getEvents();
+    this.getUsers();
   }
-
-  updateSigninStatus(isSignedIn) {
-    this.setState({sign: isSignedIn});
-  }
-  setCalendar(newCalendar) {
-    this.setState({calendar: newCalendar});
-  }
-  listenSign(callback) {
-    if (this.state.gapi) {
-        this.state.gapi.auth2.getAuthInstance().isSignedIn.listen(callback);
-    }
-    else {
-        console.log("Error: this.gapi not loaded");
-    }
-  }
-
-  onLoad(callback) {
-    if (this.state.gapi) {
-        callback();
-    }
-    else {
-        // this.state.onLoadCallback = callback;
-        this.setState({onLoadCallback: callback});
-    }
-  }
-
-  handleSignoutClick() {
-    if (this.state.gapi) {
-        this.state.gapi.auth2.getAuthInstance().signOut();
-    }
-    else {
-        console.log("Error: this.gapi not loaded");
-    }
-  }
-  listUpcomingEvents(maxResults, calendarId = this.state.calendar) {
-    if (this.state.gapi) {
-        return this.state.gapi.client.calendar.events.list({
-            'calendarId': calendarId,
-            'timeMin': (new Date()).toISOString(),
-            'showDeleted': false,
-            'singleEvents': true,
-            'maxResults': maxResults,
-            'orderBy': 'startTime'
-        });
-    }
-    else {
-        console.log("Error: this.gapi not loaded");
-        return false;
-    }
-}
-
-  initClient() {
-    this.setState({ gapi: window['gapi'] });
-    this.state.gapi.client.init({
-            apiKey: GOOGLE_API_KEY,
-            clientId: CLIENT_ID,
-            discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"],
-            scope: SCOPES
-    }).then(() => {
-      // Listen for sign-in state changes.
-      let events = this.listUpcomingEvents(25);
-      this.setState({events: events});
-      this.state.gapi.auth2.getAuthInstance().isSignedIn.listen(this.updateSigninStatus);
-      // Handle the initial sign-in state.
-      this.updateSigninStatus(this.state.gapi.auth2.getAuthInstance().isSignedIn.get());
-      if (this.onLoadCallback) {
-          this.onLoadCallback();
+  
+  toggleAllDay(e) {
+    e.preventDefault();
+    this.setState({
+      tempEvent: {
+        title: this.state.tempEvent.title,
+        start: this.state.tempEvent.start,
+        end: this.state.tempEvent.end,
+        allDay: !this.state.tempEvent.allDay,
+        users: this.state.tempEvent.users,
+        eventId: this.state.tempEvent.eventId,
       }
-    })
-        .catch((e) => {
-        console.log(e);
     });
   }
-  handleAuthClick() {
-    if (this.state.gapi) {
-        this.state.gapi.auth2.getAuthInstance().signIn();
+  updateTitle(e) {
+    this.setState({
+      tempEvent: {
+        title: e.target.value,
+        start: this.state.tempEvent.start,
+        end: this.state.tempEvent.end,
+        allDay: this.state.tempEvent.allDay,
+        users: this.state.tempEvent.users,
+        eventId: this.state.tempEvent.eventId,
+      }
+    });
+  }
+  updateStart(date) {
+    const {tempEvent} = this.state;
+    let jsonStart = date.toJSON();
+    this.setState({
+      tempEvent: {
+        title: tempEvent.title,
+        start: jsonStart,
+        end: moment(date).isAfter(moment(tempEvent.end).toDate()) ? jsonStart : tempEvent.end,
+        allDay: tempEvent.allDay,
+        users: tempEvent.users,
+        eventId: tempEvent.eventId,
+      }
+    });
+  }
+  updateEnd(date) {
+    this.setState({
+      tempEvent: {
+        title: this.state.tempEvent.title,
+        start: this.state.tempEvent.start,
+        end: date.toJSON(),
+        allDay: this.state.tempEvent.allDay,
+        users: this.state.tempEvent.users,
+        eventId: this.state.tempEvent.eventId,
+      }
+    });
+  }
+  updateUsers(e) {
+    console.log("Updating new item people...");
+    const user = e.target.value;
+    var found = this.state.tempItem.users.find(i => i === user);
+    var users;
+    if (found === undefined) {
+      users = this.state.tempItem.users.concat([user]);
+    } else {
+      users = this.state.tempItem.users.filter(i => i !== user);
     }
-    else {
-        console.log("Error: this.gapi not loaded");
-    }
+    this.setState({
+      tempItem: {
+        title: this.state.tempEvent.title,
+        start: this.state.tempEvent.start,
+        end: this.state.tempEvent.end,
+        allDay: this.state.tempEvent.allDay,
+        users: users,
+        eventId: this.state.tempEvent.eventId,
+      }
+    });
+    console.log("Successfully updated new item people!");
+  }
+  showAddEventModal() {
+    this.setState({ 
+      addEventModal: !this.state.addEventModal,
+      allDay: true,
+    });
   }
 
+  getEvents() {
+    axios.get("http://localhost:4000/event/get")
+      .then(resp => {
+        this.setState({ events: resp.data, loading: false });
+        console.log(resp.data);
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
+  }
+  getUsers() {
+    axios.get("http://localhost:4000/user/get")
+      .then(response => {
+        this.setState({ users: response.data });
+      })
+      .catch(error => {
+        console.log("Error: " + error);
+      });
+  }
+  handleAddEvent = async tempEvent => {
+    let parsedEvent = {
+      title: this.state.tempEvent.title,
+      start: this.state.tempEvent.start,
+      end: this.state.tempEvent.end,
+      allDay: this.state.tempEvent.allDay,
+      users: this.state.tempEvent.users,
+    }
+    await axios.post("http://localhost:4000/event/add", parsedEvent)
+    .then(response => {
+      var concatEvent = {
+        title: tempEvent.title,
+        start: moment(tempEvent.start).toDate(),
+        end: moment(tempEvent.end).toDate(),
+        allDay: tempEvent.event,
+        users: tempEvent.users,
+        eventId: response.data
+      };
+      this.setState(currentState => {
+        return {
+          events: currentState.events.concat([concatEvent]),
+          tempEvent: {
+            title: "",
+            start: (new Date()).toJSON(),
+            end: (new Date()).toJSON(),
+            allDay: true,
+            users: [],
+            eventId: undefined
+          }
+        };
+      });
+      console.log("Successfully added event!");
+    })
+    .catch(error => {
+      console.log("Error: " + error);
+    });
+  };
+
+  handleClick() {
+    let tempEvent = {
+      title: 'DAD Showcase',
+      allDay: true,
+      start: '2019-12-02T02:00:00-07:00',
+      end: '2019-12-02T02:00:00-07:00',
+      users: ['zcachary prong']
+    };
+    this.addEvent(tempEvent);
+  }
 
   render () {
-    // const {events} = this.state;
-    const events = [{
-      'start': '2019-11-28T09:00:00-07:00',
-      'end': '2019-11-28T17:00:00-07:00',
-      'title': 'Google I/O 2015',
-    }];
+    const {events} = this.state;
+    // const events = [{
+    //   'allDay': true,
+    //   'start': moment('2019-11-28T09:00:00-07:00').toDate(),
+    //   'end': moment('2019-11-28T17:00:00-07:00').toDate(),
+    //   'title': 'Google I/O 2015',
+    // }];
 
+    const calendarEvents = events.map(event => {
+      return {
+        'title': event.title,
+        'allDay': event.allDay,
+        'start': moment(event.start).toDate(),
+        'end': moment(event.end).toDate(),
+      };
+    });
     return (
-    <div style={{height:'100vh'}}>
-      <NavbarComponent />
-      
-      <Calendar
-        localizer={localizer}
-        events={events}
-        style={{height: 500}}
-      />
-    </div>
-  )}
+      <div style={{height:'100vh'}}>
+        <NavbarComponent />
+        <div style={{padding: '20px 40px'}}>
+          <Calendar
+            localizer={localizer}
+            events={calendarEvents}
+            style={{height: 640, marginBottom: '50px'}}
+          />
+          <button onClick={this.showAddEventModal} className="calendar-button">Create Event</button>
+          <CalendarCreateEventModal
+            onClose={this.showAddEventModal}
+            show={this.state.addEventModal}
+            handleAddEvent={this.handleAddEvent}
+            tempEvent={this.state.tempEvent}
+            toggleAllDay={this.toggleAllDay}
+            updateTitle={this.updateTitle}
+            updateStart={this.updateStart}
+            updateEnd={this.updateEnd}
+            updateTime={this.updateTime}
+            updatePeople={this.updatePeople}
+            users={this.state.users}
+          />
+        </div>
+      </div>
+    )
+  }
 }
 
 export default RoomiesCalendar;

@@ -4,6 +4,8 @@ import "./MainCard.css";
 import dummy from "../images/dummy.jpg";
 import axios from "axios";
 
+axios.defaults.withCredentials = true;
+
 export default class MainCard extends Component {
   constructor(props) {
     super(props);
@@ -21,10 +23,9 @@ export default class MainCard extends Component {
       }
     };
 
-    axios
-      .get("http://localhost:4000/user/get")
+    axios.get("http://localhost:4000/user/get_current_user")
       .then(response => {
-        const user = response.data[0];
+        const user = response.data;
         this.setState({
           users: {
             first_name: user.first_name,
@@ -49,6 +50,7 @@ export default class MainCard extends Component {
       last_name: this.state.users.last_name,
       status: "Home"
     };
+    
    axios
     .post("http://localhost:4000/user/edit_info", newStatus)
     .then(response=> {
