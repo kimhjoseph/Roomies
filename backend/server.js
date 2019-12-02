@@ -38,43 +38,43 @@ connection.once("open", function() {
 
 });
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use(cookieParser('secret'));
-app.use(session({
-    key: 'user_sid',
-    secret: 'secret',
+app.use(cookieParser("secret"));
+app.use(
+  session({
+    key: "user_sid",
+    secret: "secret",
     resave: false,
     saveUninitialized: true,
     cookie: {
-        expires: 600000
+      expires: 600000
     }
-}));
-
+  })
+);
 
 app.use((req, res, next) => {
-    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
-    res.header(
-        "Access-Control-Allow-Headers",
-        "Origin, X-Requested-With, Content-Type, Accept, Authorization"
-    );
-    res.header('Access-Control-Allow-Credentials', true);
-    if (req.method === 'OPTIONS') {
-        res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-        return res.status(200).json({});
-    }
-    next();
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, Authorization"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  if (req.method === "OPTIONS") {
+    res.header("Access-Control-Allow-Methods", "PUT, POST, PATCH, DELETE, GET");
+    return res.status(200).json({});
+  }
+  next();
 });
-
 
 // This middleware will check if user's cookie is still saved in browser and user is not set, then automatically log the user out.
 // This usually happens when you stop your express server after login, your cookie still remains saved in the browser.
 app.use((req, res, next) => {
-    if (req.cookies.user_sid && !req.session.user) {
-        res.clearCookie('user_sid');        
-    }
-    next();
+  if (req.cookies.user_sid && !req.session.user) {
+    res.clearCookie("user_sid");
+  }
+  next();
 });
 
 // const facebookRouter = require('./routes/facebook_login');
@@ -84,7 +84,6 @@ const apartmentRouter = require("./routes/apartment");
 const shoppingitemRouter = require("./routes/shoppingitem");
 const choreitemRouter = require("./routes/choreitem");
 const eventRouter = require("./routes/event");
-
 
 // app.use('/auth/facebook', facebookRouter);
 // app.use('/auth/google', googleRouter);
@@ -172,43 +171,4 @@ const storage = new GridFsStorage({
       }
     })
   })
-//   app.post('/set', async function(req, res){
-//       let file;
-//       let user;
-//       let id;
-//     User.findOneAndUpdate(
-//         { email: req.session.user._id },
-//         { picture: new ObjectId(req.body.img_id) },
-//         { new: true }
-//       )
-//     .then(user => {
-//         req.session.user = user;
-//     })
-//     .catch(err => res.status(400).json("Error: " + err));
-
-//     console.log(user);
-
-//     //   try {
-//     //     file = await gfs.files.findOne({ _id: new ObjectId(req.body.img_id) });
-//     //     if (!file || file.length === 0) {
-//     //         return res.status(404).json({
-//     //           err: 'No file exists',
-//     //         })
-//     //       }
-//     //   } catch (err) {
-//     //     res.status(400).send("Error finding apartment.");
-//     //   }
-//     //   // Check if image
-//     //   try {
-//     //     user = await User.findOneAndUpdate(
-//     //       { email: req.session.user._id },
-//     //       { picture: file._id },
-//     //       { new: true }
-//     //     );
-//     //   } catch (err) {
-//     //     res.status(400).send("Error adding information to user.");
-//     //   }
-//     //   req.session.user = user;
-//     //   res.status(200).json("Success");
-//     })
 

@@ -3,12 +3,11 @@ import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 import RoomiesLanding from "./RoomiesLanding";
 import RoomiesHome from "./RoomiesHome";
 import ShoppingList from "./ShoppingList";
-import Settings from "./Settings"
+import Settings from "./Settings";
 import ChoreList from "./ChoreList";
 import SignUp from "./SignUp";
 import Login from "./Login";
-import CreateJoinApartment from "./CreateJoinApartment"
-import ReactUploadImage from "./ImageUpload"
+import CreateJoinApartment from "./CreateJoinApartment";
 import "./App.css";
 
 function App() {
@@ -18,11 +17,8 @@ function App() {
         <Router>
           <div>
             <Switch>
-            <Route path="/signup">
+              <Route path="/signup">
                 <SignUp />
-              </Route>
-              <Route path="/testimage">
-                <ReactUploadImage />
               </Route>
               <Route path="/login">
                 <Login />
@@ -40,7 +36,7 @@ function App() {
                 <RoomiesHome />
               </Route>
               <Route path="/chores">
-                <ChoreList/>
+                <ChoreList />
               </Route>
               <Route path="/">
                 <RoomiesLanding />

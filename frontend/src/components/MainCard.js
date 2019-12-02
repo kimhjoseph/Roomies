@@ -23,7 +23,8 @@ export default class MainCard extends Component {
       }
     };
 
-    axios.get("http://localhost:4000/user/get_current_user")
+    axios
+      .get("http://localhost:4000/user/get_current_user")
       .then(response => {
         const user = response.data;
         this.setState({
@@ -39,10 +40,12 @@ export default class MainCard extends Component {
       });
   }
 
-  setStatusHome(){
-    document.getElementById("Home-Button").className = "custom-status-button active";
-    document.getElementById("Away-Button").className = "custom-status-button" ;
-    document.getElementById("Sleeping-Button").className = "custom-status-button";
+  setStatusHome() {
+    document.getElementById("Home-Button").className =
+      "custom-status-button active";
+    document.getElementById("Away-Button").className = "custom-status-button";
+    document.getElementById("Sleeping-Button").className =
+      "custom-status-button";
     document.getElementById("Busy-Button").className = "custom-status-button";
 
     var newStatus = {
@@ -50,45 +53,48 @@ export default class MainCard extends Component {
       last_name: this.state.users.last_name,
       status: "Home"
     };
-    
-   axios
-    .post("http://localhost:4000/user/edit_info", newStatus)
-    .then(response=> {
-      this.setState({users: newStatus})
-      console.log(this.state.userInfo)
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-  console.log(this.state.newStatus);
+
+    axios
+      .post("http://localhost:4000/user/edit_info", newStatus)
+      .then(response => {
+        this.setState({ users: newStatus });
+        console.log(this.state.userInfo);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    console.log(this.state.newStatus);
   }
 
-  setStatusAway(){
+  setStatusAway() {
     document.getElementById("Home-Button").className = "custom-status-button";
-    document.getElementById("Away-Button").className = "custom-status-button active" ;
-    document.getElementById("Sleeping-Button").className = "custom-status-button";
+    document.getElementById("Away-Button").className =
+      "custom-status-button active";
+    document.getElementById("Sleeping-Button").className =
+      "custom-status-button";
     document.getElementById("Busy-Button").className = "custom-status-button";
     var newStatus = {
       first_name: this.state.users.first_name,
       last_name: this.state.users.last_name,
       status: "Away"
     };
-   axios
-    .post("http://localhost:4000/user/edit_info", newStatus)
-    .then(response=> {
-      this.setState({users: newStatus})
-      console.log(this.state.userInfo)
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-  console.log(this.state.newStatus);
+    axios
+      .post("http://localhost:4000/user/edit_info", newStatus)
+      .then(response => {
+        this.setState({ users: newStatus });
+        console.log(this.state.userInfo);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    console.log(this.state.newStatus);
   }
 
-  setStatusSleeping(){
+  setStatusSleeping() {
     document.getElementById("Home-Button").className = "custom-status-button";
-    document.getElementById("Away-Button").className = "custom-status-button" ;
-    document.getElementById("Sleeping-Button").className = "custom-status-button active";
+    document.getElementById("Away-Button").className = "custom-status-button";
+    document.getElementById("Sleeping-Button").className =
+      "custom-status-button active";
     document.getElementById("Busy-Button").className = "custom-status-button";
 
     var newStatus = {
@@ -96,72 +102,81 @@ export default class MainCard extends Component {
       last_name: this.state.users.last_name,
       status: "Sleeping"
     };
-   axios
-    .post("http://localhost:4000/user/edit_info", newStatus)
-    .then(response=> {
-      this.setState({users: newStatus})
-      console.log(this.state.userInfo)
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-  console.log(this.state.newStatus);
+    axios
+      .post("http://localhost:4000/user/edit_info", newStatus)
+      .then(response => {
+        this.setState({ users: newStatus });
+        console.log(this.state.userInfo);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    console.log(this.state.newStatus);
   }
 
-  setStatusBusy(){
+  setStatusBusy() {
     document.getElementById("Home-Button").className = "custom-status-button";
-    document.getElementById("Away-Button").className = "custom-status-button" ;
-    document.getElementById("Sleeping-Button").className = "custom-status-button";
-    document.getElementById("Busy-Button").className = "custom-status-button active";
-
+    document.getElementById("Away-Button").className = "custom-status-button";
+    document.getElementById("Sleeping-Button").className =
+      "custom-status-button";
+    document.getElementById("Busy-Button").className =
+      "custom-status-button active";
 
     var newStatus = {
       first_name: this.state.users.first_name,
       last_name: this.state.users.last_name,
       status: "Busy"
     };
-   axios
-    .post("http://localhost:4000/user/edit_info", newStatus)
-    .then(response=> {
-      this.setState({users: newStatus})
-      console.log(this.state.userInfo)
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
-  console.log(this.state.newStatus);
+    axios
+      .post("http://localhost:4000/user/edit_info", newStatus)
+      .then(response => {
+        this.setState({ users: newStatus });
+        console.log(this.state.userInfo);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    console.log(this.state.newStatus);
   }
 
   render() {
     const status = this.state.users.status;
-    if(status == "Home"){
-      document.getElementById("Home-Button").className = "custom-status-button active";
-      document.getElementById("Away-Button").className = "custom-status-button" ;
-      document.getElementById("Sleeping-Button").className = "custom-status-button";
+    if (status == "Home") {
+      document.getElementById("Home-Button").className =
+        "custom-status-button active";
+      document.getElementById("Away-Button").className = "custom-status-button";
+      document.getElementById("Sleeping-Button").className =
+        "custom-status-button";
       document.getElementById("Busy-Button").className = "custom-status-button";
-    }
-    else if (status == "Away"){
-      document.getElementById("Home-Button").className = "custom-status-button active";
-      document.getElementById("Away-Button").className = "custom-status-button active" ;
-      document.getElementById("Sleeping-Button").className = "custom-status-button";
+    } else if (status == "Away") {
+      document.getElementById("Home-Button").className =
+        "custom-status-button active";
+      document.getElementById("Away-Button").className =
+        "custom-status-button active";
+      document.getElementById("Sleeping-Button").className =
+        "custom-status-button";
       document.getElementById("Busy-Button").className = "custom-status-button";
-    }
-    else if (status == "Sleeping"){
+    } else if (status == "Sleeping") {
       document.getElementById("Home-Button").className = "custom-status-button";
-      document.getElementById("Away-Button").className = "custom-status-button" ;
-      document.getElementById("Sleeping-Button").className = "custom-status-button active";
+      document.getElementById("Away-Button").className = "custom-status-button";
+      document.getElementById("Sleeping-Button").className =
+        "custom-status-button active";
       document.getElementById("Busy-Button").className = "custom-status-button";
-    }
-    else if (status == "Busy"){
+    } else if (status == "Busy") {
       document.getElementById("Home-Button").className = "custom-status-button";
-      document.getElementById("Away-Button").className = "custom-status-button" ;
-      document.getElementById("Sleeping-Button").className = "custom-status-button";
-      document.getElementById("Busy-Button").className = "custom-status-button active";
+      document.getElementById("Away-Button").className = "custom-status-button";
+      document.getElementById("Sleeping-Button").className =
+        "custom-status-button";
+      document.getElementById("Busy-Button").className =
+        "custom-status-button active";
     }
     return (
-      <Card className="main-card">
-        <Card.Body>
-          <Card.Title className="greeting" style={{ fontSize: "28px" }}>
+      <Card style={{ width: "90%", maxWidth: "550px" }}>
+        <Card.Body className="main-card" style={{ padding: "30px 40px" }}>
+          <Card.Title
+            className="greeting"
+            style={{ fontSize: "28px", marginBottom: "0px" }}
+          >
             Good Morning,
             <br />
             {this.state.users.first_name}
@@ -174,15 +189,45 @@ export default class MainCard extends Component {
               alt=""
             ></img>
           </div>
-          <div style={{ paddingTop: "10px", paddingBottom: "10px" }} id="myButtons">
-            <button id="Home-Button" className="custom-status-button" onClick={this.setStatusHome}>Home</button>
-            <button id="Away-Button" className="custom-status-button" onClick={this.setStatusAway}>Away</button>
-            <button id="Sleeping-Button" className="custom-status-button" onClick={this.setStatusSleeping}>Sleeping</button>
-            <button id="Busy-Button" className="custom-status-button" onClick={this.setStatusBusy}>Busy</button>
+          <div id="myButtons" className="status-buttons-container">
+            <button
+              id="Home-Button"
+              className="custom-status-button"
+              onClick={this.setStatusHome}
+            >
+              Home
+            </button>
+            <button
+              id="Away-Button"
+              className="custom-status-button"
+              onClick={this.setStatusAway}
+            >
+              Away
+            </button>
+            <button
+              id="Sleeping-Button"
+              className="custom-status-button"
+              onClick={this.setStatusSleeping}
+            >
+              Sleeping
+            </button>
+            <button
+              id="Busy-Button"
+              className="custom-status-button"
+              onClick={this.setStatusBusy}
+            >
+              Busy
+            </button>
           </div>
-          <Card.Text>Chores assigned: Sweeping (14 day(s) late)</Card.Text>
-          <Card.Text>
-            Upcoming Event: Thanksgiving Potluck (11/24 at 5PM)
+          <Card.Text style={{ marginBottom: "8px" }}>
+            <strong>Chores assigned:</strong>
+            <br />
+            Sweeping (14 day(s) late)
+          </Card.Text>
+          <Card.Text style={{ marginBottom: "8px" }}>
+            <strong>Upcoming Event:</strong>
+            <br />
+            Thanksgiving Potluck (11/24 at 5PM)
           </Card.Text>
         </Card.Body>
       </Card>

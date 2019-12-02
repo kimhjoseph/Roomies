@@ -52,3 +52,8 @@
 .custom-landing-button:hover {
   background: #76bcef;
 }
+
+.login-sub {
+  font-size: 25px;
+  color: #9fcaea;
+}

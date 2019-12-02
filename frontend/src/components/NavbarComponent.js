@@ -20,7 +20,6 @@ export default class NavbarComponent extends Component {
         <Nav className="mr-auto">
           <Nav.Link href="/list">List</Nav.Link>
           <Nav.Link href="/chores">Chores</Nav.Link>
-          <Nav.Link href="/testimage">Image</Nav.Link>
           <Nav.Link href="#calendar">Calendar</Nav.Link>
         </Nav>
         <Nav className="ml-auto">
