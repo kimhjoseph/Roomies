@@ -1,19 +1,11 @@
 # Roomies
 
-Roomies is a web platform used by roommates to make their lives easier.
+Roomies is a web platform used by roommates to make living with roommates easier.
 
-Test Cases:
-1. Get all Users - This test creates 2 mock Users and tests if the length of User.find().
-Expected: 2, Received: 2
+Before starting the application, run `npm install` in the backend, frontend, and main directories to install the required dependencies.
 
-2. Create an Apartment - This test creates an Apartment with Apartment.create() and checks if its name matches the expected value.
-Expected: Atrium, Received: Atrium
+To enable integration with PayPal's API, a .env file is required in the main directory with PayPal credentials (PayPalClientID and PayPalClientSecret).
 
-3. Edit an Apartment - This test finds an Apartment by id, constructs a new Apartment object, updates the original Apartment object with Apartment.findOneAndUpdate(), and checks the name.
-Expected: Red Roebs, Received: Red Roebs
+To start the application, run `npm start`.
 
-4. Add ChoreListItem - This test creates a User object, finds the User object that matches the first name and last name passed in, creates a ChoreListItem with that User's id passed in to the user field, and checks the user field.
-Expected: 1, Received: 1
-
-5. Delete ChoreListItem - This test creates a ChoreListItem, deletes it using ChoreListItem.delete(), and checks the length of ChoreListItem.
-Expected: 0, Received: 0
+To generate the JSDoc documentation simply navigate to the backend/routes directory and run npm install -g jsdoc. Then you can generate documentation for any file using jsdoc <file_name> <additional file names separated by a single space>. This will produce a folder named out in the routes directory with the HTML files containing the generated documentation.

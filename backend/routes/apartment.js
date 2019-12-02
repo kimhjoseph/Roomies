@@ -1,4 +1,24 @@
+/** Express router providing apartment related routes
+ * @module routes/apartment
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
+
+
 const express = require("express");
+
+
+/**
+ * Express router to mount apartment related functions on.
+ * @type {object}
+ * @const
+ * @namespace apartmentRouter
+ */
+
 const router = express.Router();
 
 const mongoose = require("mongoose");
@@ -6,11 +26,16 @@ const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const Apartment = require("../models/Apartment");
 
-//
-// create_apartment (get)
-// join_apartment (post)
-// get_apartment (get)
-// edit_apartment (post)
+
+/**
+ * Function for generating apartment code.
+ * @name makeId
+ * @function
+ * @memberof module:routes/apartment~apartmentRouter
+ * @inner
+ * @return {string} Generated apartment code.
+ */
+
 
 function makeId() {
   var result = "";
@@ -27,12 +52,16 @@ function makeId() {
   return result;
 }
 
+
 /**
- * Create a new Apartment.
- *
- * Use axios.get(.../apartment/create_apartment, newApartment)
- *
- * @return res contining the apartment object created.
+ * Route for creating an apartment.
+ * @name get/create
+ * @function
+ * @memberof module:routes/apartment~apartmentRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} 'Successfully created apartment'.
  */
 
 router.get("/create", async function(req, res) {
@@ -61,16 +90,18 @@ router.get("/create", async function(req, res) {
   req.session.user = user;
   console.log("Sucessfully change req.session.user");
   console.log(req.session.user);
-  res.status(200).json("Success");
+  res.status(200).json(apartment.code);
 });
 
 /**
- * Join an apartment.
- *
- * Use axios.post(.../apartment/join_apartment, code)
- *
- * @param req contains the code of the apartment to be joined.
- * @return user opject with udpated apartment field on completion
+ * Route for joining an apartment.
+ * @name post/join
+ * @function
+ * @memberof module:routes/apartment~apartmentRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} 'Successfully created apartment'.
  */
 
 router.post("/join", async function(req, res) {
@@ -93,16 +124,18 @@ router.post("/join", async function(req, res) {
     res.status(400).send("Error adding information to user.");
   }
   req.session.user = user;
-  res.status(200).json("Success");
+  res.status(201).json("Success");
 });
 
 /**
- * Retrieve an apartment of a user.
- *
- * Use axios.get(.../apartment/get_apartment)
- *
- * @param req contains the user session variable
- * @return res continaing the retrieved Apartment object.
+ * Route for retrieving a user's apartment.
+ * @name get/get_apartment
+ * @function
+ * @memberof module:routes/apartment~apartmentRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {Apartment} Apartment found.
  */
 
 router.get("/get_apartment", async function(req, res) {
@@ -116,12 +149,14 @@ router.get("/get_apartment", async function(req, res) {
 });
 
 /**
- * Retrieve an apartment of a user.
- *
- * Use axios.post(.../apartment/edit_apartment, newApartment)
- *
- * @param req contains the user session variable and the newApartment object
- * @return res continaing the retrieved Apartment object.
+ * Route for editing an apartment.
+ * @name post/edit
+ * @function
+ * @memberof module:routes/apartment~apartmentRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} "Success".
  */
 
 router.post("/edit", async function(req, res) {
@@ -148,3 +183,4 @@ router.post("/edit", async function(req, res) {
 });
 
 module.exports = router;
+

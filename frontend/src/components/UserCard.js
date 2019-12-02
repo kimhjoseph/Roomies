@@ -5,9 +5,15 @@ import { Row, Col } from "react-bootstrap";
 import "./UserCard.css";
 
 class UserCard extends Component {
-  // constructor(props) {
-  //   super(props);
-  // }
+  async componentDidMount() {
+    console.log(this.props.user);
+    document
+      .getElementById("card-img" + this.props.user.first_name)
+      .setAttribute(
+        "src",
+        "http://localhost:4000/load_image/" + this.props.user.picture
+      );
+  }
 
   render() {
     return (
@@ -19,8 +25,9 @@ class UserCard extends Component {
           <Row style={{ alignItems: "center" }}>
             <Col md="3" style={{ padding: "0px" }}>
               <Card.Img
-                src={DummyIcon}
-                style={{ width: "100%", height: "100%" }}
+                id={"card-img" + this.props.user.first_name}
+                className="rounded-circle"
+                style={{ height: "40px", width: "40px" }}
               />
             </Col>
             <Col md="9">

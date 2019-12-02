@@ -78,3 +78,12 @@
 .chore-button:hover {
   background: #76bcef;
 }
+
+.h4.create-modal {
+    font-family: Noto Sans;
+}
+
+.p.create-modal {
+    font-family: Noto Sans;
+    font-size: 30px;
+}

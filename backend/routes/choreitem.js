@@ -1,4 +1,22 @@
+/** Express router providing chore item related routes
+ * @module routes/choreitem
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
+
 const express = require("express");
+
+/**
+ * Express router to mount chore item related functions on.
+ * @type {object}
+ * @const
+ * @namespace choreitemRouter
+ */
+
 const router = express.Router();
 
 const mongoose = require("mongoose");
@@ -6,13 +24,18 @@ const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const ChoreListItem = require("../models/ChoreListItem");
 
-//
-// add (post)
-// edit_item (post)
-// get (get)
-// delete_item (delete)
-// delete_all_items (delete)
-// getmyitems (get)
+
+/**
+ * Function for calculating days remaining on a chore.
+ * @name getDaysRemaining
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {Date} createdAt - Date created
+ * @param {Number} days - Days to complete chore.
+ * @return {Number} Days remaining to complete chore.
+ */
+
 
 function getDaysRemaining(createdAt, days) {
   createdAt.setDate(createdAt.getDate() + days);
@@ -24,25 +47,30 @@ function getDaysRemaining(createdAt, days) {
   return diffDays;
 }
 
+
+
 /**
- * Create a new ChoreListItem. We first find the user id to be assigned to using the first and last name and then use that as a reference.
- *
- * Use axios.post(.../choreitem/add, newChoreListItem)
- *
- * @param req contains the new ChoreListItem with user, description, created timestamp, and days to complete.
- * @return "Successfully added chore!"
+ * Route for adding a chore item.
+ * @name post/add
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} 'Success'.
  */
+
 
 router.post("/add", async function(req, res) {
   var name = req.body.userName.split(" ");
   var userFirstName = name[0];
   var userLastName = name[1];
-
-  let user;
+  let newUser;
   try {
-    user = await User.findOne({
+    newUser = await User.findOne({
       first_name: userFirstName,
-      last_name: userLastName
+      last_name: userLastName,
+      apartment: req.session.user.apartment
     });
   } catch (err) {
     res.status(400).send("Error finding user with that first and last name.");
@@ -52,7 +80,7 @@ router.post("/add", async function(req, res) {
   try {
     item = await ChoreListItem.create({
       description: req.body.description,
-      user: user._id,
+      user: newUser._id,
       apartment: req.session.user.apartment,
       days: req.body.days
     });
@@ -63,12 +91,14 @@ router.post("/add", async function(req, res) {
 });
 
 /**
- * Edit an existing ChoreListItem. Find the chore using the object id and then update it.
- *
- * Use axios.post(.../choreitem/edit_item/:id, newChoreListItem)
- *
- * @param req contains the new ChoreListItem with all relevant fields and the id of the ChoreListItem.
- * @return res containing "Success"
+ * Route for editing a chore item.
+ * @name post/edit
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} 'Success'.
  */
 
 router.post("/edit/:id", async function(req, res) {
@@ -118,44 +148,18 @@ router.post("/edit/:id", async function(req, res) {
 });
 
 /**
- * Getting all ChoreListItems for the apartment by user apartment id.
- * Populate the user field with user first_name and last_name.
- *
- * Use axios.post(.../choreitem/get)
- *
- * @return res containing a list of all ChoreListItems found.
+ * Route for retrieving all chore item of an apartment.
+ * @name get/get_all_items
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {List<ChoreListItem>} List of chores found.
  */
 
-// hard coded apartment
 router.get("/get_all_items", async function(req, res) {
-  let items;
-  try {
-    items = await ChoreListItem.find({
-      apartment: req.session.user.apartment
-    }).populate("user");
-    console.log(items);
-  } catch (err) {
-    res.status(400).send("Error finding items in database.");
-  }
-
-  let populatedItems = [];
-  items.forEach(item => {
-    console.log(item);
-    var name = item.user.first_name + " " + item.user.last_name;
-    var diffDays = getDaysRemaining(item.created, item.days);
-    populatedItems.push({
-      id: item._id,
-      chore: item.description,
-      user: name,
-      days: diffDays
-    });
-  });
-  res.status(200).json(populatedItems);
-});
-
-/*
-router.get("/get_all_items", async function(req, res) {
-  ChoreListItem.find({ apartment: new ObjectId("5ddecc7a1c9d4400000141dd") })
+  ChoreListItem.find({ apartment: req.session.user.apartment })
     .populate("user")
     .then(chores => {
       let populatedItems = [];
@@ -163,9 +167,11 @@ router.get("/get_all_items", async function(req, res) {
       chores.forEach(chore => {
         name = chore.user.first_name + " " + chore.user.last_name;
         var diffDays = getDaysRemaining(chore.created, chore.days);
+        var id = chore.user._id;
         populatedItems.push({
           chore: chore.description,
           id: chore._id,
+          user_id: id,
           user: name,
           days: diffDays
         });
@@ -174,15 +180,17 @@ router.get("/get_all_items", async function(req, res) {
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
-*/
+
 
 /**
- * Delete a ChoreListItem by object id.
- *
- * Use axios.get(.../choreitem/delete_item:id)
- *
- * @param req contains the id paramater of the chore to be deleted.
- * @return "Successfully deleted chore item."
+ * Route for deleting a chore.
+ * @name delete/delete_item
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} "Successfully deleted chore item!".
  */
 
 router.delete("/delete_item/:id", async function(req, res) {
@@ -195,12 +203,14 @@ router.delete("/delete_item/:id", async function(req, res) {
 });
 
 /**
- * Delete all ChoreListItems for the apartment by user apartment id.
- *
- * Use axios.delete(.../choreitem/delete_all_items)
- *
- * @param req user session variable with apartment_id
- * @return "Success"
+ * Route for deleting all chores of an apartment.
+ * @name delete/delete_all_items
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} "Success!".
  */
 
 router.delete("/delete_all_items", async function(req, res) {
@@ -213,33 +223,18 @@ router.delete("/delete_all_items", async function(req, res) {
 });
 
 /**
- * Retrieve all ChoreListItems by user id, and populates with days remaning.
- *
- * Use axios.get(.../choreitem/get_my_items)
- *
- * @param req user session variable with user _id
- * @return res containing a list of items retrieved and populated.
+ * Route for retrieving all of a user's items.
+ * @name get/get_my_items
+ * @function
+ * @memberof module:routes/choreitem~choreitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {List<ChoreListItem>} List of chores found.
  */
 
 router.get("/get_my_items", async function(req, res) {
-  let items;
-  try {
-    items = await ChoreListItem.find({ user: req.session.user._id });
-  } catch (err) {
-    res.status(400).send("Error finding items in database.");
-  }
-
-  let userItems = [];
-  items.forEach(item => {
-    var diffDays = getDaysRemaining(item.created, item.days);
-    userItems.push({ id: item._id, chore: item.description, days: diffDays });
-  });
-  res.status(200).json(userItems);
-});
-
-/*
-router.get("/get_my_items", async function(req, res) {
-  ChoreListItem.find({ user: new ObjectId(req.body._id) })
+  ChoreListItem.find({ user: req.session.user._id })
     .then(myChores => {
       let populatedItems = [];
       myChores.forEach(chore => {
@@ -254,6 +249,6 @@ router.get("/get_my_items", async function(req, res) {
     })
     .catch(err => res.status(400).json("Error: " + err));
 });
-*/
+
 
 module.exports = router;

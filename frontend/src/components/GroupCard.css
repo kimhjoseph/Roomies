@@ -1,61 +1,78 @@
 .group-code-card {
-    display: flex;
-    flex-direction: column;
-    text-align: center;
-    align-items: center;
-    width: 80%;
-    height: 100%;
-    background: #FFFFFF;
-    box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  align-items: center;
+  width: 80%;
+  height: 100%;
+  background: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
 }
 
 .group-text {
-    padding: 0px;
-    margin-bottom: 7px;
-    font-family: 'Noto Sans';
-    font-style: 'italic';
-    color: black;
+  padding: 0px;
+  margin-bottom: 7px;
+  font-family: "Noto Sans";
+  font-style: "italic";
+  color: black;
 }
 .group-code-body.card-body {
-    flex: 1 1 auto;
-    padding: 3rem;
-    padding-bottom: 0px;
+  flex: 1 1 auto;
+  padding: 3rem;
+  padding-bottom: 0px;
 }
 
 .group-button1.btn-primary {
-    width: 100%;
-    background-color: #008DC9;
-    border: #008DC9;
-    font-family: Sansita;
-    font-style: italic;
+  background: #008dc9;
+  border: 0px;
+  border-radius: 8px;
+  font-family: Sansita;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  background-color: #008dc9;
+  border: #008dc9;
+  font-family: Sansita;
+  font-style: italic;
 }
 
 .btn-primary:hover {
-    background-color: white;
+  background-color: white;
 }
 
 .group-button2.btn-primary {
-    width: 100%;
-    background-color: #9FCAEA;
-    border: #9FCAEA;
-    font-family: Sansita;
-    font-style: italic;
+  background: #9fcaea;
+  border: 0px;
+  border-radius: 8px;
+  font-family: Sansita;
+  font-weight: 800;
+  color: #ffffff;
+  box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+  border-radius: 8px;
+  transition: all 0.2s ease-in-out;
+  width: 100%;
+  background-color: #9fcaea;
+  border: #9fcaea;
+  font-family: Sansita;
+  font-style: italic;
 }
-
 
 .group-title {
-    font-family: Sansita;
-    font-style: italic;
-    font-weight: 700;
-    font-size: 36px;
-    line-height: 42px;
-    margin-bottom: 0px;
+  font-family: Sansita;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 36px;
+  line-height: 42px;
+  margin-bottom: 0px;
 
-    color: #000000;
+  color: #000000;
 }
 
-input[type=group-code-text]{
+input[type="group-code-text"] {
   border: 1.3px solid grey;
   border-radius: 4px;
   text-align: center;
@@ -67,5 +84,5 @@ input[type=group-code-text]{
 }
 
 input::placeholder {
-    color: #C4C4C4;
+  color: #c4c4c4;
 }

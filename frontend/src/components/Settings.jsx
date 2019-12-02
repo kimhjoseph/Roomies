@@ -1,14 +1,9 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
+import FormData from "form-data";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import axios from "axios";
-
-import UserList from "./UserList";
-import NotificationCards from "./NotificationList";
-import MainCard from "./MainCard";
 import NavbarComponent from "./NavbarComponent";
 import ProfileChangeModal from "./ProfileChangeModal";
-import dummy from "../images/dummy.jpg";
 import "./Settings.css";
 
 export default class ShoppingList extends Component {
@@ -22,41 +17,59 @@ export default class ShoppingList extends Component {
     this.updateEmail = this.updateEmail.bind(this);
     this.updateProfilePic = this.updateProfilePic.bind(this);
     this.handleImageAdded = this.handleImageAdded.bind(this);
+    this.update = this.update.bind(this);
 
     this.state = {
-      imagefile: dummy,
       changeInfoModal: false,
+      user: "",
       userInfo: {
         firstname: "",
         lastname: "",
         email: "",
-        profile_image: ""
+        img: ""
       },
       newInfo: {
         firstname: "",
         lastname: "",
         email: "",
-        profile_image: ""
-      },
-      userName: "Rondald"
+        img: ""
+      }
     };
+  }
 
-    axios
-      .get("http://localhost:4000/user/get")
+  async componentDidMount() {
+    await axios
+      .get("http://localhost:4000/user/get_current_user")
       .then(response => {
-        const user = response.data[0];
+        this.setState({ user: response.data });
+        let temp = response.data;
+
         this.setState({
           userInfo: {
-            firstname: user.first_name,
-            lastname: user.last_name,
-            email: user.email,
-            profile_image: "damn"
+            firstname: temp.first_name,
+            lastname: temp.last_name,
+            email: temp.email
           }
         });
       })
       .catch(function(error) {
         console.log(error);
       });
+
+    await axios
+      .get("http://localhost:4000/apartment/get_apartment")
+      .then(response => {
+        this.setState({ code: response.data.code });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    document
+      .getElementById("img")
+      .setAttribute(
+        "src",
+        "http://localhost:4000/load_image/" + this.state.user.picture
+      );
   }
 
   showChangeInfoModal() {
@@ -67,48 +80,48 @@ export default class ShoppingList extends Component {
     const value = e.target.value;
     const ln = this.state.newInfo.lastname;
     const email = this.state.newInfo.email;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: value,
-          lastname: ln != "" ? ln : this.state.userInfo.lastname,
-          email: email != "" ? email : this.state.userInfo.email,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: value,
+        lastname: ln != "" ? ln : this.state.userInfo.lastname,
+        email: email != "" ? email : this.state.userInfo.email,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateLastName(e) {
     const value = e.target.value;
     const fn = this.state.newInfo.firstname;
     const email = this.state.newInfo.email;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: fn != "" ? fn : this.state.userInfo.firstname,
-          lastname: value,
-          email: email != "" ? email : this.state.userInfo.email,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: fn != "" ? fn : this.state.userInfo.firstname,
+        lastname: value,
+        email: email != "" ? email : this.state.userInfo.email,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateEmail(e) {
     const value = e.target.value;
     const fn = this.state.newInfo.firstname;
     const ln = this.state.newInfo.lastname;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: fn != "" ? fn : this.state.userInfo.firstname,
-          lastname: ln != "" ? ln : this.state.userInfo.lastname,
-          email: value,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: fn != "" ? fn : this.state.userInfo.firstname,
+        lastname: ln != "" ? ln : this.state.userInfo.lastname,
+        email: value,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateProfilePic(e) {
@@ -126,21 +139,54 @@ export default class ShoppingList extends Component {
     console.log(this.state.newInfo);
   }
 
-  handleImageAdded(e) {
+  async handleImageAdded(e) {
     e.preventDefault();
-    let reader = new FileReader();
-    let file = e.target.files[0];
-    console.log(file);
+    const file = document.getElementById("profile_image").files;
+    const formData = new FormData();
 
-    reader.onloadend = () => {
-      this.setState({
-        imagefile: file,
-        imagePreviewUrl: reader.result
+    formData.append("img", file[0]);
+
+    await axios
+      .post("http://localhost:4000/upload", formData)
+      .then(response => {
+        console.log("The file successfully uploaded");
+        console.log(response.data.id);
+        this.setState({
+          img_id: response.data.id
+        });
       });
-    };
 
-    var url = reader.readAsDataURL(file);
-    console.log(url);
+    document
+      .getElementById("img")
+      .setAttribute("src", "http://localhost:4000/upload/" + file[0].name);
+
+    await this.update();
+  }
+
+  async update() {
+    const info = this.state;
+    console.log(info);
+    await axios
+      .post("http://localhost:4000/user/add_image", info)
+      .then(response => {
+        console.log(response.data);
+        //this.setState({ user: response.data});
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    await axios
+      .get("http://localhost:4000/user/get_current_user")
+      .then(response => {
+        this.setState({ user: response.data });
+        console.log(this.state.user);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    this.forceUpdate();
   }
 
   clickImageUploader() {
@@ -151,14 +197,15 @@ export default class ShoppingList extends Component {
     console.log(newInfo);
     await axios
       .post("http://localhost:4000/user/edit_info", newInfo)
-      .then(response=> {
-        this.setState({userInfo: newInfo})
-        console.log(this.state.userInfo)
+      .then(response => {
+        this.setState({ userInfo: newInfo });
+        console.log(this.state.userInfo);
       })
       .catch(function(error) {
         console.log(error);
       });
     console.log(this.state.newInfo);
+    this.forceUpdate();
   };
 
   render() {
@@ -175,41 +222,59 @@ export default class ShoppingList extends Component {
         </h1>
 
         <Container style={{ height: "100%", alignContent: "center" }}>
-          <div className="rounded-circle">
-            <form method="post" enctype="multipart/form-data" action="/upload">
-              <input
-                type="image"
-                src={this.state.imagefile}
-                className="rounded-circle"
-                onClick={this.clickImageUploader}
-              />
-              <input
-                type="file"
-                id="profile_image"
-                accept="image/*"
-                onChange={this.handleImageAdded}
-                style={{ display: "none" }}
-              />
-            </form>
-            <div className="name">{this.state.userInfo.firstname} {this.state.userInfo.lastname}</div>
-            <button
-              onClick={this.showChangeInfoModal}
-              className="change-info-button"
-            >
-              Change User Info
-            </button>
-            <ProfileChangeModal
-              onClose={this.showChangeInfoModal}
-              show={this.state.changeInfoModal}
-              handleUpdateInfo={this.handleUpdateInfo}
-              updateFirstName={this.updateFirstName}
-              updateLastName={this.updateLastName}
-              updateEmail={this.updateEmail}
-              updateProfilePic={this.updateProfilePic}
-              userInfo={this.state.userInfo}
-              newInfo={this.state.newInfo}
+          <div
+            className="rounded-circle"
+            style={{
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto"
+            }}
+          >
+            <input
+              id="img"
+              type="image"
+              className="rounded-circle"
+              onClick={this.clickImageUploader}
+            />
+            <input
+              type="file"
+              id="profile_image"
+              onChange={this.handleImageAdded}
+              style={{ display: "none" }}
             />
           </div>
+          <div
+            className="name"
+            style={{ textAlign: "center", fontSize: "20px" }}
+          >
+            {this.state.userInfo.firstname} {this.state.userInfo.lastname}
+            <div>
+              Invite:
+              <div style={{ display: "inline-block", color: "#008dc9" }}>
+                {} {this.state.code}
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={this.showChangeInfoModal}
+                className="change-info-button"
+              >
+                Change User Info
+              </button>
+            </div>
+          </div>
+
+          <ProfileChangeModal
+            onClose={this.showChangeInfoModal}
+            show={this.state.changeInfoModal}
+            handleUpdateInfo={this.handleUpdateInfo}
+            updateFirstName={this.updateFirstName}
+            updateLastName={this.updateLastName}
+            updateEmail={this.updateEmail}
+            updateProfilePic={this.updateProfilePic}
+            userInfo={this.state.userInfo}
+            newInfo={this.state.newInfo}
+          />
         </Container>
       </div>
     );
