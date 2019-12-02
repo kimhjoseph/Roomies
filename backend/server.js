@@ -13,8 +13,7 @@ const ObjectId = mongoose.Types.ObjectId;
 
 
 
-//Audrey
-// call all the required packages
+// call all the required packages for images
 const path = require('path');
 const multer = require('multer');
 app.use(bodyParser.urlencoded({extended: true}))
@@ -150,8 +149,7 @@ const storage = new GridFsStorage({
     })
   })
 
-  app.get('/start/:fileid', async function(req, res){
-    console.log(req.params.fileid);
+  app.get('/load_image/:fileid', async function(req, res){
     gfs.files.findOne({ _id: new ObjectId(req.params.fileid) }, (err, file) => {
       // Check if file
       if (!file || file.length === 0) {

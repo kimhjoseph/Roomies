@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Card } from "react-bootstrap";
 import "./MainCard.css";
-import dummy from "../images/dummy.jpg";
 import axios from "axios";
 
 axios.defaults.withCredentials = true;
@@ -19,11 +18,14 @@ export default class MainCard extends Component {
       users: {
         first_name: "",
         last_name: "",
-        status: ""
+        status: "",
+        picture: ""
       }
     };
+  }
 
-    axios
+  async componentDidMount() {
+    await axios
       .get("http://localhost:4000/user/get_current_user")
       .then(response => {
         const user = response.data;
@@ -31,13 +33,22 @@ export default class MainCard extends Component {
           users: {
             first_name: user.first_name,
             last_name: user.last_name,
-            status: user.status
+            status: user.status,
+            picture: user.picture
           }
         });
       })
       .catch(function(error) {
         console.log(error);
       });
+
+    console.log(this.state.users);
+    document
+      .getElementById("main-img")
+      .setAttribute(
+        "src",
+        "http://localhost:4000/load_image/" + this.state.users.picture
+      );
   }
 
   setStatusHome() {
@@ -184,7 +195,8 @@ export default class MainCard extends Component {
           <div>
             {/* TODO: currently getting the image in a weird way, should be done better */}
             <img
-              src={dummy}
+              id="main-img"
+              className="rounded-circle"
               style={{ height: "125px", width: "125px" }}
               alt=""
             ></img>
