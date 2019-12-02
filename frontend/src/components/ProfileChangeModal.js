@@ -37,7 +37,7 @@ export default class ProfileChangeModal extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">
-            Modal heading
+          Edit Info
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
