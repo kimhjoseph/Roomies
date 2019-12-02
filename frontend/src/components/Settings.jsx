@@ -63,7 +63,7 @@ export default class ShoppingList extends Component {
       });
       document
       .getElementById("img")
-      .setAttribute("src", "http://localhost:4000/start/" + this.state.user.picture);
+      .setAttribute("src", "http://localhost:4000/load_image/" + this.state.user.picture);
   }
 
 
