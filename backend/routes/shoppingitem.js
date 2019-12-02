@@ -13,6 +13,7 @@ require("dotenv").config();
 var PayPalBasicAuth = process.env.PayPalBasicAuth;
 
 router.post("/get_access", async function(request, response) {
+  console.log("test");
   console.log(PayPalBasicAuth);
   var options = {
     "method": "POST",
@@ -65,7 +66,7 @@ router.post("/send_invoice", async function(req, res) {
     // create invoice draft
     .then(async response => {
       let jsonString = circularJSON.stringify(response.data);
-      let json = JSON.parse(jsonString);
+      let json = JSON.parse(jsonString);f
       // console.log(json);
       var invoice_draft = {
         "detail": {

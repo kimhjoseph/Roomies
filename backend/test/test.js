@@ -1,75 +1,106 @@
-const mongoose = require('mongoose');
-const User = require('../models/User');
-const Apartment = require('../models/Apartment');
-const ChoreListItem = require('../models/ChoreListItem')
+const session = require('supertest-session');
+const app = require('../server');
 
-// tests get_users for get functionality
-beforeEach(async function() {
-  await User.clear();
-  let user1 = { _id: 1, first_name: "Amlan", last_name: "Bose", email: "dummy_email", status: "Sleeping", apartment: 1};
-  let user2 = { _id: 2, first_name: "Pradyuman", last_name: "Mittal", email: "dummy_email_2", status: "Busy", apartment: 1};
-  await User.save([user1, user2]);
+var testSession = null;
+
+beforeEach(() => {
+  testSession = session('http://localhost:4000');
 });
 
-describe('#find()', function() {
-  it('finds matching users', async function() {
-    const users = await User.find({ apartment: 1 }).toArray();
-    users.should.have.length(2);
+it('should sign in', (done) => {
+  testSession.post('/user/login')
+    .send({ email: 'test@gmail.com', password: 'test' })
+    .expect(201)
+    .end(done);
+});
+
+describe('after authenticating session', () => {
+  var authenticatedSession;
+
+  beforeEach((done) => {
+    testSession.post('/user/login')
+      .send({ email: 'test@gmail.com', password: 'test' })
+      .expect(201)
+      .end(function (err) {
+        if (err) return done(err);
+        authenticatedSession = testSession;
+        return done();
+      });
   });
-});
 
-// tests create_apartment for create functionality
-beforeEach(async function() {
-	await Apartment.clear();
-});
-
-describe('#create()', function() {
-  it('creates correct Apartment object', async function() {
-    const apartment = await Apartment.create({ _id: 1, name: "Atrium", address: "10965 Strathmore Dr", code: "AAAAA" });
-    assert.equal(apartment.name, "Atrium");
+  it('should create apartment', (done) => {
+  	authenticatedSession.get('/apartment/create')
+  	  .expect(200)
+  	  .end(done)
   });
-});
 
-// tests edit_apartment for edit functionality
-beforeEach(async function() {
-	await Apartment.clear();
-	await Apartment.create({ _id: 1, name: "Atrium", address: "10965 Strathmore Dr", code: "AAAAA" });
-});
+  it('should join apartment', (done) => {
+  	let data = {
+  		code: 'vu7Bp'
+  	}
+  	authenticatedSession.post('/apartment/join')
+  	  .send(data)
+  	  .set('Accept', 'application/json')
+  	  .expect(201)
+  	  .end(done)
+  });
 
-describe('#findOneAndUpdate', function() {
-	it('edits Apartment object correctly', async function() {
-		let oldApartment = await Apartment.findOne({ _id: 1 });
-		let updatedApartment = { name: "Red Roebs", address: "10943 Roebling Avenue" };
-		let newApartment = await Apartment.findOneAndUpdate({ _id: 1 }, updatedApartment, { new: true });
-		assert.equal(newApartment.name, "Red Roebs");
-	})
-});
+  it('should return users', (done) => {
+    authenticatedSession.get('/user/get')
+      .expect(200)
+      .end(done)
+  });
 
-// tests add_item to check that User and ChoreListItem interact correctly
-beforeEach(async function() {
-	await User.clear()
-	await User.create({ _id: 1, first_name: "Pradyuman", last_name: "Mittal", email: "dummy_email_2", status: "Busy", apartment: 1 });
-	await ChoreListItem.clear();
-});
+  it('should return current user', (done) => {
+  	authenticatedSession.get('/user/get_current_user')
+  	  .expect(200)
+  	  .end(done)
+  });
 
-describe('#create()', function() {
-	it('creates correct ChoreListItem object', async function() {
-		let user = await User.findOne({ first_name: "Pradyuman", last_name: "Mittal" });
-		let choreitem = await ChoreListItem.create({ description: "Clean", frequency: 1, user: user._id, priority: "High", apartment: 1 });
-		assert.equal(choreitem.user, 1);
-	});
-});
+  it('should add chore item', (done) => {
+  	let data = {
+  		userName: "Test User",
+  		description: "Clean",
+  		days: 5
+  	}
 
+  	authenticatedSession.post('/choreitem/add')
+  	  .send(data)
+  	  .set('Accept', 'application/json')
+  	  .expect(201)
+  	  .end(done)
+  });
 
-// tests delete_item for delete functionality
-beforeEach(async function() {
-	await ChoreListItem.clear()
-	await ChoreListItem.create({ id: 1, description: "Clean", frequency: 1, user: user._id, priority: "High", apartment: 1 });
-});
+  it('should get all chore items', (done) => {
+  	authenticatedSession.get('/choreitem/get_all_items')
+  	.expect(200)
+  	.end(done)
+  });
 
-describe('#delete()', function() {
-	it('deletes ChoreListItem object', async function() {
-		await ChoreListItem.deleteOne({ id: 1 });
-		assert.equal(ChoreListItem.length, 0);
-	});
+  it('should delete all chore items', (done) => {
+  	authenticatedSession.delete('/choreitem/delete_all_items')
+  	  .expect(200)
+  	  .end(done)
+  });
+
+  it('should add shopping list item', (done) => {
+  	let data = {
+  		people: ["Test User"],
+  		item: "Bananas",
+  		description: "3 yellow ones!"
+  	}
+
+  	authenticatedSession.post('/shoppingitem/add')
+  	  .send(data)
+  	  .set('Accept', 'application/json')
+  	  .expect(201)
+  	  .end(done)
+  });
+  
+  it('should get all shopping list items', (done) => {
+  	authenticatedSession.get('/shoppingitem/get')
+  	  .expect(200)
+  	  .end(done)
+  });
+
 });

@@ -98,6 +98,7 @@ router.post("/edit_info", async function(req, res) {
 
 router.get("/get", async function(req, res) {
   let users;
+  console.log(req.session.user);
   try {
     users = await User.find({ apartment: req.session.user.apartment });
   } catch (err) {

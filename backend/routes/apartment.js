@@ -93,7 +93,7 @@ router.post("/join", async function(req, res) {
     res.status(400).send("Error adding information to user.");
   }
   req.session.user = user;
-  res.status(200).json("Success");
+  res.status(201).json("Success");
 });
 
 /**
