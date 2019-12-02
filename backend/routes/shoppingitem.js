@@ -10,21 +10,22 @@ var https = require("https");
 const circularJSON = require("circular-json");
 require("dotenv").config();
 
-var PayPalBasicAuth = process.env.PayPalBasicAuth;
+var PayPalClientID = process.env.PayPalClientID;
+var PayPalClientSecret = process.env.PayPalClientSecret;
 
 router.post("/get_access", async function(request, response) {
-  console.log("test");
-  console.log(PayPalBasicAuth);
+  var base64encodedData = await new Buffer(
+    PayPalClientID + ":" + PayPalClientSecret
+  ).toString("base64");
   var options = {
     "method": "POST",
     "hostname": "api.sandbox.paypal.com",
     "path": "/v1/oauth2/token",
     "headers": {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " + PayPalBasicAuth
+      "Authorization": "Basic " + base64encodedData
     }
   };
-
   var req = await https.request(options, function(res) {
     var chunks = [];
     res.on("data", function(chunk) {
@@ -33,11 +34,10 @@ router.post("/get_access", async function(request, response) {
     res.on("end", function() {
       var body = Buffer.concat(chunks);
       var jsonBody = JSON.parse(body.toString());
-      // console.log(jsonBody);
+      console.log(jsonBody);
       response.status(201).send(jsonBody);
     });
   });
-
   try {
     await req.write(
       querystring.stringify({ grant_type: "client_credentials" })
@@ -49,13 +49,13 @@ router.post("/get_access", async function(request, response) {
 });
 
 router.post("/send_invoice", async function(req, res) {
-  // console.log(req);
   var config = {
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + req.body.access_token
     }
   };
+  console.log(config);
   // get invoice number
   await axios
     .post(
@@ -66,8 +66,8 @@ router.post("/send_invoice", async function(req, res) {
     // create invoice draft
     .then(async response => {
       let jsonString = circularJSON.stringify(response.data);
-      let json = JSON.parse(jsonString);f
-      // console.log(json);
+      let json = JSON.parse(jsonString);
+      console.log(json);
       var invoice_draft = {
         "detail": {
           "invoice_number": json.invoice_number,
@@ -119,7 +119,7 @@ router.post("/send_invoice", async function(req, res) {
     .then(response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
-      // console.log(json);
+      console.log(json);
       return axios.post(json.href + "/send", null, config);
     })
     // invoice sent
