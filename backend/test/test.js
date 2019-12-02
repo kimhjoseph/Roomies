@@ -8,7 +8,7 @@ beforeEach(() => {
 });
 
 it('should sign up', (done) => {
-  testSession.post('/user/signup')
+  testSession.post('/user/signupd')
     .send({ first_name: 'Test', last_name: 'User', email: 'test@gmail.com', password: 'test' })
     .expect(201)
     .end(done);

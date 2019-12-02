@@ -84,6 +84,7 @@ router.post("/edit_info", async function(req, res) {
     console.log("Error updating user.");
     res.status(400).send(err);
   }
+  req.session.user = user;
   res.status(201).send("Success");
 });
 
