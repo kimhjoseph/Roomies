@@ -1,4 +1,23 @@
+/** Express router providing shopping item related routes
+ * @module routes/shoppingitem
+ * @requires express
+ */
+
+/**
+ * express module
+ * @const
+ */
+
+
 const express = require("express");
+
+
+/**
+ * Express router to mount shopping item related functions on.
+ * @type {object}
+ * @const
+ * @namespace shoppingitemRouter
+ */
 const router = express.Router();
 const mongoose = require("mongoose");
 const ObjectId = mongoose.Types.ObjectId;
@@ -11,6 +30,18 @@ const circularJSON = require("circular-json");
 require("dotenv").config();
 
 var PayPalBasicAuth = process.env.PayPalBasicAuth;
+
+
+/**
+ * Route for gaining access token from paypal.
+ * @name post/get_access
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} Access token obtained from paypal.
+ */
 
 router.post("/get_access", async function(request, response) {
   console.log("test");
@@ -47,6 +78,18 @@ router.post("/get_access", async function(request, response) {
     response.status(400).send("Error getting access token.");
   }
 });
+
+
+/**
+ * Route for sending invoices to users through paypal.
+ * @name post/send_invoice
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {JSON} Generated invoices.
+ */
 
 router.post("/send_invoice", async function(req, res) {
   // console.log(req);
@@ -135,17 +178,17 @@ router.post("/send_invoice", async function(req, res) {
     });
 });
 
-// add (post)
-// get (get)
-// delete (delete)
+
 
 /**
- * Create a new ShoppingListItem.
- *
- * Use axios.post(.../shoppingitem/add, newShoppingListItem)
- *
- * @param req contains the new ShoppingListItem with name, quantity, price, priority, completed and apartment.
- * @return "Success"
+ * Route for adding a shopping list item to an apartment.
+ * @name post/add
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {ObjectID} Id of the item added.
  */
 
 router.post("/add", async function(req, res) {
@@ -184,13 +227,16 @@ router.post("/add", async function(req, res) {
     });
 });
 
+
 /**
- * Getting all ShoppingListItems for the apartment by user apartment id.
- *
- * Use axios.get(.../shoppingitem/get_item)
- *
- * @param req user session variable
- * @return res containing a list of ShoppingListItems found."
+ * Route for retrieving all shopping list items of an apartment.
+ * @name get/get
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {List<ShoppingListItem>} List of shopping list items.
  */
 
 router.route("/get").get((req, res) => {
@@ -215,14 +261,18 @@ router.route("/get").get((req, res) => {
     .catch(error => res.status(400).json("Error: " + error));
 });
 
+
 /**
- * Delete a ShoppingListItem by object id.
- *
- * Use axios.delete(.../shoppingitem/delete:id)
- *
- * @param req contains the id paramater of the object to be deleted.
- * @return "Success"
+ * Route for deleting a shopping list item.
+ * @name delete/delete
+ * @function
+ * @memberof module:routes/shoppingitem~shoppingitemRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} "Success".
  */
+
 
 router.delete("/delete/:id", async function(req, res) {
   try {
