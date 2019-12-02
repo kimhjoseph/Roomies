@@ -23,11 +23,11 @@ export default class ShoppingList extends Component {
     this.updateEmail = this.updateEmail.bind(this);
     this.updateProfilePic = this.updateProfilePic.bind(this);
     this.handleImageAdded = this.handleImageAdded.bind(this);
-    this.b64toBlob = this.b64toBlob.bind(this);
+    this.update = this.update.bind(this);
 
     this.state = {
-      img: "",
       changeInfoModal: false,
+      user: "", 
       userInfo: {
         firstname: "",
         lastname: "",
@@ -39,29 +39,34 @@ export default class ShoppingList extends Component {
         lastname: "",
         email: "",
         img: ""
-      },
-      userName: "Rondald"
+      }
     };
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     await axios
-    .get("http://localhost:4000/user/get")
-    .then(response => {
-      const user = response.data[0];
-      this.setState({
-        userInfo: {
-          firstname: user.first_name,
-          lastname: user.last_name,
-          email: user.email
-        },
-        img: user.img
+      .get("http://localhost:4000/user/get_current_user")
+      .then(response => {
+        this.setState({user: response.data});
+        let temp = response.data;
+
+        this.setState({
+          userInfo: {
+            firstname: temp.first_name,
+            lastname: temp.last_name,
+            email: temp.email
+          }
+        });
+      })
+      .catch(function(error) {
+        console.log(error);
       });
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+      document
+      .getElementById("img")
+      .setAttribute("src", "http://localhost:4000/start/" + this.state.user.picture);
   }
+
+
   showChangeInfoModal() {
     this.setState({ changeInfoModal: !this.state.changeInfoModal });
   }
@@ -70,52 +75,51 @@ export default class ShoppingList extends Component {
     const value = e.target.value;
     const ln = this.state.newInfo.lastname;
     const email = this.state.newInfo.email;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: value,
-          lastname: ln != "" ? ln : this.state.userInfo.lastname,
-          email: email != "" ? email : this.state.userInfo.email,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: value,
+        lastname: ln != "" ? ln : this.state.userInfo.lastname,
+        email: email != "" ? email : this.state.userInfo.email,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateLastName(e) {
     const value = e.target.value;
     const fn = this.state.newInfo.firstname;
     const email = this.state.newInfo.email;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: fn != "" ? fn : this.state.userInfo.firstname,
-          lastname: value,
-          email: email != "" ? email : this.state.userInfo.email,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: fn != "" ? fn : this.state.userInfo.firstname,
+        lastname: value,
+        email: email != "" ? email : this.state.userInfo.email,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateEmail(e) {
     const value = e.target.value;
     const fn = this.state.newInfo.firstname;
     const ln = this.state.newInfo.lastname;
-    const pp = this.state.newInfo.profile_image
-      this.setState({
-        newInfo: {
-          firstname: fn != "" ? fn : this.state.userInfo.firstname,
-          lastname: ln != "" ? ln : this.state.userInfo.lastname,
-          email: value,
-          profile_image: pp != "" ? pp : this.state.userInfo.profile_image
-        }
-      });
-      console.log(this.state.newInfo);
+    const pp = this.state.newInfo.profile_image;
+    this.setState({
+      newInfo: {
+        firstname: fn != "" ? fn : this.state.userInfo.firstname,
+        lastname: ln != "" ? ln : this.state.userInfo.lastname,
+        email: value,
+        profile_image: pp != "" ? pp : this.state.userInfo.profile_image
+      }
+    });
+    console.log(this.state.newInfo);
   }
 
   updateProfilePic(e) {
-    
     const value = e.target.value;
 
     this.setState({
@@ -130,55 +134,55 @@ export default class ShoppingList extends Component {
     console.log(this.state.newInfo);
   }
 
-  b64toBlob(b64Data, contentType, sliceSize) {
-    contentType = contentType || '';
-    sliceSize = sliceSize || 512;
+  async handleImageAdded(e) {
 
-    var byteCharacters = atob(b64Data);
-    var byteArrays = [];
+    e.preventDefault();
+    const file = document.getElementById("profile_image").files;
+    const formData = new FormData();
 
-    for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-        var slice = byteCharacters.slice(offset, offset + sliceSize);
+    formData.append("img", file[0]);
 
-        var byteNumbers = new Array(slice.length);
-        for (var i = 0; i < slice.length; i++) {
-            byteNumbers[i] = slice.charCodeAt(i);
-        }
-
-        var byteArray = new Uint8Array(byteNumbers);
-
-        byteArrays.push(byteArray);
-    }
-
-  var blob = new Blob(byteArrays, {type: contentType});
-  return blob;
-}
-
-  async handleImageAdded(event) {
-    event.preventDefault();
-    var reader;
-    var newData;
-    var current = this;
-
-    if (event.target.files && event.target.files[0]) {
-      reader = new FileReader();
-      reader.onload = function(e) {
-        newData = reader.result;
-        current.setState({img:newData});
-      }
-      reader.readAsDataURL(event.target.files[0]);
-      
-      await axios
-        .post("http://localhost:4000/user/edit_info", this.state.img)
-        .then(response=> {
-          this.setState({img: this.state.img})
-          console.log(this.state.img);
-        })
-        .catch(function(error) {
-          console.log(error);
+    await axios
+      .post("http://localhost:4000/upload", formData)
+      .then(response => {
+        console.log("The file successfully uploaded");
+        console.log(response.data.id);
+        this.setState({
+          img_id: response.data.id
         });
-      document.getElementById("preview").setAttribute('src', this.state.img);
-    }
+      });
+
+    document
+      .getElementById("img")
+      .setAttribute("src", "http://localhost:4000/upload/" + file[0].name);
+    
+    await this.update();
+    
+  }
+
+  async update() {
+    const info = this.state;
+    console.log(info);
+    await axios.post("http://localhost:4000/user/add_image", info)
+    .then(response => {
+        console.log(response.data);
+        //this.setState({ user: response.data});
+    })
+    .catch(function(error) {
+      console.log(error);
+    });
+
+    await axios
+      .get("http://localhost:4000/user/get_current_user")
+      .then(response => {
+        this.setState({user: response.data});
+        console.log(this.state.user);
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+
+    this.forceUpdate();
   }
 
   clickImageUploader() {
@@ -189,14 +193,15 @@ export default class ShoppingList extends Component {
     console.log(newInfo);
     await axios
       .post("http://localhost:4000/user/edit_info", newInfo)
-      .then(response=> {
-        this.setState({userInfo: newInfo})
-        console.log(this.state.userInfo)
+      .then(response => {
+        this.setState({ userInfo: newInfo });
+        console.log(this.state.userInfo);
       })
       .catch(function(error) {
         console.log(error);
       });
     console.log(this.state.newInfo);
+    this.forceUpdate();
   };
 
   render() {
@@ -214,27 +219,31 @@ export default class ShoppingList extends Component {
 
         <Container style={{ height: "100%", alignContent: "center" }}>
           <div className="rounded-circle">
-              <input
-                id="preview"
+            <input
+                id="img"
                 type="image"
-                src={this.state.img}
                 className="rounded-circle"
                 onClick={this.clickImageUploader}
               />
-              <input
+            <input
                 type="file"
                 id="profile_image"
-                accept="image/*"
                 onChange={this.handleImageAdded}
                 style={{ display: "none" }}
               />
-            <div className="name">{this.state.userInfo.firstname} {this.state.userInfo.lastname}</div>
-            <button
+              </div>
+            <div className="name" style={{textAlign:"center"}}>
+              {this.state.userInfo.firstname} {this.state.userInfo.lastname}
+              <div>
+              <button
               onClick={this.showChangeInfoModal}
               className="change-info-button"
             >
               Change User Info
             </button>
+            </div>
+            </div>
+            
             <ProfileChangeModal
               onClose={this.showChangeInfoModal}
               show={this.state.changeInfoModal}
@@ -246,7 +255,6 @@ export default class ShoppingList extends Component {
               userInfo={this.state.userInfo}
               newInfo={this.state.newInfo}
             />
-          </div>
         </Container>
       </div>
     );
