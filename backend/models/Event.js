@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 let Event = new Schema(
   {
-    description: {
+    title: {
       type: String
     },
     frequency: {
@@ -12,8 +12,14 @@ let Event = new Schema(
     location: {
       type: String
     },
-    time: {
+    start: {
       type: String
+    },
+    end: {
+      type: String
+    },
+    allDay: {
+      type: Boolean
     },
     users: [
       {

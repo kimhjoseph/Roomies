@@ -7,7 +7,8 @@ import Settings from "./Settings";
 import ChoreList from "./ChoreList";
 import SignUp from "./SignUp";
 import Login from "./Login";
-import CreateJoinApartment from "./CreateJoinApartment";
+import RoomiesCalendar from "./RoomiesCalendar";
+import CreateJoinApartment from "./CreateJoinApartment"
 import "./App.css";
 
 function App() {
@@ -37,6 +38,9 @@ function App() {
               </Route>
               <Route path="/chores">
                 <ChoreList />
+              </Route>
+              <Route path="/calendar">
+                <RoomiesCalendar/>
               </Route>
               <Route path="/">
                 <RoomiesLanding />
