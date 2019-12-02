@@ -9,7 +9,7 @@ export default class NavbarComponent extends Component {
     super(props);
 
     this.state = {
-      user: ''
+      user: ""
     };
   }
 
@@ -17,7 +17,7 @@ export default class NavbarComponent extends Component {
     await axios
       .get("http://localhost:4000/user/get_current_user")
       .then(response => {
-        this.setState({ user: response.data});
+        this.setState({ user: response.data });
       })
       .catch(function(error) {
         console.log(error);
@@ -52,12 +52,14 @@ export default class NavbarComponent extends Component {
         </Nav>
         <Nav className="ml-auto">
           <NavDropdown
-            title={ <img
-              id="nav-img"
-              className="rounded-circle"
-              style={{ height: "45px", width: "45px", marginTop:"20px", marginRight:"5px"}}
-              alt=""
-            ></img>}
+            title={
+              <img
+                id="nav-img"
+                className="rounded-circle"
+                style={{ height: "45px", width: "45px" }}
+                alt=""
+              ></img>
+            }
             alignRight
             id="basic-nav-dropdown"
           >
@@ -70,4 +72,3 @@ export default class NavbarComponent extends Component {
     );
   }
 }
-

@@ -1,15 +1,9 @@
 import React, { Component } from "react";
-import ReactDOM from "react-dom";
 import FormData from "form-data";
 import { Container, Row, Col, Card, Button } from "react-bootstrap";
 import axios from "axios";
-
-import UserList from "./UserList";
-import NotificationCards from "./NotificationList";
-import MainCard from "./MainCard";
 import NavbarComponent from "./NavbarComponent";
 import ProfileChangeModal from "./ProfileChangeModal";
-import dummy from "../images/dummy.jpg";
 import "./Settings.css";
 
 export default class ShoppingList extends Component {
@@ -27,7 +21,7 @@ export default class ShoppingList extends Component {
 
     this.state = {
       changeInfoModal: false,
-      user: "", 
+      user: "",
       userInfo: {
         firstname: "",
         lastname: "",
@@ -47,7 +41,7 @@ export default class ShoppingList extends Component {
     await axios
       .get("http://localhost:4000/user/get_current_user")
       .then(response => {
-        this.setState({user: response.data});
+        this.setState({ user: response.data });
         let temp = response.data;
 
         this.setState({
@@ -61,11 +55,22 @@ export default class ShoppingList extends Component {
       .catch(function(error) {
         console.log(error);
       });
-      document
-      .getElementById("img")
-      .setAttribute("src", "http://localhost:4000/load_image/" + this.state.user.picture);
-  }
 
+    await axios
+      .get("http://localhost:4000/apartment/get_apartment")
+      .then(response => {
+        this.setState({ code: response.data.code });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
+    document
+      .getElementById("img")
+      .setAttribute(
+        "src",
+        "http://localhost:4000/load_image/" + this.state.user.picture
+      );
+  }
 
   showChangeInfoModal() {
     this.setState({ changeInfoModal: !this.state.changeInfoModal });
@@ -135,7 +140,6 @@ export default class ShoppingList extends Component {
   }
 
   async handleImageAdded(e) {
-
     e.preventDefault();
     const file = document.getElementById("profile_image").files;
     const formData = new FormData();
@@ -155,27 +159,27 @@ export default class ShoppingList extends Component {
     document
       .getElementById("img")
       .setAttribute("src", "http://localhost:4000/upload/" + file[0].name);
-    
+
     await this.update();
-    
   }
 
   async update() {
     const info = this.state;
     console.log(info);
-    await axios.post("http://localhost:4000/user/add_image", info)
-    .then(response => {
+    await axios
+      .post("http://localhost:4000/user/add_image", info)
+      .then(response => {
         console.log(response.data);
         //this.setState({ user: response.data});
-    })
-    .catch(function(error) {
-      console.log(error);
-    });
+      })
+      .catch(function(error) {
+        console.log(error);
+      });
 
     await axios
       .get("http://localhost:4000/user/get_current_user")
       .then(response => {
-        this.setState({user: response.data});
+        this.setState({ user: response.data });
         console.log(this.state.user);
       })
       .catch(function(error) {
@@ -218,43 +222,59 @@ export default class ShoppingList extends Component {
         </h1>
 
         <Container style={{ height: "100%", alignContent: "center" }}>
-          <div className="rounded-circle">
+          <div
+            className="rounded-circle"
+            style={{
+              display: "block",
+              marginLeft: "auto",
+              marginRight: "auto"
+            }}
+          >
             <input
-                id="img"
-                type="image"
-                className="rounded-circle"
-                onClick={this.clickImageUploader}
-              />
-            <input
-                type="file"
-                id="profile_image"
-                onChange={this.handleImageAdded}
-                style={{ display: "none" }}
-              />
-              </div>
-            <div className="name" style={{textAlign:"center"}}>
-              {this.state.userInfo.firstname} {this.state.userInfo.lastname}
-              <div>
-              <button
-              onClick={this.showChangeInfoModal}
-              className="change-info-button"
-            >
-              Change User Info
-            </button>
-            </div>
-            </div>
-            
-            <ProfileChangeModal
-              onClose={this.showChangeInfoModal}
-              show={this.state.changeInfoModal}
-              handleUpdateInfo={this.handleUpdateInfo}
-              updateFirstName={this.updateFirstName}
-              updateLastName={this.updateLastName}
-              updateEmail={this.updateEmail}
-              updateProfilePic={this.updateProfilePic}
-              userInfo={this.state.userInfo}
-              newInfo={this.state.newInfo}
+              id="img"
+              type="image"
+              className="rounded-circle"
+              onClick={this.clickImageUploader}
             />
+            <input
+              type="file"
+              id="profile_image"
+              onChange={this.handleImageAdded}
+              style={{ display: "none" }}
+            />
+          </div>
+          <div
+            className="name"
+            style={{ textAlign: "center", fontSize: "20px" }}
+          >
+            {this.state.userInfo.firstname} {this.state.userInfo.lastname}
+            <div>
+              Invite:
+              <div style={{ display: "inline-block", color: "#008dc9" }}>
+                {} {this.state.code}
+              </div>
+            </div>
+            <div>
+              <button
+                onClick={this.showChangeInfoModal}
+                className="change-info-button"
+              >
+                Change User Info
+              </button>
+            </div>
+          </div>
+
+          <ProfileChangeModal
+            onClose={this.showChangeInfoModal}
+            show={this.state.changeInfoModal}
+            handleUpdateInfo={this.handleUpdateInfo}
+            updateFirstName={this.updateFirstName}
+            updateLastName={this.updateLastName}
+            updateEmail={this.updateEmail}
+            updateProfilePic={this.updateProfilePic}
+            userInfo={this.state.userInfo}
+            newInfo={this.state.newInfo}
+          />
         </Container>
       </div>
     );
