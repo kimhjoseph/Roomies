@@ -1,11 +1,10 @@
-@import url('https://fonts.googleapis.com/css?family=Markazi+Text|Noto+Sans&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Markazi+Text|Noto+Sans&display=swap");
 
 .main {
   display: flex;
   margin: auto;
   width: 80%;
   height: 100vh;
-  
 }
 
 .h1 {
@@ -20,7 +19,7 @@
 
 .login-sub {
   font-size: 25px;
-  color: #9FCAEA;
+  color: #9fcaea;
 }
 
 .login-title {
@@ -69,11 +68,10 @@
 
 .custom-landing-button:hover {
   background: #008dc9;
-  
 }
 
 .custom-sign-button {
-  margin: 6px 0px;
+  margin: 0px;
   float: center;
   padding: 6px 12px;
   width: 300px;
@@ -88,5 +86,4 @@
 
 .custom-sign-button:hover {
   background: #008dc9;
-  
 }
