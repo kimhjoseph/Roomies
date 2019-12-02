@@ -93,7 +93,13 @@ class CreateJoinApartment extends Component {
           }}
         >
           <Card className="group-code-card" style={{ margin: "auto" }}>
-            <Card.Body className="group-code-body">
+            <Card.Body
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center"
+              }}
+            >
               <Card.Title className="group-title" style={{ fontSize: "30px" }}>
                 Group Code:
               </Card.Title>
