@@ -8,9 +8,7 @@
  * @const
  */
 
-
 const express = require("express");
-
 
 /**
  * Express router to mount shopping item related functions on.
@@ -29,8 +27,8 @@ var https = require("https");
 const circularJSON = require("circular-json");
 require("dotenv").config();
 
-var PayPalBasicAuth = process.env.PayPalBasicAuth;
-
+var PayPalClientID = process.env.PayPalClientID;
+var PayPalClientSecret = process.env.PayPalClientSecret;
 
 /**
  * Route for gaining access token from paypal.
@@ -44,18 +42,18 @@ var PayPalBasicAuth = process.env.PayPalBasicAuth;
  */
 
 router.post("/get_access", async function(request, response) {
-  console.log("test");
-  console.log(PayPalBasicAuth);
+  var base64encodedData = await new Buffer(
+    PayPalClientID + ":" + PayPalClientSecret
+  ).toString("base64");
   var options = {
     "method": "POST",
     "hostname": "api.sandbox.paypal.com",
     "path": "/v1/oauth2/token",
     "headers": {
       "Content-Type": "application/x-www-form-urlencoded",
-      "Authorization": "Basic " + PayPalBasicAuth
+      "Authorization": "Basic " + base64encodedData
     }
   };
-
   var req = await https.request(options, function(res) {
     var chunks = [];
     res.on("data", function(chunk) {
@@ -64,11 +62,10 @@ router.post("/get_access", async function(request, response) {
     res.on("end", function() {
       var body = Buffer.concat(chunks);
       var jsonBody = JSON.parse(body.toString());
-      // console.log(jsonBody);
+      console.log(jsonBody);
       response.status(201).send(jsonBody);
     });
   });
-
   try {
     await req.write(
       querystring.stringify({ grant_type: "client_credentials" })
@@ -78,7 +75,6 @@ router.post("/get_access", async function(request, response) {
     response.status(400).send("Error getting access token.");
   }
 });
-
 
 /**
  * Route for sending invoices to users through paypal.
@@ -92,13 +88,13 @@ router.post("/get_access", async function(request, response) {
  */
 
 router.post("/send_invoice", async function(req, res) {
-  // console.log(req);
   var config = {
     headers: {
       "Content-Type": "application/json",
       "Authorization": "Bearer " + req.body.access_token
     }
   };
+  console.log(config);
   // get invoice number
   await axios
     .post(
@@ -109,8 +105,8 @@ router.post("/send_invoice", async function(req, res) {
     // create invoice draft
     .then(async response => {
       let jsonString = circularJSON.stringify(response.data);
-      let json = JSON.parse(jsonString);f
-      // console.log(json);
+      let json = JSON.parse(jsonString);
+      console.log(json);
       var invoice_draft = {
         "detail": {
           "invoice_number": json.invoice_number,
@@ -162,7 +158,7 @@ router.post("/send_invoice", async function(req, res) {
     .then(response => {
       let jsonString = circularJSON.stringify(response.data);
       let json = JSON.parse(jsonString);
-      // console.log(json);
+      console.log(json);
       return axios.post(json.href + "/send", null, config);
     })
     // invoice sent
@@ -177,8 +173,6 @@ router.post("/send_invoice", async function(req, res) {
       res.status(400).send(error);
     });
 });
-
-
 
 /**
  * Route for adding a shopping list item to an apartment.
@@ -227,7 +221,6 @@ router.post("/add", async function(req, res) {
     });
 });
 
-
 /**
  * Route for retrieving all shopping list items of an apartment.
  * @name get/get
@@ -261,7 +254,6 @@ router.route("/get").get((req, res) => {
     .catch(error => res.status(400).json("Error: " + error));
 });
 
-
 /**
  * Route for deleting a shopping list item.
  * @name delete/delete
@@ -272,7 +264,6 @@ router.route("/get").get((req, res) => {
  * @param {callback} middleware - Express middleware.
  * @return {string} "Success".
  */
-
 
 router.delete("/delete/:id", async function(req, res) {
   try {
