@@ -1,14 +1,17 @@
 import React, { Component } from "react";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
-import DatePicker from "react-datepicker";
 import moment from 'moment';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+
 
 export default class CalendarCreateEventModal extends Component {
   constructor(props) {
     super(props);
 
     this.onClose = this.onClose.bind(this);
+    this.click = this.click.bind(this);
     // this.toggleAllUsers = this.toggleAllUsers.bind(this);
 
     this.state = {
@@ -22,6 +25,12 @@ export default class CalendarCreateEventModal extends Component {
     this.props.onClose();
   };
 
+  click() {
+    let eventId = this.props.tempEvent.eventId;
+    this.props.deleteEvent(eventId);
+    this.props.onClose();
+  };
+
   handleDisableClick = e => {
     e.stopPropagation();
     e.preventDefault();
@@ -31,7 +40,6 @@ export default class CalendarCreateEventModal extends Component {
   render() {
     const tempEvent = this.props.tempEvent;
     let users = tempEvent.users;
-    let options = { year: 'numeric', month: 'long', day: 'numeric', hour: 'medium', minute: 'short' };
     return (
       <Modal
         show={this.props.show}
@@ -42,6 +50,11 @@ export default class CalendarCreateEventModal extends Component {
       >
         <Modal.Header closeButton>
           <Modal.Title id="contained-modal-title-vcenter">{tempEvent.title}</Modal.Title>
+          <FontAwesomeIcon
+            icon={faTrashAlt}
+            className="edit-button"
+            onClick={() => this.click()}
+          />
         </Modal.Header>
         <Modal.Body>
           <Form>

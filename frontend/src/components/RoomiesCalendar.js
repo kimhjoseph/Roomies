@@ -38,6 +38,7 @@ class RoomiesCalendar extends React.Component {
     this.updateStart = this.updateStart.bind(this);
     this.updateEnd = this.updateEnd.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
+    this.deleteEvent = this.deleteEvent.bind(this);
     this.showAddEventModal = this.showAddEventModal.bind(this);
     this.showEventCardModal = this.showEventCardModal.bind(this);
     this.getEvent = this.getEvent.bind(this);
@@ -148,7 +149,7 @@ class RoomiesCalendar extends React.Component {
           end: e.end,
           allDay: e.allDay,
           users: e.users,
-          eventId: e.eventId,
+          eventId: e.key,
         }
     });
   }
@@ -215,6 +216,22 @@ class RoomiesCalendar extends React.Component {
       console.log("Error: " + error);
     });
   };
+  deleteEvent(eventId) {
+    axios.delete("http://localhost:4000/event/delete_event/" + eventId)
+      .then(() => {
+        this.setState({
+          tempEvent: {
+            title: "",
+            start: (new Date()).toJSON(),
+            end: (new Date()).toJSON(),
+            allDay: true,
+            users: [],
+            eventId: undefined
+          },
+          events: this.state.events.filter(event => event.eventId !== eventId)
+        });
+      });
+  }
 
   handleClick() {
     let tempEvent = {
@@ -268,6 +285,7 @@ class RoomiesCalendar extends React.Component {
             updateEnd={this.updateEnd}
             updateTime={this.updateTime}
             updateUsers={this.updateUsers}
+            deleteEvent={this.deleteEvent}
             users={this.state.users}
           />
           <EventCardModal

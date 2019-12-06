@@ -71,7 +71,7 @@ router.post("/add", async function(req, res) {
 });
 /**
  * Route for deleting an event.
- * @name delete/delete_item
+ * @name delete/delete_event
  * @function
  * @memberof module:routes/event~eventRouter
  * @inner
@@ -80,7 +80,9 @@ router.post("/add", async function(req, res) {
  * @return {string} "Successfully deleted event!".
  */
 
-router.delete("/delete_item/:id", async function(req, res) {
+router.delete("/delete_event/:id", async function(req, res) {
+  console.log("deleting event...");
+  console.log(req.params);
   try {
     await Event.deleteOne({ _id: req.params.id });
   } catch (err) {
