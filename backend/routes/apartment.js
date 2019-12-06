@@ -8,9 +8,7 @@
  * @const
  */
 
-
 const express = require("express");
-
 
 /**
  * Express router to mount apartment related functions on.
@@ -26,7 +24,6 @@ const ObjectId = mongoose.Types.ObjectId;
 const User = require("../models/User");
 const Apartment = require("../models/Apartment");
 
-
 /**
  * Function for generating apartment code.
  * @name makeId
@@ -35,7 +32,6 @@ const Apartment = require("../models/Apartment");
  * @inner
  * @return {string} Generated apartment code.
  */
-
 
 function makeId() {
   var result = "";
@@ -51,7 +47,6 @@ function makeId() {
   }
   return result;
 }
-
 
 /**
  * Route for creating an apartment.
@@ -141,7 +136,7 @@ router.post("/join", async function(req, res) {
 router.get("/get_apartment", async function(req, res) {
   let apartment;
   try {
-    let apartment = await Apartment.findById(req.session.user.apartment);
+    apartment = await Apartment.findById(req.session.user.apartment);
   } catch (err) {
     res.status(400).send("Error finding apartment.");
   }
@@ -183,4 +178,3 @@ router.post("/edit", async function(req, res) {
 });
 
 module.exports = router;
-
