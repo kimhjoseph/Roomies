@@ -33,7 +33,8 @@ export default class ShoppingList extends Component {
         lastname: "",
         email: "",
         img: ""
-      }
+      },
+      code: ""
     };
   }
 
@@ -59,6 +60,7 @@ export default class ShoppingList extends Component {
     await axios
       .get("http://localhost:4000/apartment/get_apartment")
       .then(response => {
+        console.log(response);
         this.setState({ code: response.data.code });
       })
       .catch(function(error) {
