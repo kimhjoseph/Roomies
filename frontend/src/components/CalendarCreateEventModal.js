@@ -31,7 +31,7 @@ export default class CalendarCreateEventModal extends Component {
   };
 
   render() {
-    let allDay = this.props.tempEvent.allDay
+    let allDay = this.props.tempEvent.allDay;
     let allDayText = this.props.tempEvent.allDay ? "Add time" : "Make All Day";
     let dateFormat = allDay ? "MM/dd/yy" : "MM/dd/yy h:mm aa";
     return (
@@ -118,7 +118,7 @@ export default class CalendarCreateEventModal extends Component {
                       id={user}
                       label={name}
                       value={name}
-                      onChange={this.props.updatePeople}
+                      onChange={this.props.updateUsers}
                       // checked={this.state.allUsers}
                     />
                   );

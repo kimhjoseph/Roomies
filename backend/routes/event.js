@@ -69,6 +69,27 @@ router.post("/add", async function(req, res) {
       res.status(400).send("Error creating calendar event.");
     });
 });
+/**
+ * Route for deleting an event.
+ * @name delete/delete_event
+ * @function
+ * @memberof module:routes/event~eventRouter
+ * @inner
+ * @param {string} path - Express path
+ * @param {callback} middleware - Express middleware.
+ * @return {string} "Successfully deleted event!".
+ */
+
+router.delete("/delete_event/:id", async function(req, res) {
+  console.log("deleting event...");
+  console.log(req.params);
+  try {
+    await Event.deleteOne({ _id: req.params.id });
+  } catch (err) {
+    res.status(400).send("Error deleting event.");
+  }
+  res.status(200).send("Successfully deleted event!");
+});
 
 /**
  * Route for retrieving events of an apartment.
@@ -104,4 +125,4 @@ router.route("/get").get((req, res) => {
       .catch(error => res.status(400).json("Error: " + error));
   });
 
-  module.exports = router;
+module.exports = router;

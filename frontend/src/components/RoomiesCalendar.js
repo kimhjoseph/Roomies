@@ -5,6 +5,7 @@ import moment from 'moment';
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import axios from "axios";
 import CalendarCreateEventModal from "./CalendarCreateEventModal";
+import EventCardModal from "./EventCardModal";
 import "react-datepicker/dist/react-datepicker.css";
 import "./RoomiesCalendar.css";
 axios.defaults.withCredentials = true;
@@ -26,6 +27,7 @@ class RoomiesCalendar extends React.Component {
       },
       users: [],
       addEventModal: false,
+      eventCardModal: false,
     };
     this.getEvents = this.getEvents.bind(this);
     this.getUsers = this.getUsers.bind(this);
@@ -36,7 +38,10 @@ class RoomiesCalendar extends React.Component {
     this.updateStart = this.updateStart.bind(this);
     this.updateEnd = this.updateEnd.bind(this);
     this.updateUsers = this.updateUsers.bind(this);
+    this.deleteEvent = this.deleteEvent.bind(this);
     this.showAddEventModal = this.showAddEventModal.bind(this);
+    this.showEventCardModal = this.showEventCardModal.bind(this);
+    this.getEvent = this.getEvent.bind(this);
   }
   componentDidMount () {
     // Fetch events from backend
@@ -96,17 +101,17 @@ class RoomiesCalendar extends React.Component {
     });
   }
   updateUsers(e) {
-    console.log("Updating new item people...");
+    console.log("Updating new event people...");
     const user = e.target.value;
-    var found = this.state.tempItem.users.find(i => i === user);
+    var found = this.state.tempEvent.users.find(i => i === user);
     var users;
     if (found === undefined) {
-      users = this.state.tempItem.users.concat([user]);
+      users = this.state.tempEvent.users.concat([user]);
     } else {
-      users = this.state.tempItem.users.filter(i => i !== user);
+      users = this.state.tempEvent.users.filter(i => i !== user);
     }
     this.setState({
-      tempItem: {
+      tempEvent: {
         title: this.state.tempEvent.title,
         start: this.state.tempEvent.start,
         end: this.state.tempEvent.end,
@@ -115,12 +120,37 @@ class RoomiesCalendar extends React.Component {
         eventId: this.state.tempEvent.eventId,
       }
     });
-    console.log("Successfully updated new item people!");
+    console.log("Successfully updated new event people!");
   }
   showAddEventModal() {
     this.setState({ 
       addEventModal: !this.state.addEventModal,
       allDay: true,
+    });
+  }
+  showEventCardModal(e) {
+    console.log(e);
+    // this.getEvent(e.resource);
+    let isDisplayed = this.state.eventCardModal
+    this.setState({ 
+      eventCardModal: !this.state.eventCardModal,
+      tempEvent: isDisplayed ? 
+        {
+          title: "",
+          start: (new Date()).toJSON(),
+          end: (new Date()).toJSON(),
+          allDay: true,
+          users: [],
+          eventId: undefined
+        } :
+        {
+          title: e.title,
+          start: e.start,
+          end: e.end,
+          allDay: e.allDay,
+          users: e.users,
+          eventId: e.key,
+        }
     });
   }
 
@@ -141,6 +171,12 @@ class RoomiesCalendar extends React.Component {
       })
       .catch(error => {
         console.log("Error: " + error);
+      });
+  }
+  getEvent(eventId) {
+    axios.get("http://localhost:4000/event/get_one", eventId)
+      .then(resp => {
+        this.setState({tempEvent: resp.data});
       });
   }
   handleAddEvent = async tempEvent => {
@@ -180,6 +216,22 @@ class RoomiesCalendar extends React.Component {
       console.log("Error: " + error);
     });
   };
+  deleteEvent(eventId) {
+    axios.delete("http://localhost:4000/event/delete_event/" + eventId)
+      .then(() => {
+        this.setState({
+          tempEvent: {
+            title: "",
+            start: (new Date()).toJSON(),
+            end: (new Date()).toJSON(),
+            allDay: true,
+            users: [],
+            eventId: undefined
+          },
+          events: this.state.events.filter(event => event.eventId !== eventId)
+        });
+      });
+  }
 
   handleClick() {
     let tempEvent = {
@@ -207,16 +259,19 @@ class RoomiesCalendar extends React.Component {
         'allDay': event.allDay,
         'start': moment(event.start).toDate(),
         'end': moment(event.end).toDate(),
+        'key': event.eventId,
+        'users': event.users,
       };
     });
     return (
       <div style={{height:'100vh'}}>
         <NavbarComponent />
-        <div style={{padding: '20px 40px'}}>
+        <div style={{padding: '20px 30px'}}>
           <Calendar
             localizer={localizer}
             events={calendarEvents}
             style={{height: 640, marginBottom: '50px'}}
+            onSelectEvent={this.showEventCardModal}
           />
           <button onClick={this.showAddEventModal} className="calendar-button">Create Event</button>
           <CalendarCreateEventModal
@@ -229,8 +284,15 @@ class RoomiesCalendar extends React.Component {
             updateStart={this.updateStart}
             updateEnd={this.updateEnd}
             updateTime={this.updateTime}
-            updatePeople={this.updatePeople}
+            updateUsers={this.updateUsers}
+            deleteEvent={this.deleteEvent}
             users={this.state.users}
+          />
+          <EventCardModal
+            onClose={this.showEventCardModal}
+            tempEvent={this.state.tempEvent}
+            show={this.state.eventCardModal}
+            deleteEvent={this.deleteEvent}
           />
         </div>
       </div>
